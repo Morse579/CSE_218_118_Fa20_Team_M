@@ -1,6 +1,7 @@
 export{initializeScene}
+import{functions} from './main.js'
 
-  function initializeScene(user){
+function initializeScene(user){
     var canvas = document.getElementById("renderCanvas"); // Get the canvas element
     var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
     var markerOn = true;
@@ -130,17 +131,6 @@ export{initializeScene}
         header.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
         header.fontSize = "120"
         panel.addControl(header);
-        // var picker = new BABYLON.GUI.ColorPicker();
-
-        // picker.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-        // picker.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-        // picker.height = "350px";
-        // picker.width = "350px";
-        // // This will work in XR, since we are using native pointer events!
-        // picker.onValueChangedObservable.add(function(value) {
-        //     //sphere.material.diffuseColor.copyFrom(value);
-        // });
-        // panel.addControl(picker);
 
         var button = BABYLON.GUI.Button.CreateSimpleButton("but", "Click Me");
         button.height = "200px";
@@ -151,7 +141,7 @@ export{initializeScene}
         button.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
         button.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
         button.onPointerClickObservable.add(function () {
-        alert("pressed!");
+            feed(user);
     });
         panel.addControl(button);
     //////////////////////////////// UI test //////////////////////////////// 
@@ -165,4 +155,13 @@ export{initializeScene}
         engine.resize();
         });
     });
+  }
+
+  function feed(user){
+    alert("feed!");
+    const feed = functions.httpsCallable('feed');
+    feed({email: user.email}).then(res => {
+        console.log(res);
+    });
+
   }

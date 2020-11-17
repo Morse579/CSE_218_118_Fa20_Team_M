@@ -1,5 +1,6 @@
 import {initializeScene} from './placeCats.js'
-/////////////////////// Firebase ////////////////////////////
+export{functions}
+
 const firebaseConfig = {
     apiKey: "AIzaSyCHuFcfj3D2vXpxuJWbJViYa1SJPUkEAZM",
     authDomain: "ar-meowmeow.firebaseapp.com",
@@ -31,7 +32,8 @@ const firebaseConfig = {
     const getUserInfo = functions.httpsCallable('userInfo');
     getUserInfo({email: user.email}).then(res => {
         console.log(res.data);
-        initializeScene(JSON.parse(res.data));
+        var userInfo = JSON.parse(res.data);
+        userInfo.email = user.email;
+        initializeScene(userInfo);
     });
   }
-/////////////////////// Firebase ////////////////////////////
