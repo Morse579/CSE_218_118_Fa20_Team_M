@@ -2,5 +2,5 @@
 Please use `firebase deploy --only hosting` to deploy when you make changes in
 public folder.
 
-# Hosting URL
+## Hosting URL
 https://ar-meowmeow.web.app
