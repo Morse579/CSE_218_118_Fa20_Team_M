@@ -1,124 +1,168 @@
-var canvas = document.getElementById("renderCanvas"); // Get the canvas element
-var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
-var markerOn = true;
+export{initializeScene}
 
-var addMesh = function (xr, scene) {
-    const fm = xr.baseExperience.featuresManager;
+  function initializeScene(user){
+    var canvas = document.getElementById("renderCanvas"); // Get the canvas element
+    var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
+    var markerOn = true;
 
-    const xrTest = fm.enableFeature(BABYLON.WebXRHitTest, "latest");
+    var addMesh = function (xr, scene) {
+        const fm = xr.baseExperience.featuresManager;
 
-    const marker = BABYLON.MeshBuilder.CreateTorus('marker', { diameter: 0.15, thickness: 0.03 });
-    marker.isVisible = false;
-    marker.rotationQuaternion = new BABYLON.Quaternion();
+        const xrTest = fm.enableFeature(BABYLON.WebXRHitTest, "latest");
 
-    /*
-    var markerMaterial = new BABYLON.StandardMaterial(scene);
-    markerMaterial.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-    markerMaterial.specularColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-    markerMaterial.emissiveColor = BABYLON.Color3.White();
-    marker.material = markerMaterial;
-    */
+        const marker = BABYLON.MeshBuilder.CreateTorus('marker', { diameter: 0.15, thickness: 0.03 });
+        marker.isVisible = false;
+        marker.rotationQuaternion = new BABYLON.Quaternion();
 
-    var hitTest;
-    xrTest.onHitTestResultObservable.add((results) => {
-        if (results.length) {
-            if(markerOn){
-                marker.isVisible = true;
+        /*
+        var markerMaterial = new BABYLON.StandardMaterial(scene);
+        markerMaterial.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.4);
+        markerMaterial.specularColor = new BABYLON.Color3(0.4, 0.4, 0.4);
+        markerMaterial.emissiveColor = BABYLON.Color3.White();
+        marker.material = markerMaterial;
+        */
+
+        var hitTest;
+        xrTest.onHitTestResultObservable.add((results) => {
+            if (results.length) {
+                if(markerOn){
+                    marker.isVisible = true;
+                }
+                hitTest = results[0];
+                hitTest.transformationMatrix.decompose(marker.scaling, marker.rotationQuaternion, marker.position);
+            } else {
+                marker.isVisible = false;
             }
-            hitTest = results[0];
-            hitTest.transformationMatrix.decompose(marker.scaling, marker.rotationQuaternion, marker.position);
-        } else {
-            marker.isVisible = false;
-        }
-    });
-    return [hitTest, marker];
-}
+        });
+        return [hitTest, marker];
+    }
 
-var createScene = async function () {
-    var scene = new BABYLON.Scene(engine);
-    var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
-    camera.setTarget(BABYLON.Vector3.Zero());
-    camera.attachControl(canvas, true);
-    var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
-    light.intensity = 0.7;
+    var createScene = async function () {
+        var scene = new BABYLON.Scene(engine);
+        var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
+        camera.setTarget(BABYLON.Vector3.Zero());
+        camera.attachControl(canvas, true);
+        var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+        light.intensity = 0.7;
 
-    const xr = await scene.createDefaultXRExperienceAsync({
-        uiOptions: {
-            sessionMode: 'immersive-ar'
-        },
-        optionalFeatures: true,
-    });
+        const xr = await scene.createDefaultXRExperienceAsync({
+            uiOptions: {
+                sessionMode: 'immersive-ar'
+            },
+            optionalFeatures: true,
+        });
 
-    // Cat will be set later once hit test is performed
-    var cat = null;
-    // const [hitTest, marker] = addMesh(xr, scene);
+        // Cat will be set later once hit test is performed
+        var cat = null;
+        // const [hitTest, marker] = addMesh(xr, scene);
 
-    const fm = xr.baseExperience.featuresManager;
+        const fm = xr.baseExperience.featuresManager;
 
-    const xrTest = fm.enableFeature(BABYLON.WebXRHitTest, "latest");
+        const xrTest = fm.enableFeature(BABYLON.WebXRHitTest, "latest");
 
-    const marker = BABYLON.MeshBuilder.CreateTorus('marker', { diameter: 0.15, thickness: 0.03 });
-    marker.isVisible = false;
-    marker.rotationQuaternion = new BABYLON.Quaternion();
+        const marker = BABYLON.MeshBuilder.CreateTorus('marker', { diameter: 0.15, thickness: 0.03 });
+        marker.isVisible = false;
+        marker.rotationQuaternion = new BABYLON.Quaternion();
 
-    /*
-    var markerMaterial = new BABYLON.StandardMaterial(scene);
-    markerMaterial.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-    markerMaterial.specularColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-    markerMaterial.emissiveColor = BABYLON.Color3.White();
-    marker.material = markerMaterial;
-    */
+        /*
+        var markerMaterial = new BABYLON.StandardMaterial(scene);
+        markerMaterial.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.4);
+        markerMaterial.specularColor = new BABYLON.Color3(0.4, 0.4, 0.4);
+        markerMaterial.emissiveColor = BABYLON.Color3.White();
+        marker.material = markerMaterial;
+        */
 
-    var hitTest;
-    xrTest.onHitTestResultObservable.add((results) => {
-        if (results.length) {
-            if(markerOn){
-                marker.isVisible = true;
+        var hitTest;
+        xrTest.onHitTestResultObservable.add((results) => {
+            if (results.length) {
+                if(markerOn){
+                    marker.isVisible = true;
+                }
+                hitTest = results[0];
+                hitTest.transformationMatrix.decompose(marker.scaling, marker.rotationQuaternion, marker.position);
+            } else {
+                marker.isVisible = false;
             }
-            hitTest = results[0];
-            hitTest.transformationMatrix.decompose(marker.scaling, marker.rotationQuaternion, marker.position);
-        } else {
-            marker.isVisible = false;
-        }
-    });
+        });
 
-    scene.onPointerObservable.add((pointerInfo) => {
-        switch (pointerInfo.type) {
-            case BABYLON.PointerEventTypes.POINTERTAP:
-                if(cat == null){
-                    if(marker.isVisible){
-                        var meshStaticCat = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
-                            cat = newMeshes[0];
-                            cat.scaling = new BABYLON.Vector3(0.009, 0.009, 0.009);
-                            cat.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
-                            hitTest.transformationMatrix.decompose(null, cat.rotationQuaternion, cat.position);
-                            markerOn = false;
-                        });
+        scene.onPointerObservable.add((pointerInfo) => {
+            switch (pointerInfo.type) {
+                case BABYLON.PointerEventTypes.POINTERTAP:
+                    if(cat == null){
+                        if(marker.isVisible){
+                            var meshStaticCat = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+                                cat = newMeshes[0];
+                                cat.scaling = new BABYLON.Vector3(0.009, 0.009, 0.009);
+                                cat.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
+                                hitTest.transformationMatrix.decompose(null, cat.rotationQuaternion, cat.position);
+                                markerOn = false;
+                            });
+                        }
                     }
-                }
-                else{
-                    alert("You are tapping after cat is set up");
-                }
-                break;      
-            case BABYLON.PointerEventTypes.POINTERDOWN:
-                break;
-            case BABYLON.PointerEventTypes.POINTERUP:
-                break;
-            case BABYLON.PointerEventTypes.POINTERMOVE:
-                break;
-            case BABYLON.PointerEventTypes.POINTERPICK:
-                break;
-            case BABYLON.PointerEventTypes.POINTERDOUBLETAP:
-                break;
-        }
-    });
+                    else{
+                        //alert("You are tapping after cat is set up");
+                    }
+                    break;      
+                case BABYLON.PointerEventTypes.POINTERDOWN:
+                    break;
+                case BABYLON.PointerEventTypes.POINTERUP:
+                    break;
+                case BABYLON.PointerEventTypes.POINTERMOVE:
+                    break;
+                case BABYLON.PointerEventTypes.POINTERPICK:
+                    break;
+                case BABYLON.PointerEventTypes.POINTERDOUBLETAP:
+                    break;
+            }
+        });
 
-    return scene;
-}
+    //////////////////////////////// UI  test //////////////////////////////// 
+        var plane = BABYLON.Mesh.CreatePlane("plane", 1);
+        plane.position = new BABYLON.Vector3(0.4, 0, 0.4)
+        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane);
+        var panel = new BABYLON.GUI.StackPanel();
+        advancedTexture.addControl(panel);
+        var header = new BABYLON.GUI.TextBlock();
+        header.text = `Food level: ${user.food}`;
+        header.height = "100px";
+        header.color = "white";
+        header.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        header.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        header.fontSize = "120"
+        panel.addControl(header);
+        // var picker = new BABYLON.GUI.ColorPicker();
 
-createScene().then(scene => {
-    engine.runRenderLoop(() => scene.render());
-    window.addEventListener("resize", function () {
-      engine.resize();
+        // picker.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        // picker.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        // picker.height = "350px";
+        // picker.width = "350px";
+        // // This will work in XR, since we are using native pointer events!
+        // picker.onValueChangedObservable.add(function(value) {
+        //     //sphere.material.diffuseColor.copyFrom(value);
+        // });
+        // panel.addControl(picker);
+
+        var button = BABYLON.GUI.Button.CreateSimpleButton("but", "Click Me");
+        button.height = "200px";
+        button.width = "400px";
+        button.color = "#003399";
+        button.background = "grey";
+        button.left = "120px";
+        button.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+        button.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        button.onPointerClickObservable.add(function () {
+        alert("pressed!");
     });
-});
+        panel.addControl(button);
+    //////////////////////////////// UI test //////////////////////////////// 
+
+        return scene;
+    }
+
+    createScene().then(scene => {
+        engine.runRenderLoop(() => scene.render());
+        window.addEventListener("resize", function () {
+        engine.resize();
+        });
+    });
+  }

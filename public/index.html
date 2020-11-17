@@ -3,7 +3,11 @@
 
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <title>Babylon Template</title>
+        <title>AR Meow Meow Home Page</title>
+        <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-database.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-functions.js"></script>
 
         <style>
             html, body {
@@ -23,26 +27,17 @@
 
         <script src="https://preview.babylonjs.com/babylon.js"></script>
         <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
-        <script src="babylon.glTFFileLoader.js"></script>
         <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
+
+        <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
     </head>
 
    <body>
     <h1> Meow ~(^w^)~ </h1>
-    <canvas id="renderCanvas" touch-action="none"></canvas> <!-- touch-action="none" for best results from PEP -->
+    <canvas id="renderCanvas"></canvas>
+    <script type="module" src="main.js"></script>
 
-    <script src='placeCats.js'></script>
-
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="/__/firebase/8.0.1/firebase-app.js"></script>
-
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-        https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="/__/firebase/8.0.1/firebase-analytics.js"></script>
-
-    <!-- Initialize Firebase -->
-    <script src="/__/firebase/init.js"></script>
-
+    <!-- <script src='placeCats.js'></script> -->
 
    </body>
 
