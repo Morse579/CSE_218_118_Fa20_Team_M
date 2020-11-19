@@ -6,6 +6,7 @@ function initializeScene(user){
     var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
     var markerOn = true;
 
+    // Currently unused
     var addMesh = function (xr, scene) {
         const fm = xr.baseExperience.featuresManager;
 
@@ -55,6 +56,7 @@ function initializeScene(user){
 
         // Cat will be set later once hit test is performed
         var cat = null;
+        var sphere = null;
         // const [hitTest, marker] = addMesh(xr, scene);
 
         const fm = xr.baseExperience.featuresManager;
@@ -86,6 +88,25 @@ function initializeScene(user){
             }
         });
 
+        // Full screen UI - display text only
+        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        var panel = new BABYLON.GUI.StackPanel();
+        advancedTexture.addControl(panel);
+        var header = new BABYLON.GUI.TextBlock();
+        header.text = `Food level: ${user.food}`;
+        header.height = "100px";
+        header.color = "white";
+        header.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        header.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+        header.fontSize = "80";
+        panel.addControl(header);
+
+        // 3D gui - for mesh interaction
+        var manager = new BABYLON.GUI.GUI3DManager(scene);
+        var panel3D = new BABYLON.GUI.StackPanel3D();
+        panel3D.margin = 0.2;
+        manager.addControl(panel3D);
+
         scene.onPointerObservable.add((pointerInfo) => {
             switch (pointerInfo.type) {
                 case BABYLON.PointerEventTypes.POINTERTAP:
@@ -97,53 +118,48 @@ function initializeScene(user){
                                 cat.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
                                 hitTest.transformationMatrix.decompose(null, cat.rotationQuaternion, cat.position);
                                 markerOn = false;
+
+                                // Create 3 3D GUI button for testing purpose
+                                hitTest.transformationMatrix.decompose(null, panel3D.rotationQuaternion, panel3D.position);
+                                panel3D.position.z = cat.position.z + 5.5;
+                                panel3D.blockLayout = true;
+                                for (var index = 0; index < 3; index++) {
+                                    // var sphere = BABYLON.Mesh.CreateSphere("sphere", 16, 0.3, scene);
+                                    var button = new BABYLON.GUI.Button3D("click me");
+                                    button.onPointerClickObservable.add(function () {
+                                        feed(user);
+                                    });
+                                    var text1 = new BABYLON.GUI.TextBlock();
+                                    text1.text = "meow";
+                                    text1.color = "white";
+                                    text1.fontSize = 24;
+                                    button.content = text1; 
+                                    panel3D.addControl(button);
+                                }
+                                panel3D.blockLayout = false;
                             });
                         }
                     }
                     else{
-                        //alert("You are tapping after cat is set up");
+                        // alert("You are tapping after cat is set up");                 
                     }
                     break;      
-                case BABYLON.PointerEventTypes.POINTERDOWN:
-                    break;
-                case BABYLON.PointerEventTypes.POINTERUP:
-                    break;
-                case BABYLON.PointerEventTypes.POINTERMOVE:
-                    break;
-                case BABYLON.PointerEventTypes.POINTERPICK:
-                    break;
-                case BABYLON.PointerEventTypes.POINTERDOUBLETAP:
-                    break;
             }
         });
 
-    //////////////////////////////// UI  test //////////////////////////////// 
-        var plane = BABYLON.Mesh.CreatePlane("plane", 1);
-        plane.position = new BABYLON.Vector3(0.4, 0, 0.4)
-        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane);
-        var panel = new BABYLON.GUI.StackPanel();
-        advancedTexture.addControl(panel);
-        var header = new BABYLON.GUI.TextBlock();
-        header.text = `Food level: ${user.food}`;
-        header.height = "100px";
-        header.color = "white";
-        header.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-        header.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-        header.fontSize = "120"
-        panel.addControl(header);
-
+    //////////////////////////////// UI  test ////////////////////////////////
+        /*
         var button = BABYLON.GUI.Button.CreateSimpleButton("but", "Click Me");
         button.height = "200px";
         button.width = "400px";
         button.color = "#003399";
         button.background = "grey";
         button.left = "120px";
+        button.cornerRadius = 20;
         button.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
         button.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-        button.onPointerClickObservable.add(function () {
-            feed(user);
-    });
-        panel.addControl(button);
+        */
+        //panel.addControl(button);
     //////////////////////////////// UI test //////////////////////////////// 
 
         return scene;
