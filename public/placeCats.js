@@ -39,13 +39,19 @@ function initializeScene(user){
         return [hitTest, marker];
     }
 
+    // Code for AR scene goes here
     var createScene = async function () {
+        // Set up basic scene with camera, light, sounds, etc.
         var scene = new BABYLON.Scene(engine);
         var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
         camera.setTarget(BABYLON.Vector3.Zero());
         camera.attachControl(canvas, true);
         var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
         light.intensity = 0.7;
+
+        // BGM and sound effect
+        const music = new BABYLON.Sound("bgm", "./assets/sounds/bensound-ukulele.mp3", scene, null, { loop: true, autoplay: true });
+        const meow = new BABYLON.Sound("meow", "./assets/sounds/cat-meow.mp3", scene);
 
         const xr = await scene.createDefaultXRExperienceAsync({
             uiOptions: {
@@ -54,19 +60,17 @@ function initializeScene(user){
             optionalFeatures: true,
         });
 
-        // Cat will be set later once hit test is performed
         var cat = null;
         var sphere = null;
         // const [hitTest, marker] = addMesh(xr, scene);
 
         const fm = xr.baseExperience.featuresManager;
-
         const xrTest = fm.enableFeature(BABYLON.WebXRHitTest, "latest");
 
+        // Initialize a marker to show hit test result 
         const marker = BABYLON.MeshBuilder.CreateTorus('marker', { diameter: 0.15, thickness: 0.03 });
         marker.isVisible = false;
         marker.rotationQuaternion = new BABYLON.Quaternion();
-
         /*
         var markerMaterial = new BABYLON.StandardMaterial(scene);
         markerMaterial.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.4);
@@ -75,6 +79,7 @@ function initializeScene(user){
         marker.material = markerMaterial;
         */
 
+        // Initialize hit test to detect position and place cat
         var hitTest;
         xrTest.onHitTestResultObservable.add((results) => {
             if (results.length) {
@@ -110,6 +115,7 @@ function initializeScene(user){
         scene.onPointerObservable.add((pointerInfo) => {
             switch (pointerInfo.type) {
                 case BABYLON.PointerEventTypes.POINTERTAP:
+                    meow.play();
                     if(cat == null){
                         if(marker.isVisible){
                             var meshStaticCat = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
@@ -130,7 +136,7 @@ function initializeScene(user){
                                         feed(user);
                                     });
                                     var text1 = new BABYLON.GUI.TextBlock();
-                                    text1.text = "meow";
+                                    text1.text = "meow~";
                                     text1.color = "white";
                                     text1.fontSize = 24;
                                     button.content = text1; 
