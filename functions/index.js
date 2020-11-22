@@ -51,41 +51,6 @@ const functions = require('firebase-functions');
 admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
 
-///////// deprecated ///////
-exports.userInfo = functions.https.onCall((data, context) =>{
-    let result = db.collection("User").doc(data.email);
-    return result.get().then(user => {
-        return JSON.stringify(user.data());
-    })
-    .catch(err => {
-        console.log('Error getting documents', err);
-        return { error : "DB Error"}
-    });
-});
-const foodComsumption = admin.firestore.FieldValue.increment((-1)*FOOD_CONSUMPTION);
-exports.feed = functions.https.onCall((data, context) =>{
-    let result = db.collection("User").doc(data.email);
-    result.update({food: foodComsumption})
-    .then(()=>{
-        return "success";
-    })
-    .catch(err => {
-        console.log('Error getting documents', err);
-        return { error : "Update Error"}
-    });
-});
-
-exports.play = functions.https.onCall(async (data, context) =>{
-    let ref = db.collection("User").doc(data.email).collection("cat").doc(data.catName);
-    await ref.update(
-        {
-            mood: admin.firestore.FieldValue.increment(MOOD_INCREASE)
-        }
-    )
-    return "success";
-});
-///////// deprecated ///////
-
 exports.eat = functions.https.onCall(async (data, context) =>{
     let ref = db.collection("User").doc(data.email).collection("cat").doc(data.catName);
     switch(data.type) {
