@@ -1,8 +1,12 @@
+
 const HUNGER_DECREASE_PER_HOUR = 1;
 const MOOD_DECREASE_PER_HOUR = 1;
 const LONGEST_UNATTEND_TIME = 24;
 const DAILY_CHECKIN_REWARDS = 5;
 const FOOD_CONSUMPTION = 1;
+const MIN_HUNGER = -20;
+const MIN_MOOD = -20;
+
 const HUNGER_INCREASE = 2;
 const FOOD_INCREASE = 1;
 const FOOD_PRICE = {
@@ -20,7 +24,28 @@ const ACTION_OUTCOME = {
     wetFood: [10,5,3,4],
     specialFood: [20,40, 6,8]
 };
+const AGES = ["1","3","15"];
+const APPEARANCES = ["yellow", "black", "white"];
+const BACKGROUNDS = ["1","2","3","4","5"];
 
+const AGE_OUTCOME = {
+    "1": [2,3,4,5],
+    "3": [6,3,7,2],
+    "15": [6,2,6,3]
+}
+const APPEARANCE_OUTCOME = {
+    "yellow": [2,3,4,5],
+    "black": [6,3,7,2],
+    "white": [6,2,6,3]
+}
+const BACKGROUND_OUTCOME = {
+    "1": [2,3,4,5],
+    "2": [6,3,7,2],
+    "3": [6,2,6,3],
+    "4": [6,8,0,0],
+    "5": [7,2,9,9]
+}
+const cors = require('cors')({ origin: true });
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 admin.initializeApp(functions.config().firebase);
@@ -148,9 +173,10 @@ exports.loadUser = functions.https.onCall(async (data, context) =>{
 
     // case 1: no cat in progress, client side should be prompted to initialize a cat
     if (snapshot.empty) {
-        user.cat = initializeCat(user, data);
+        user.hasCat = false;
         return JSON.stringify(user);
     }
+    user.hasCat = true;
     snapshot.forEach(doc => {
         user.cat = doc.data();
     });
@@ -165,8 +191,8 @@ exports.loadUser = functions.https.onCall(async (data, context) =>{
     let update = updateCatData(user, data);
 
     // case 3: hunger < 0 or mood < 0 for 24 hrs, end game(BE)
-    if(update === -1){
-        user.cat.status = 1; //bad end
+    if(update === false){
+        user.cat.status = 4; //bad end
         return JSON.stringify(user);
     }
 
@@ -177,33 +203,59 @@ exports.loadUser = functions.https.onCall(async (data, context) =>{
 
 
 //TODO
-function initializeCat(user, data){
-    //assign cat randomly
-    //store default value in db
-    //return cat data
-}
+exports.initCat = functions.https.onCall(async (data, context) =>{
+    // set cat attributes randomly
+    let randomAge = getRandomItem(AGES);
+    let randomApperance = getRandomItem(APPEARANCES);
+    let randomBackground = getRandomItem(BACKGROUNDS);
+
+    let cat = {
+        name: data.name,
+        status: 0,
+        age: randomAge,
+        appearance: randomApperance,
+        background: randomBackground,
+        currency: 100,
+        startTime: data.time,
+        lastLogin: data.time,
+        hunger: 100,
+        mood: 100,
+        outcome1: AGE_OUTCOME[randomAge][0] + APPEARANCE_OUTCOME[randomApperance][0] + BACKGROUND_OUTCOME[randomBackground][0],
+        outcome2: AGE_OUTCOME[randomAge][1] + APPEARANCE_OUTCOME[randomApperance][1] + BACKGROUND_OUTCOME[randomBackground][1],
+        outcome3: AGE_OUTCOME[randomAge][2] + APPEARANCE_OUTCOME[randomApperance][2] + BACKGROUND_OUTCOME[randomBackground][2],
+        outcome4: AGE_OUTCOME[randomAge][3] + APPEARANCE_OUTCOME[randomApperance][3] + BACKGROUND_OUTCOME[randomBackground][3],
+        dryFood: 10,
+        wetFood: 0,
+        specialFood: 0,
+        feedDryCount: 0,
+        feedWetCount: 0,
+        feedSpecialCount: 0
+    }
+    const res = await db.collection("User").doc(data.email).collection("cat").doc(data.name).set(cat);
+    return JSON.stringify(cat);
+});
 
 //TODO
-function calculateOutcome(user, data){
+function calculateOutcome(user){
     return 1;
 
 }
 
-//TODO
+//TODO: hunger and mood should be updated according to time
 function updateCatData(user, data){
-    let hours = Math.floor((data.time - user.cat.lastLogin)/(60*60*1000));
-    user.cat.hunger -= HUNGER_DECREASE_PER_HOUR * hours;
-    user.cat.mood -= MOOD_DECREASE_PER_HOUR * hours;
-    if(user.cat.hunger < HUNGER_DECREASE_PER_HOUR * LONGEST_UNATTEND_TIME ||
-        user.cat.mood < MOOD_DECREASE_PER_HOUR * LONGEST_UNATTEND_TIME){
-            //TODO: END
-            return -1;
-        }
-    else{
-        // if(days > 1){
-        //     user.cat.currency += DAILY_CHECKIN_REWARDS;
-        //     user.cat.lastLogin = data.time;
-        // }
+    user.cat.hunger -= 5;
+    user.cat.mood -= 5;
+    if(user.cat.hunger < MIN_HUNGER|| user.cat.mood < MIN_MOOD){
+        return false;
     }
-    return 0;
+    else{
+        user.cat.currency += DAILY_CHECKIN_REWARDS;
+        user.cat.lastLogin = data.time;
+    }
+    return true;
+}
+
+function getRandomItem(array) {
+    var index = Math.floor(Math.random() * Math.floor(array.length));
+    return array[index];
 }

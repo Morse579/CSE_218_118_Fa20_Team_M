@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Test</title>
+        <title>Home Page</title>
         <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-auth.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-database.js"></script>
@@ -11,18 +11,23 @@
     </head>
     <body id="id_body">
         <header>
-            <h1>Test Page</h1>
+            <h1>Home Page (aka. Dashboard)</h1>
         </header>
-        <pre id="json"></pre>
-        <button id="buyDryFood">Buy Dry Food</button>
-        <button id="buyWetFood">Buy Wet Food</button>
-        <button id="buySpFood">Buy Special Food</button><br><br>
 
-        <button id="feedDryFood">Feed Dry Food</button>
-        <button id="feedWetFood">Feed Wet Food</button>
-        <button id="feedSpFood">Feed Special Food</button><br><br>
-
+        <button id="start" hidden>Start Game</button>
+        <button id="continue" hidden>Continue Game</button>
+        <button id="history" hidden>View History</button>
         <button id="logout">Logout</button>
-        <script src="test.js"> </script>
+
+        <dialog id="initCatDialog">
+            <div class="form"> 
+                <label>Name your cat</label><br>
+                <input id="catName" type="text"><br>
+                <button id="createBtn">Create</button>
+                <button id="cancelBtn">Cancel</button>
+            <div class="form"> 
+        </dialog>
+
+        <script src="main.js"> </script>
     </body>
 </html>
