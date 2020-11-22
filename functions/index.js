@@ -185,7 +185,7 @@ exports.loadUser = functions.https.onCall(async (data, context) =>{
 
     // case 2: 7 days after starting the story, end game 
     if(days > 7){
-        user.cat.status = calculateOutcome(user, data);
+        user.cat.status = calculateOutcome(user.cat);
         return JSON.stringify(user);
     }
     let update = updateCatData(user, data);
@@ -201,8 +201,6 @@ exports.loadUser = functions.https.onCall(async (data, context) =>{
     return JSON.stringify(user);
 });
 
-
-//TODO
 exports.initCat = functions.https.onCall(async (data, context) =>{
     // set cat attributes randomly
     let randomAge = getRandomItem(AGES);
@@ -215,7 +213,7 @@ exports.initCat = functions.https.onCall(async (data, context) =>{
         age: randomAge,
         appearance: randomApperance,
         background: randomBackground,
-        currency: 100,
+        currency: data.currency,
         startTime: data.time,
         lastLogin: data.time,
         hunger: 100,
@@ -235,10 +233,36 @@ exports.initCat = functions.https.onCall(async (data, context) =>{
     return JSON.stringify(cat);
 });
 
-//TODO
-function calculateOutcome(user){
-    return 1;
+exports.endStory = functions.https.onCall(async (data, context) =>{
+    let catRef = db.collection("User").doc(data.email).collection("cat").doc(data.name);
+    let snapshot = await catRef.get();
+    let cat = snapshot.data();
 
+    let ref = db.collection("User").doc(data.email);
+    await ref.update({
+        storyCount: admin.firestore.FieldValue.increment(1),
+        currency: cat.currency,
+    });
+    await catRef.update({
+        status: data.status
+    });
+    return "end success";
+});
+
+
+function calculateOutcome(cat){
+    let max = Math.max(cat.outcome1, cat.outcome2, cat.outcome3, cat.outcome4);
+    switch(max){
+        case cat.outcome1:
+            return 1;
+        case cat.outcome2:
+            return 2;
+        case cat.outcome3:
+            return 3;
+        case cat.outcome4:
+            return 4; 
+    }
+    return 0;
 }
 
 //TODO: hunger and mood should be updated according to time

@@ -43,6 +43,7 @@ function initialize(user){
 
 document.getElementById("start").addEventListener('click', onStartButtonClick);
 document.getElementById("continue").addEventListener('click', showARScene);
+document.getElementById("end").addEventListener('click', endStory);
 document.getElementById("history").addEventListener('click', showHistory);
 document.getElementById("logout").addEventListener('click', e => {firebase.auth().signOut();});
 
@@ -58,7 +59,7 @@ function initCat(){
     document.getElementById('initCatDialog').close();
 
     const init = functions.httpsCallable('initCat');
-    init({email: userInfo.email, time: Date.now(), name: catName}).then(res => {
+    init({email: userInfo.email, time: Date.now(), name: catName, currency: userInfo.currency}).then(res => {
         console.log("finish init cat...");
         userInfo.cat = JSON.parse(res.data);
         userInfo.hasCat = true;
@@ -71,9 +72,22 @@ function initCat(){
 function showARScene(){
     console.log("showing AR scene");
     console.log(userInfo);
+    if(userInfo.cat.status === 0){
+        console.log("in progress");
+    }else{
+        console.log("end story");
+        document.getElementById("end").hidden = false;
+    }
 }
 
 //TODO
 function showHistory(){
     console.log("showing history");
+}
+
+function endStory(){
+    const end = functions.httpsCallable('endStory');
+    end({email: userInfo.email, name: userInfo.cat.name, status: userInfo.cat.status}).then(res => {
+        console.log(res.data);
+    }); 
 }
