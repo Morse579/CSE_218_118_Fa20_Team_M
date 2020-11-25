@@ -134,7 +134,7 @@ exports.loadUser = functions.https.onCall(async (data, context) =>{
     let snapshot = await ref.get();
     user = snapshot.data();
     let catRef = db.collection("User").doc(data.email).collection("cat");
-    snapshot = await catRef.where('status', '==', 0).get(); 
+    snapshot = await catRef.where('status', '==', 0).get();
 
     // case 1: no cat in progress, client side should be prompted to initialize a cat
     if (snapshot.empty) {
@@ -148,7 +148,7 @@ exports.loadUser = functions.https.onCall(async (data, context) =>{
     catRef = db.collection("User").doc(data.email).collection("cat").doc(user.cat.name);
     let days = Math.floor((data.time - user.cat.startTime)/(24*60*60*1000));
 
-    // case 2: 7 days after starting the story, end game 
+    // case 2: 7 days after starting the story, end game
     if(days > 7){
         user.cat.status = calculateOutcome(user.cat);
         return JSON.stringify(user);
@@ -170,7 +170,7 @@ exports.loadCat = functions.https.onCall(async (data, context) =>{
     let cat = {};
 
     let catRef = db.collection("User").doc(data.email).collection("cat");
-    let snapshot = await catRef.where('status', '==', 0).get(); 
+    let snapshot = await catRef.where('status', '==', 0).get();
 
     // no cat error
     if (snapshot.empty) {
@@ -241,7 +241,7 @@ function calculateOutcome(cat){
         case cat.outcome3:
             return 3;
         case cat.outcome4:
-            return 4; 
+            return 4;
     }
     return 0;
 }

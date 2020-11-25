@@ -9,18 +9,18 @@ const firebaseConfig = {
     appId: "1:426725357319:web:5c5851563c99b1c282b7a2",
     measurementId: "G-WZ7ZJL7E5V"
   };
-  
+
 firebase.initializeApp(firebaseConfig);
 const functions = firebase.functions();
 var userInfo = {};
 
-// firebase auth 
+// firebase auth
 firebase.auth().onAuthStateChanged( user => {
     if(user){
         user.getIdTokenResult().then(idTokenResult => {
             console.log(idTokenResult.claims);
             initialize(user);
-        });  
+        });
     }else{
         window.location.href = "login.html";
     }
@@ -78,7 +78,7 @@ function initCat(){
         userInfo.hasCat = true;
         console.log(userInfo.cat);
         showARScene();
-    }); 
+    });
 }
 
 //TODO
@@ -97,7 +97,7 @@ function endStory(){
     const end = functions.httpsCallable('endStory');
     end({email: userInfo.email, name: userInfo.cat.name, status: userInfo.cat.status}).then(res => {
         console.log(res.data);
-    }); 
+    });
     const endDialog = document.getElementById("endDialog");
     endDialog.showModal();
     document.getElementById("status").innerText = `Your end status: ${userInfo.cat.status}`;
@@ -115,6 +115,6 @@ function loadCatInfo(){
         console.log("finish loading cat...");
         let cat = JSON.parse(res.data);
         console.log(cat);
-    }); 
+    });
 
 }
