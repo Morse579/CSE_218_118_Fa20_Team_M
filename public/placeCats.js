@@ -68,16 +68,14 @@ function initializeScene(user){
         const xrTest = fm.enableFeature(BABYLON.WebXRHitTest, "latest");
 
         // Initialize a marker to show hit test result 
-        const marker = BABYLON.MeshBuilder.CreateTorus('marker', { diameter: 0.15, thickness: 0.03 });
+        const marker = BABYLON.MeshBuilder.CreateTorus('marker', { diameter: 0.12, thickness: 0.02 });
         marker.isVisible = false;
         marker.rotationQuaternion = new BABYLON.Quaternion();
-        /*
         var markerMaterial = new BABYLON.StandardMaterial(scene);
         markerMaterial.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.4);
         markerMaterial.specularColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-        markerMaterial.emissiveColor = BABYLON.Color3.White();
+        // markerMaterial.emissiveColor = BABYLON.Color3.White();
         marker.material = markerMaterial;
-        */
 
         // Initialize hit test to detect position and place cat
         var hitTest;
@@ -118,36 +116,78 @@ function initializeScene(user){
                     meow.play();
                     if(cat == null){
                         if(marker.isVisible){
-                            var meshStaticCat = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+                            markerOn = false;
+                            marker.isVisible = false;
+                            var meshStaticCat = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/CatV2glTFSeparated/", "ChibiCatV2_unity.gltf", scene, function (newMeshes, particleSystems, skeletons) {
                                 cat = newMeshes[0];
-                                cat.scaling = new BABYLON.Vector3(0.009, 0.009, 0.009);
-                                cat.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
+                                // cat.scaling = new BABYLON.Vector3(0.009, 0.009, 0.009);
+                                // cat.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
+                                cat.rotation = new BABYLON.Vector3(0, 0, 0);
+                                if (scene.animationGroups.length > 0) {
+                                    var cat_anim = ['static', 'cat_attack_jump', 'cat_attack_left', 'cat_catch', 'cat_catch_play', 
+                                                    'cat_clean1', 'cat_death_right', 'cat_eat', 'cat_gallop', 'cat_gallop_right', 
+                                                    'cat_HighJump_air', 'cat_HighJump_land', 'cat_HighJump_up', 'cat_hit_right', 
+                                                    'cat_idle', 'cat_jumpDown_air', 'cat_jumpDown_down', 'cat_jumpDown_land', 
+                                                    'cat_LongJump_up', 'cat_rest1', 'cat_rest2', 'cat_resting1', 'cat_sit', 'cat_sitting',
+                                                    'cat_sleeping', 'cat_static0', 'cat_static1', 'cat_trot', 'cat_trot_left', 
+                                                    'cat_walk', 'cat_walk_right']; 
+                                    // alert("Cat animation: " + cat_anim[1]);
+                                    scene.animationGroups[11].play(false);
+                                }
                                 hitTest.transformationMatrix.decompose(null, cat.rotationQuaternion, cat.position);
-                                markerOn = false;
 
                                 // Create 3 3D GUI button for testing purpose
                                 hitTest.transformationMatrix.decompose(null, panel3D.rotationQuaternion, panel3D.position);
                                 panel3D.position.z = cat.position.z + 5.5;
                                 panel3D.blockLayout = true;
-                                for (var index = 0; index < 3; index++) {
-                                    // var sphere = BABYLON.Mesh.CreateSphere("sphere", 16, 0.3, scene);
-                                    var button = new BABYLON.GUI.Button3D("click me");
-                                    button.onPointerClickObservable.add(function () {
-                                        feed(user);
-                                    });
-                                    var text1 = new BABYLON.GUI.TextBlock();
-                                    text1.text = "meow~";
-                                    text1.color = "white";
-                                    text1.fontSize = 24;
-                                    button.content = text1; 
-                                    panel3D.addControl(button);
-                                }
+
+                                var button_feed_dry = new BABYLON.GUI.Button3D("feed_dry");
+                                button_feed_dry.onPointerClickObservable.add(function () {
+                                    // feed(user);
+                                    scene.animationGroups[7].play(false);
+                                });
+                                var text1 = new BABYLON.GUI.TextBlock();
+                                text1.text = "eat_dry";
+                                text1.color = "white";
+                                text1.fontSize = 24;
+                                button_feed_dry.content = text1; 
+                                button_feed_dry.width = 50;
+                                button_feed_dry.height = 50;
+                                panel3D.addControl(button_feed_dry);
+
+                                var button_buy_dry = new BABYLON.GUI.Button3D("buy_dry");
+                                button_buy_dry.onPointerClickObservable.add(function () {
+                                    // feed(user);
+                                });
+                                var text2 = new BABYLON.GUI.TextBlock();
+                                text2.text = "buy_dry";
+                                text2.color = "white";
+                                text2.fontSize = 24;
+                                button_buy_dry.content = text2; 
+                                button_buy_dry.width = 50;
+                                button_buy_dry.height = 50;
+                                panel3D.addControl(button_buy_dry);
+
+                                var button_exist = new BABYLON.GUI.Button3D("exist");
+                                button_exist.onPointerClickObservable.add(function () {
+                                    // feed(user);
+                                });
+                                var text3 = new BABYLON.GUI.TextBlock();
+                                text3.text = "exist";
+                                text3.color = "white";
+                                text3.fontSize = 24;
+                                button_exist.content = text3; 
+                                button_exist.width = 50;
+                                button_exist.height = 50;
+                                panel3D.addControl(button_exist);
+                                
                                 panel3D.blockLayout = false;
                             });
                         }
                     }
                     else{
-                        // alert("You are tapping after cat is set up");                 
+                        // alert("You are tapping after cat is set up");
+                        scene.animationGroups[1].play(false);                 
                     }
                     break;      
             }
@@ -181,9 +221,4 @@ function initializeScene(user){
 
   function feed(user){
     alert("feed!");
-    const feed = functions.httpsCallable('feed');
-    feed({email: user.email}).then(res => {
-        console.log(res);
-    });
-
   }
