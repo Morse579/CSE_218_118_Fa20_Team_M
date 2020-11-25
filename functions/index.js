@@ -166,6 +166,22 @@ exports.loadUser = functions.https.onCall(async (data, context) =>{
     return JSON.stringify(user);
 });
 
+exports.loadCat = functions.https.onCall(async (data, context) =>{
+    let cat = {};
+
+    let catRef = db.collection("User").doc(data.email).collection("cat");
+    let snapshot = await catRef.where('status', '==', 0).get(); 
+
+    // no cat error
+    if (snapshot.empty) {
+        return "No cat, error!";
+    }
+    snapshot.forEach(doc => {
+        cat = doc.data();
+    });
+    return JSON.stringify(cat);
+});
+
 exports.initCat = functions.https.onCall(async (data, context) =>{
     // set cat attributes randomly
     let randomAge = getRandomItem(AGES);

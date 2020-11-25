@@ -1,3 +1,4 @@
+
 const firebaseConfig = {
     apiKey: "AIzaSyCHuFcfj3D2vXpxuJWbJViYa1SJPUkEAZM",
     authDomain: "ar-meowmeow.firebaseapp.com",
@@ -34,7 +35,11 @@ function initialize(user){
         userInfo.email = user.email;
         document.getElementById("history").hidden = false;
         if(userInfo.hasCat){
-            document.getElementById("continue").hidden = false;
+            if(userInfo.cat.status === 0){
+                document.getElementById("continue").hidden = false;
+            }else{
+                document.getElementById("end").hidden = false;
+            }
         }else{
             document.getElementById("start").hidden = false;
         }
@@ -48,11 +53,19 @@ document.getElementById("history").addEventListener('click', showHistory);
 document.getElementById("logout").addEventListener('click', e => {firebase.auth().signOut();});
 
 function onStartButtonClick(){
-    const dialog = document.getElementById('initCatDialog');
+    const dialog = document.getElementById('gameplayDialog');
     dialog.showModal();
-    document.getElementById("createBtn").addEventListener('click', initCat);
-    document.getElementById("cancelBtn").addEventListener('click', function(){dialog.close()});
+    document.getElementById("nextBtn").addEventListener('click', ()=>{
+        dialog.close();
+        const initDialog = document.getElementById('initCatDialog');
+        initDialog.showModal();
+        document.getElementById("createBtn").addEventListener('click', initCat);
+        document.getElementById("cancelBtn").addEventListener('click', function(){initDialog.close()});
+
+    });
+    document.getElementById("cancelGameplay").addEventListener('click', function(){dialog.close()});
 }
+
 function initCat(){
     console.log("init cat...");
     let catName = document.getElementById("catName").value;
@@ -72,12 +85,7 @@ function initCat(){
 function showARScene(){
     console.log("showing AR scene");
     console.log(userInfo);
-    if(userInfo.cat.status === 0){
-        console.log("in progress");
-    }else{
-        console.log("end story");
-        document.getElementById("end").hidden = false;
-    }
+    window.location.href = "index.html";
 }
 
 //TODO
@@ -90,4 +98,23 @@ function endStory(){
     end({email: userInfo.email, name: userInfo.cat.name, status: userInfo.cat.status}).then(res => {
         console.log(res.data);
     }); 
+    const endDialog = document.getElementById("endDialog");
+    endDialog.showModal();
+    document.getElementById("status").innerText = `Your end status: ${userInfo.cat.status}`;
+    document.getElementById("cancelEnd").addEventListener('click', function(){
+        endDialog.close();
+        location.reload();
+    });
+
+}
+
+document.getElementById("loadCat").addEventListener('click', loadCatInfo);
+function loadCatInfo(){
+    const load = functions.httpsCallable('loadCat');
+    load({email: userInfo.email}).then(res => {
+        console.log("finish loading cat...");
+        let cat = JSON.parse(res.data);
+        console.log(cat);
+    }); 
+
 }

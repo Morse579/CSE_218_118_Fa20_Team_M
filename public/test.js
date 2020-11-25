@@ -59,3 +59,13 @@ document.getElementById("feedSpFood").addEventListener('click', ()=>{
     })
 });
 
+document.getElementById("loadCat").addEventListener('click', loadCatInfo);
+function loadCatInfo(){
+    const load = functions.httpsCallable('loadCat');
+    load({email: userInfo.email}).then(res => {
+        console.log("finish loading cat...");
+        let cat = JSON.parse(res.data);
+        console.log(cat);
+    }); 
+
+}
