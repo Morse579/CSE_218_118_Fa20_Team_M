@@ -1,0 +1,280 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 1142,
+      "max": [
+        0.31754922866821289,
+        3.7043213844299316,
+        0.93258899450302124
+      ],
+      "min": [
+        -0.31754913926124573,
+        -5.2512178421020508,
+        -1.1354295015335083
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 13704,
+      "componentType": 5126,
+      "count": 1142,
+      "max": [
+        0.99999988079071045,
+        0.99856787919998169,
+        0.99997210502624512
+      ],
+      "min": [
+        -0.99999988079071045,
+        -0.97951602935791016,
+        -0.9999774694442749
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 1142,
+      "max": [
+        0.9965212345123291,
+        0.99998754262924194,
+        0.9369044303894043,
+        1
+      ],
+      "min": [
+        -0.99922126531600952,
+        -0.98441141843795776,
+        -0.84989827871322632,
+        -1
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 1142,
+      "max": [
+        0.97987568378448486,
+        0.5720677375793457
+      ],
+      "min": [
+        0.043369334191083908,
+        0.034624852240085602
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 6396,
+      "max": [
+        1141
+      ],
+      "min": [
+        0
+      ],
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "Drake (https://sketchfab.com/dlp14c)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/models/d7a2d0bd2a524d35b01e0d898b026479",
+      "title": "Sardine"
+    },
+    "generator": "Sketchfab-3.18.6",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 25584,
+      "byteOffset": 0,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 9136,
+      "byteOffset": 25584,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 27408,
+      "byteOffset": 34720,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 18272,
+      "byteOffset": 62128,
+      "byteStride": 16,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 80400,
+      "uri": "scene.bin"
+    }
+  ],
+  "images": [
+    {
+      "uri": "textures/fish_baseColor.png"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "name": "fish",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "baseColorTexture": {
+          "index": 0,
+          "texCoord": 0
+        },
+        "metallicFactor": 0,
+        "roughnessFactor": 0.88243140239999995
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Sphere_fish_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 4,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "name": "RootNode (gltf orientation matrix)",
+      "rotation": [
+        -0.70710678118654746,
+        -0,
+        -0,
+        0.70710678118654757
+      ]
+    },
+    {
+      "children": [
+        2
+      ],
+      "name": "RootNode (model correction matrix)"
+    },
+    {
+      "children": [
+        3
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        -1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "name": "517fe693a58d4a15a186f77dd4a487c5.fbx"
+    },
+    {
+      "children": [
+        4
+      ],
+      "name": "RootNode"
+    },
+    {
+      "children": [
+        5
+      ],
+      "matrix": [
+        0.023057632148265839,
+        0,
+        0,
+        0,
+        0,
+        -2.557925276804273e-09,
+        -0.015700433403253347,
+        0,
+        0,
+        0.016087131574749735,
+        -2.6209264056240441e-09,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "name": "Sphere"
+    },
+    {
+      "mesh": 0,
+      "name": "Sphere_fish_0"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "OSG_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    }
+  ]
+}
+
