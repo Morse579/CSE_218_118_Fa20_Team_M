@@ -85,7 +85,7 @@ function initCat(){
 function showARScene(){
     console.log("showing AR scene");
     console.log(userInfo);
-    window.location.href = "index.html";
+    window.location.href = "ARscene.html";
 }
 
 //TODO
@@ -100,7 +100,11 @@ function endStory(){
     });
     const endDialog = document.getElementById("endDialog");
     endDialog.showModal();
-    document.getElementById("status").innerText = `Your end status: ${userInfo.cat.status}`;
+    document.getElementById("status").innerHTML = `<p>Thank you for taking care of ${userInfo.cat.name}!</p>
+    <p>End story ${userInfo.cat.status}: ${userInfo.cat.name} goes back to the shelter and is adopted by a new host later.</p>`;
+    document.getElementById("stats").innerHTML = `In the 7 days, <br> You fed ${userInfo.cat.name} N times, <br>
+    You bought ${userInfo.cat.name} N toys, <br> You decorate ${userInfo.cat.name}'s living space N times`;
+    
     document.getElementById("cancelEnd").addEventListener('click', function(){
         endDialog.close();
         location.reload();

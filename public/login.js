@@ -20,7 +20,7 @@ testLogin.addEventListener('click', onTestLogin);
 firebase.auth().onAuthStateChanged( user => {
     if(user){
         console.log(user);
-        window.location.href = "main.html";
+        window.location.href = "index.html";
     } else{
         console.log('user not logged in');
     }

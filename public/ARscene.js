@@ -239,12 +239,11 @@ function initializeScene(user){
   }
 
   function onFeedDryClicked(user, foodType, header){
-    alert("hi222");
     const feed = functions.httpsCallable('eat');
     
     feed({email: user.email, catName: user.cat.name, type: foodType})
     .then(res => {
-        alert(res.data);
+        //alert(res.data);
     });
     user.cat.dryFood -= 1;
     user.cat.feedDryCount += 1;
@@ -255,7 +254,7 @@ function initializeScene(user){
     const buyFood = functions.httpsCallable('buyFood');
     buyFood({email: user.email, catName: user.cat.name, type: foodType})
     .then(res => {
-        alert(res.data);
+        //alert(res.data);
     });
     user.cat.food += 1;
     user.cat.currency -= 1;
@@ -263,7 +262,7 @@ function initializeScene(user){
   }
 
   function exitAR(){
-    window.location.href = "main.html";
+    window.location.href = "index.html";
   }
 
   
