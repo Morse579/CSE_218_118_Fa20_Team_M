@@ -1,5 +1,5 @@
 export{initializeScene}
-import{functions} from './main.js'
+import{functions} from './ARmain.js'
 
 function initializeScene(user){
     var canvas = document.getElementById("renderCanvas"); // Get the canvas element
@@ -95,14 +95,33 @@ function initializeScene(user){
         var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
         var panel = new BABYLON.GUI.StackPanel();
         advancedTexture.addControl(panel);
+
         var header = new BABYLON.GUI.TextBlock();
-        header.text = `Food level: ${user.food}`;
+        header.text = `Hunger: ${user.cat.hunger}`;
         header.height = "100px";
         header.color = "white";
         header.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
         header.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
         header.fontSize = "80";
         panel.addControl(header);
+
+        var header2 = new BABYLON.GUI.TextBlock();
+        header2.text = `Mood: ${user.cat.mood}`;
+        header2.height = "100px";
+        header2.color = "white";
+        header2.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        header2.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+        header2.fontSize = "80";
+        panel.addControl(header2);
+
+        var header3 = new BABYLON.GUI.TextBlock();
+        header3.text = `Money: ${user.cat.currency}`;
+        header3.height = "100px";
+        header3.color = "white";
+        header3.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        header3.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+        header3.fontSize = "80";
+        panel.addControl(header3);
 
         // 3D gui - for mesh interaction
         var manager = new BABYLON.GUI.GUI3DManager(scene);
@@ -143,7 +162,7 @@ function initializeScene(user){
 
                                 var button_feed_dry = new BABYLON.GUI.Button3D("feed_dry");
                                 button_feed_dry.onPointerClickObservable.add(function () {
-                                    // feed(user);
+                                    onFeedDryClicked(user, "dry", header);
                                     scene.animationGroups[7].play(false);
                                 });
                                 var text1 = new BABYLON.GUI.TextBlock();
@@ -157,7 +176,7 @@ function initializeScene(user){
 
                                 var button_buy_dry = new BABYLON.GUI.Button3D("buy_dry");
                                 button_buy_dry.onPointerClickObservable.add(function () {
-                                    // feed(user);
+                                    onBuyFoodClicked(user, "dry", header3);
                                 });
                                 var text2 = new BABYLON.GUI.TextBlock();
                                 text2.text = "buy_dry";
@@ -168,12 +187,12 @@ function initializeScene(user){
                                 button_buy_dry.height = 50;
                                 panel3D.addControl(button_buy_dry);
 
-                                var button_exist = new BABYLON.GUI.Button3D("exist");
+                                var button_exist = new BABYLON.GUI.Button3D("exit");
                                 button_exist.onPointerClickObservable.add(function () {
-                                    // feed(user);
+                                    exitAR();
                                 });
                                 var text3 = new BABYLON.GUI.TextBlock();
-                                text3.text = "exist";
+                                text3.text = "exit";
                                 text3.color = "white";
                                 text3.fontSize = 24;
                                 button_exist.content = text3; 
@@ -219,6 +238,32 @@ function initializeScene(user){
     });
   }
 
-  function feed(user){
-    alert("feed!");
+  function onFeedDryClicked(user, foodType, header){
+    alert("hi222");
+    const feed = functions.httpsCallable('eat');
+    
+    feed({email: user.email, catName: user.cat.name, type: foodType})
+    .then(res => {
+        alert(res.data);
+    });
+    user.cat.dryFood -= 1;
+    user.cat.feedDryCount += 1;
+    user.cat.hunger += 1;
+    header.text = `Hunger: ${user.cat.hunger}`;
   }
+  function onBuyFoodClicked(user, foodType, header){
+    const buyFood = functions.httpsCallable('buyFood');
+    buyFood({email: user.email, catName: user.cat.name, type: foodType})
+    .then(res => {
+        alert(res.data);
+    });
+    user.cat.food += 1;
+    user.cat.currency -= 1;
+    header.text = `Money: ${user.cat.currency}`;
+  }
+
+  function exitAR(){
+    window.location.href = "main.html";
+  }
+
+  
