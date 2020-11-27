@@ -91,37 +91,8 @@ function initializeScene(user){
             }
         });
 
-        // Full screen UI - display text only
-        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-        var panel = new BABYLON.GUI.StackPanel();
-        advancedTexture.addControl(panel);
-
-        var header = new BABYLON.GUI.TextBlock();
-        header.text = `Hunger: ${user.cat.hunger}`;
-        header.height = "100px";
-        header.color = "white";
-        header.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-        header.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-        header.fontSize = "80";
-        panel.addControl(header);
-
-        var header2 = new BABYLON.GUI.TextBlock();
-        header2.text = `Mood: ${user.cat.mood}`;
-        header2.height = "100px";
-        header2.color = "white";
-        header2.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-        header2.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-        header2.fontSize = "80";
-        panel.addControl(header2);
-
-        var header3 = new BABYLON.GUI.TextBlock();
-        header3.text = `Money: ${user.cat.currency}`;
-        header3.height = "100px";
-        header3.color = "white";
-        header3.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-        header3.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-        header3.fontSize = "80";
-        panel.addControl(header3);
+        // Display 2D GUI: food and currency
+        var textUI = displayProperties(user);
 
         // 3D gui - for mesh interaction
         var manager = new BABYLON.GUI.GUI3DManager(scene);
@@ -162,7 +133,7 @@ function initializeScene(user){
 
                                 var button_feed_dry = new BABYLON.GUI.Button3D("feed_dry");
                                 button_feed_dry.onPointerClickObservable.add(function () {
-                                    onFeedDryClicked(user, "dry", header);
+                                    onFeedDryClicked(user, "dry", textUI);
                                     scene.animationGroups[7].play(false);
                                 });
                                 var text1 = new BABYLON.GUI.TextBlock();
@@ -176,7 +147,7 @@ function initializeScene(user){
 
                                 var button_buy_dry = new BABYLON.GUI.Button3D("buy_dry");
                                 button_buy_dry.onPointerClickObservable.add(function () {
-                                    onBuyFoodClicked(user, "dry", header3);
+                                    onBuyFoodClicked(user, "dry", textUI);
                                 });
                                 var text2 = new BABYLON.GUI.TextBlock();
                                 text2.text = "buy_dry";
@@ -211,22 +182,6 @@ function initializeScene(user){
                     break;      
             }
         });
-
-    //////////////////////////////// UI  test ////////////////////////////////
-        /*
-        var button = BABYLON.GUI.Button.CreateSimpleButton("but", "Click Me");
-        button.height = "200px";
-        button.width = "400px";
-        button.color = "#003399";
-        button.background = "grey";
-        button.left = "120px";
-        button.cornerRadius = 20;
-        button.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-        button.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-        */
-        //panel.addControl(button);
-    //////////////////////////////// UI test //////////////////////////////// 
-
         return scene;
     }
 
@@ -238,7 +193,7 @@ function initializeScene(user){
     });
   }
 
-  function onFeedDryClicked(user, foodType, header){
+  function onFeedDryClicked(user, foodType, textUI){
     const feed = functions.httpsCallable('eat');
     
     feed({email: user.email, catName: user.cat.name, type: foodType})
@@ -248,21 +203,103 @@ function initializeScene(user){
     user.cat.dryFood -= 1;
     user.cat.feedDryCount += 1;
     user.cat.hunger += 1;
-    header.text = `Hunger: ${user.cat.hunger}`;
+    textUI.dry.text = `${user.cat.dryFood}`;
   }
-  function onBuyFoodClicked(user, foodType, header){
+  function onBuyFoodClicked(user, foodType, textUI){
     const buyFood = functions.httpsCallable('buyFood');
     buyFood({email: user.email, catName: user.cat.name, type: foodType})
     .then(res => {
         //alert(res.data);
     });
-    user.cat.food += 1;
+    user.cat.dryFood += 1;
     user.cat.currency -= 1;
-    header.text = `Money: ${user.cat.currency}`;
+    textUI.dry.text = `${user.cat.dryFood}`;
+    textUI.coin.text = `${user.cat.currency}`;
   }
 
   function exitAR(){
     window.location.href = "index.html";
   }
 
+  function displayProperties(user){
+    var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+    var grid = new BABYLON.GUI.Grid(); 
+    advancedTexture.addControl(grid); 
+    grid.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;   
+    grid.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    
+    grid.widthInPixels = 220;
+    grid.heightInPixels = 400;
+
+    grid.addColumnDefinition(0.4);
+    grid.addColumnDefinition(0.6);
+    grid.addRowDefinition(1/4);
+    grid.addRowDefinition(1/4);
+    grid.addRowDefinition(1/4);
+    grid.addRowDefinition(1/4);
+
+    const size = 100;
+    const textSize = 60;
+    var dryFoodIcon = new BABYLON.GUI.Image("dry", "assets/icon/dry_food.png");
+    dryFoodIcon.widthInPixels = size;
+    dryFoodIcon.heightInPixels = size;
+    grid.addControl(dryFoodIcon, 0, 0);
+
+    var wetFoodIcon = new BABYLON.GUI.Image("wet", "assets/icon/wet_food.png");
+    wetFoodIcon.widthInPixels = size;
+    wetFoodIcon.heightInPixels = size;
+    grid.addControl(wetFoodIcon, 1, 0);
+
+    var spFoodIcon = new BABYLON.GUI.Image("special", "assets/icon/salmon.png");
+    spFoodIcon.widthInPixels = 0.9*size;
+    spFoodIcon.heightInPixels = 0.9*size;
+    grid.addControl(spFoodIcon, 2, 0);
+
+    var coinIcon = new BABYLON.GUI.Image("coin", "assets/icon/coin.png");
+    coinIcon.widthInPixels = 0.9*size;
+    coinIcon.heightInPixels = 0.9*size;
+    grid.addControl(coinIcon, 3, 0);
+
+    var dryCountText = new BABYLON.GUI.TextBlock();
+    dryCountText.text = `${user.cat.dryFood}`;
+    dryCountText.heightInPixels = size;
+    dryCountText.color = "white";
+    dryCountText.fontSize = textSize;
+    dryCountText.fontFamily = "Comic Sans MS";
+    dryCountText.paddingRightInPixels = -10;
+    grid.addControl(dryCountText, 0, 1);
+
+    var wetCountText = new BABYLON.GUI.TextBlock();
+    wetCountText.text = `${user.cat.wetFood}`;
+    wetCountText.heightInPixels = size;
+    wetCountText.color = "white";
+    wetCountText.fontSize = textSize;
+    wetCountText.fontFamily = "Comic Sans MS";
+    wetCountText.paddingRightInPixels = -10;
+    grid.addControl(wetCountText, 1, 1);
+
+    var spCountText = new BABYLON.GUI.TextBlock();
+    spCountText.text = `${user.cat.specialFood}`;
+    spCountText.heightInPixels = size;
+    spCountText.color = "white";
+    spCountText.fontSize = textSize;
+    spCountText.fontFamily = "Comic Sans MS";
+    grid.addControl(spCountText, 2, 1);
+
+    var coinText = new BABYLON.GUI.TextBlock();
+    coinText.text = `${user.cat.currency}`;
+    coinText.heightInPixels = 0.9*size;
+    coinText.color = "white";
+    coinText.fontSize = textSize;
+    coinText.fontFamily = "Comic Sans MS";
+    grid.addControl(coinText, 3, 1);
+
+    var textUI = {
+        dry: dryCountText,
+        wet: wetCountText,
+        special: spCountText,
+        coin: coinText
+    }
+    return textUI;
+}
   
