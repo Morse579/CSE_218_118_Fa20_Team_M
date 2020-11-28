@@ -61,7 +61,6 @@ function initializeScene(user){
         });
 
         var cat = null;
-        var sphere = null;
         // const [hitTest, marker] = addMesh(xr, scene);
 
         const fm = xr.baseExperience.featuresManager;
@@ -71,11 +70,13 @@ function initializeScene(user){
         const marker = BABYLON.MeshBuilder.CreateTorus('marker', { diameter: 0.12, thickness: 0.02 });
         marker.isVisible = false;
         marker.rotationQuaternion = new BABYLON.Quaternion();
+        /*
         var markerMaterial = new BABYLON.StandardMaterial(scene);
         markerMaterial.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.4);
         markerMaterial.specularColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-        // markerMaterial.emissiveColor = BABYLON.Color3.White();
+        markerMaterial.emissiveColor = BABYLON.Color3.White();
         marker.material = markerMaterial;
+        */
 
         // Initialize hit test to detect position and place cat
         var hitTest;
@@ -90,6 +91,9 @@ function initializeScene(user){
                 marker.isVisible = false;
             }
         });
+
+        // Get cat information from firebase
+        var catFile = getCatColorFile(user.cat.appearance);
 
         // Display 2D GUI: food and currency
         var textUI = displayProperties(user);
@@ -107,7 +111,7 @@ function initializeScene(user){
                         if(marker.isVisible){
                             markerOn = false;
                             marker.isVisible = false;
-                            var meshStaticCat = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/CatV2glTFSeparated/", "ChibiCatV2_unity.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+                            var meshStaticCat = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/CatV2glTFSeparated/", catFile, scene, function (newMeshes, particleSystems, skeletons) {
                                 cat = newMeshes[0];
                                 // cat.scaling = new BABYLON.Vector3(0.009, 0.009, 0.009);
                                 // cat.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
@@ -194,6 +198,23 @@ function initializeScene(user){
     });
   }
 
+  function getCatColorFile(color){
+    var fileToLoad;
+    switch(color) {
+        case "yellow":
+            fileToLoad = "ChibiCatV2_unity_orange.gltf";
+            break;
+        case "black":
+            fileToLoad = "ChibiCatV2_unity_black.gltf";
+            break;
+        case "white":
+            fileToLoad = "ChibiCatV2_unity_white.gltf";
+            break;
+        default:
+            fileToLoad = "ChibiCatV2_unity_siam.gltf"
+    }
+    return fileToLoad;
+  }
   function onFeedDryClicked(user, foodType, textUI){
     const feed = functions.httpsCallable('eat');
     
