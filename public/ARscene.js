@@ -132,7 +132,6 @@ function initializeScene(user){
         scene.onPointerObservable.add((pointerInfo) => {
             switch (pointerInfo.type) {
                 case BABYLON.PointerEventTypes.POINTERTAP:
-                    meow.play();
                     if(cat == null){
                         if(marker.isVisible){
                             markerOn = false;
@@ -154,6 +153,7 @@ function initializeScene(user){
                                     scene.animationGroups[11].play(false);
                                 }
                                 hitTest.transformationMatrix.decompose(null, cat.rotationQuaternion, cat.position);
+                                meow.play(); 
 
                                 // Create 3 3D GUI button for testing purpose
                                 hitTest.transformationMatrix.decompose(null, panel3D.rotationQuaternion, panel3D.position);
@@ -206,6 +206,7 @@ function initializeScene(user){
                     }
                     else{
                         // alert("You are tapping after cat is set up");
+                        meow.play();
                         scene.animationGroups[1].play(false);                 
                     }
                     break;      
