@@ -130,53 +130,12 @@ function initializeScene(user){
                                 hitTest.transformationMatrix.decompose(null, cat.rotationQuaternion, cat.position);
                                 meow.play(); 
 
-                                // Create 3 3D GUI button for testing purpose
+                                // Link 3D GUI panel with cat position
                                 hitTest.transformationMatrix.decompose(null, panel3D.rotationQuaternion, panel3D.position);
                                 panel3D.position.z = cat.position.z + 5.5;
-                                panel3D.blockLayout = true;
-
-                                var button_feed_dry = new BABYLON.GUI.Button3D("feed_dry");
-                                button_feed_dry.onPointerClickObservable.add(function () {
-                                    onFeedDryClicked(user, "dry", textUI);
-                                    scene.animationGroups[7].play(false);
-                                });
-                                var text1 = new BABYLON.GUI.TextBlock();
-                                text1.text = "eat_dry";
-                                text1.color = "white";
-                                text1.fontSize = 24;
-                                button_feed_dry.content = text1; 
-                                button_feed_dry.width = 50;
-                                button_feed_dry.height = 50;
-                                panel3D.addControl(button_feed_dry);
-
-                                var button_buy_dry = new BABYLON.GUI.Button3D("buy_dry");
-                                button_buy_dry.onPointerClickObservable.add(function () {
-                                    onBuyFoodClicked(user, "dry", textUI);
-                                });
-                                var text2 = new BABYLON.GUI.TextBlock();
-                                text2.text = "buy_dry";
-                                text2.color = "white";
-                                text2.fontSize = 24;
-                                button_buy_dry.content = text2; 
-                                button_buy_dry.width = 50;
-                                button_buy_dry.height = 50;
-                                panel3D.addControl(button_buy_dry);
-
-                                var button_exist = new BABYLON.GUI.Button3D("exit");
-                                button_exist.onPointerClickObservable.add(function () {
-                                    exitAR();
-                                });
-                                var text3 = new BABYLON.GUI.TextBlock();
-                                text3.text = "exit";
-                                text3.color = "white";
-                                text3.fontSize = 24;
-                                button_exist.content = text3; 
-                                button_exist.width = 50;
-                                button_exist.height = 50;
-                                panel3D.addControl(button_exist);
-                                
-                                panel3D.blockLayout = false;
+                                panel3D.blockLayout = true;     // Moving this line into add3DButtonsOnPanel will cause problem...not sure why
                             });
+                            add3DButtonsOnPanel(panel3D, user, textUI, scene);
                         }
                     }
                     else{
@@ -322,6 +281,76 @@ function initializeScene(user){
         special: spCountText,
         coin: coinText
     }
+
+    var button = BABYLON.GUI.Button.CreateSimpleButton("button", "Clicks: 0");
+        button.top = "0px";
+        button.left = "0px";
+        button.width = "150px";
+        button.height = "50px";
+        button.cornerRadius = 20;
+        button.thickness = 4;
+        button.children[0].color = "#DFF9FB";
+        button.children[0].fontSize = 24;
+        button.color = "#FF7979";
+        button.background = "#EB4D4B";
+    
+        var clicks = 0;
+        button.onPointerClickObservable.add(function () {
+            clicks++;
+            if (clicks % 2 == 0) {
+            button.background = "#EB4D4B";
+            } else {
+            button.background = "#007900";
+            }
+            button.children[0].text = "Clicks: " + clicks;
+        });
+
+        advancedTexture.addControl(button);
+
     return textUI;
-}
+  }
+  function add3DButtonsOnPanel(panel, user, textUI, scene){
+    // Add 3d GUI button to given panel
+    var button_feed_dry = new BABYLON.GUI.Button3D("feed_dry");
+    button_feed_dry.onPointerClickObservable.add(function () {
+        onFeedDryClicked(user, "dry", textUI);
+        scene.animationGroups[7].play(false);
+    });
+    var text1 = new BABYLON.GUI.TextBlock();
+    text1.text = "eat_dry";
+    text1.color = "white";
+    text1.fontSize = 24;
+    button_feed_dry.content = text1; 
+    button_feed_dry.width = 50;
+    button_feed_dry.height = 50;
+    panel.addControl(button_feed_dry);
+
+    var button_buy_dry = new BABYLON.GUI.Button3D("buy_dry");
+    button_buy_dry.onPointerClickObservable.add(function () {
+        onBuyFoodClicked(user, "dry", textUI);
+    });
+    var text2 = new BABYLON.GUI.TextBlock();
+    text2.text = "buy_dry";
+    text2.color = "white";
+    text2.fontSize = 24;
+    button_buy_dry.content = text2; 
+    button_buy_dry.width = 50;
+    button_buy_dry.height = 50;
+    panel.addControl(button_buy_dry);
+
+    var button_exist = new BABYLON.GUI.Button3D("exit");
+    button_exist.onPointerClickObservable.add(function () {
+        exitAR();
+    });
+    var text3 = new BABYLON.GUI.TextBlock();
+    text3.text = "exit";
+    text3.color = "white";
+    text3.fontSize = 24;
+    button_exist.content = text3; 
+    button_exist.width = 50;
+    button_exist.height = 50;
+    panel.addControl(button_exist);
+    
+    panel.blockLayout = false;
+  }
   
