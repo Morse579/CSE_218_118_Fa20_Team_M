@@ -128,7 +128,15 @@ function initializeScene(user){
                                     scene.animationGroups[11].play(false);
                                 }
                                 hitTest.transformationMatrix.decompose(null, cat.rotationQuaternion, cat.position);
-                                meow.play(); 
+                                meow.play();
+
+                                // Load food
+                                var wetFoodMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (mesh, particleSystems, skeletons) {
+                                    var wetFood = mesh[0];
+                                    wetFood.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
+                                    wetFood.scaling = new BABYLON.Vector3(0.2, 0.2, 0.2);
+                                    //wetFood.position.z = cat.position.z - 1.5;
+                                });
 
                                 // Link 3D GUI panel with cat position
                                 hitTest.transformationMatrix.decompose(null, panel3D.rotationQuaternion, panel3D.position);
@@ -281,32 +289,6 @@ function initializeScene(user){
         special: spCountText,
         coin: coinText
     }
-
-    var button = BABYLON.GUI.Button.CreateSimpleButton("button", "Clicks: 0");
-        button.top = "0px";
-        button.left = "0px";
-        button.width = "150px";
-        button.height = "50px";
-        button.cornerRadius = 20;
-        button.thickness = 4;
-        button.children[0].color = "#DFF9FB";
-        button.children[0].fontSize = 24;
-        button.color = "#FF7979";
-        button.background = "#EB4D4B";
-    
-        var clicks = 0;
-        button.onPointerClickObservable.add(function () {
-            clicks++;
-            if (clicks % 2 == 0) {
-            button.background = "#EB4D4B";
-            } else {
-            button.background = "#007900";
-            }
-            button.children[0].text = "Clicks: " + clicks;
-        });
-
-        advancedTexture.addControl(button);
-
     return textUI;
   }
   function add3DButtonsOnPanel(panel, user, textUI, scene){
