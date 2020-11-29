@@ -133,9 +133,11 @@ function initializeScene(user){
                                 // Load food
                                 var wetFoodMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (mesh, particleSystems, skeletons) {
                                     var wetFood = mesh[0];
-                                    wetFood.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
-                                    wetFood.scaling = new BABYLON.Vector3(0.2, 0.2, 0.2);
-                                    //wetFood.position.z = cat.position.z - 1.5;
+                                    wetFood.rotation = new BABYLON.Vector3(0, -Math.PI/4, 0);
+                                    wetFood.scaling = new BABYLON.Vector3(0.04, 0.04, 0.04);
+                                    wetFood.position.x = cat.position.x;
+                                    wetFood.position.y = cat.position.y;
+                                    wetFood.position.z = cat.position.z - 0.08;
                                 });
 
                                 // Link 3D GUI panel with cat position
