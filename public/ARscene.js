@@ -142,10 +142,12 @@ function initializeScene(user){
                                 panel3D.blockLayout = true;     // Moving this line into add3DButtonsOnPanel will cause problem...not sure why
 
                                 panelBottom.position.z = cat.position.z;
+                                var mats = createMats();
+                                var bars = addBars(user, cat.position, mats);
                             });
-                            add3DButtonsOnPanel(panel3D, user, textUI, scene);
+
+                            //add3DButtonsOnPanel(panel3D, user, textUI, scene);
                             var foodButtons = display3DFoodButtons(panelBottom, scene);
-                            //var foodButtons = {};
                             displayActions(foodButtons);
                         }
                     }
@@ -215,6 +217,49 @@ function initializeScene(user){
 
 
   ////////////////////////// 3D GUI //////////////////////////
+
+  function createMats(){
+    var mats = {};
+    mats.red = new BABYLON.StandardMaterial("mat");
+    mats.red.diffuseTexture = new BABYLON.Texture("assets/color/red.jpg");
+    // mats.red.alpha = 0.7;
+
+    mats.orange = new BABYLON.StandardMaterial("mat2");
+    mats.orange.diffuseTexture = new BABYLON.Texture("assets/color/orange.jpg");
+    // mats.orange.alpha = 0.7;
+
+    return mats;
+  }
+  function addBars(user, catPos, mats){
+      //alert(catPos.x + ", " + catPos.y + ", " + catPos.z);
+      var bars = {};
+    for(var i=0;i<100;i++){
+        bars.hungerBar = BABYLON.MeshBuilder.CreateBox("box", {height: 0.1, width: 0.01, depth: 0.1});
+        bars.hungerBar.position.z = catPos.z + 2;
+        bars.hungerBar.position.y = catPos.y + 0.3;
+        bars.hungerBar.position.x = catPos.x - 0.5 + i*0.01;
+        var hungerValue = user.cat.hunger;
+        hungerValue = Math.max(0, hungerValue);
+        hungerValue = Math.min(100, hungerValue);
+        if(i<hungerValue){
+            bars.hungerBar.material = mats.red;	
+        }
+    }
+    
+    for(var i=0;i<100;i++){
+        bars.moodBar = BABYLON.MeshBuilder.CreateBox("box", {height: 0.1, width: 0.01, depth: 0.1});
+        bars.moodBar.position.z = catPos.z + 2;
+        bars.moodBar.position.y = catPos.y + 0.15;
+        bars.moodBar.position.x = catPos.x - 0.5 + i*0.01;
+        var moodValue = user.cat.mood;
+        moodValue = Math.max(0, moodValue);
+        moodValue = Math.min(100, moodValue);
+        if(i<moodValue){
+            bars.moodBar.material = mats.orange;	
+        }
+    }
+    return bars;
+  }
   function display3DFoodButtons(panel, scene){
     //sphere1 should be replaced by dry food mesh
     var sphere1 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.5});
