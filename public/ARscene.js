@@ -60,7 +60,6 @@ function initializeScene(user){
             optionalFeatures: true,
         });
 
-        var cat = null;
         // const [hitTest, marker] = addMesh(xr, scene);
 
         const fm = xr.baseExperience.featuresManager;
@@ -93,6 +92,7 @@ function initializeScene(user){
         });
 
         // Get cat information from firebase
+        var cat = null;
         var catFile = getCatColorFile(user.cat.appearance);
 
         // Display 2D GUI: food, currency, shop and exit icon
@@ -107,7 +107,7 @@ function initializeScene(user){
 
         var panelBottom = new BABYLON.GUI.StackPanel3D();
         manager.addControl(panelBottom);
-        panelBottom.margin = 0.2;
+        panelBottom.margin = 0.07;
         
 
         scene.onPointerObservable.add((pointerInfo) => {
@@ -136,27 +136,14 @@ function initializeScene(user){
                                 hitTest.transformationMatrix.decompose(null, cat.rotationQuaternion, cat.position);
                                 meow.play();
 
-                                // Load food
-                                var wetFoodMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (mesh, particleSystems, skeletons) {
-                                    var wetFood = mesh[0];
-                                    wetFood.rotation = new BABYLON.Vector3(0, -Math.PI/4, 0);
-                                    wetFood.scaling = new BABYLON.Vector3(0.04, 0.04, 0.04);
-                                    wetFood.position.x = cat.position.x;
-                                    wetFood.position.y = cat.position.y;
-                                    wetFood.position.z = cat.position.z - 0.08;
-                                });
-
                                 // Link 3D GUI panel with cat position
                                 hitTest.transformationMatrix.decompose(null, panel3D.rotationQuaternion, panel3D.position);
-                                panel3D.position.z = cat.position.z + 3;
-                                panel3D.blockLayout = true;     // Moving this line into add3DButtonsOnPanel will cause problem...not sure why
+                                hitTest.transformationMatrix.decompose(null, panelBottom.rotationQuaternion, panelBottom.position);
 
-                                panelBottom.position.z = cat.position.z;
+                                add3DButtonsOnPanel(panel3D, scene, cat);
+                                var foodButtons = display3DFoodButtons(panelBottom, user, textUI, scene, cat);
+                                displayActions(foodButtons, scene);
                             });
-                            add3DButtonsOnPanel(panel3D, user, textUI, scene);
-                            var foodButtons = display3DFoodButtons(panelBottom, scene);
-                            //var foodButtons = {};
-                            displayActions(foodButtons);
                         }
                     }
                     else{
@@ -223,11 +210,12 @@ function initializeScene(user){
     window.location.href = "index.html";
   }
 
-
   ////////////////////////// 3D GUI //////////////////////////
-  function display3DFoodButtons(panel, scene){
+  function display3DFoodButtons(panel, user, textUI, scene, cat){
+    panel.position.z = cat.position.z - 0.12;
+    
     //sphere1 should be replaced by dry food mesh
-    var sphere1 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.5});
+    var sphere1 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.05});
     var dryFoodButton = new BABYLON.GUI.MeshButton3D(sphere1, "dryFoodButton");
     dryFoodButton.onPointerUpObservable.add(function(){
         dryFoodButton.isVisible = false;
@@ -236,24 +224,53 @@ function initializeScene(user){
     });   
     panel.addControl(dryFoodButton);
     dryFoodButton.isVisible = false;
-    
 
-    const sphere2 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.5});
+    var sphere2 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.05});
     var wetFoodButton = new BABYLON.GUI.MeshButton3D(sphere2, "wetFoodButton");
     wetFoodButton.onPointerUpObservable.add(function(){
         dryFoodButton.isVisible = false;
         wetFoodButton.isVisible = false;
         specialFoodButton.isVisible = false;
+        var wetFoodMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (mesh, particleSystems, skeletons) {
+            var wetFood = mesh[0];
+            wetFood.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+            wetFood.scaling = new BABYLON.Vector3(0.035, 0.035, 0.035);
+            wetFood.position.x = cat.position.x;
+            wetFood.position.y = cat.position.y;
+            wetFood.position.z = cat.position.z - 0.075;
+
+            setTimeout(function(){
+                wetFood.setEnabled(false);
+            }, 5000);
+        });
+        setTimeout(function(){
+            scene.animationGroups[7].play(false);
+        }, 3000);
     });   
     panel.addControl(wetFoodButton);
     wetFoodButton.isVisible = false;
 
-    const sphere3 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.5});
+    const sphere3 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.05});
     var specialFoodButton = new BABYLON.GUI.MeshButton3D(sphere3, "dryFoodButton");
     specialFoodButton.onPointerUpObservable.add(function(){
         dryFoodButton.isVisible = false;
         wetFoodButton.isVisible = false;
         specialFoodButton.isVisible = false;
+        var specialFoodMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/food/sardine/", "scene.gltf", scene, function (mesh, particleSystems, skeletons) {
+            var specialFood = mesh[0];
+            specialFood.rotation = new BABYLON.Vector3(0, Math.PI/2, Math.PI/2);
+            //specialFood.scaling = new BABYLON.Vector3(0.035, 0.035, 0.035);
+            specialFood.position.x = cat.position.x;
+            specialFood.position.y = cat.position.y;
+            specialFood.position.z = cat.position.z - 0.07;
+
+            setTimeout(function(){
+                specialFood.setEnabled(false);
+            }, 4000);
+        });
+        setTimeout(function(){
+            scene.animationGroups[7].play(false);
+        }, 2000);
     });   
     panel.addControl(specialFoodButton);
     specialFoodButton.isVisible = false;
@@ -266,8 +283,11 @@ function initializeScene(user){
     return foodButtons;
 }
   var clicks = 0;
-  function add3DButtonsOnPanel(panel, user, textUI, scene){
+  function add3DButtonsOnPanel(panel, scene, cat){
     ////////////// test 3d button only /////////////////////////
+    panel.position.z = cat.position.z + 3;
+    panel.blockLayout = true;
+
     var count = new BABYLON.GUI.Button3D("count");
     var text1 = new BABYLON.GUI.TextBlock();
     text1.text = "0";
@@ -428,7 +448,7 @@ function initializeScene(user){
     return coinText;
 }
 
-function displayActions(foodButtons){
+function displayActions(foodButtons, scene){
     const size = 120;
     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("ActionUI");
     var grid = new BABYLON.GUI.Grid(); 
@@ -447,6 +467,8 @@ function displayActions(foodButtons){
     grid.addRowDefinition(2/3);
     grid.addRowDefinition(1/3);
 
+    const click = new BABYLON.Sound("click", "./assets/sounds/click.wav", scene);
+
     var feedButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "assets/icon/feed.png");
     feedButton.widthInPixels = size;
     feedButton.heightInPixels = size;
@@ -459,6 +481,7 @@ function displayActions(foodButtons){
     feedButton.background = "#EB4D4B";
 
     feedButton.onPointerClickObservable.add(function () {
+        click.play();
         //display3DFoodButtons(panelBottom);
         foodButtons.dry.isVisible = true;
         foodButtons.wet.isVisible = true;
