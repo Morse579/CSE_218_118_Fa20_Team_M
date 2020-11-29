@@ -95,14 +95,20 @@ function initializeScene(user){
         // Get cat information from firebase
         var catFile = getCatColorFile(user.cat.appearance);
 
-        // Display 2D GUI: food and currency
+        // Display 2D GUI: food, currency, shop and exit icon
         var textUI = displayProperties(user);
+        textUI.coin =  displayTopUI(user);
 
         // 3D gui - for mesh interaction
         var manager = new BABYLON.GUI.GUI3DManager(scene);
         var panel3D = new BABYLON.GUI.StackPanel3D();
         panel3D.margin = 0.2;
         manager.addControl(panel3D);
+
+        var panelBottom = new BABYLON.GUI.StackPanel3D();
+        manager.addControl(panelBottom);
+        panelBottom.margin = 0.2;
+        
 
         scene.onPointerObservable.add((pointerInfo) => {
             switch (pointerInfo.type) {
@@ -142,10 +148,15 @@ function initializeScene(user){
 
                                 // Link 3D GUI panel with cat position
                                 hitTest.transformationMatrix.decompose(null, panel3D.rotationQuaternion, panel3D.position);
-                                panel3D.position.z = cat.position.z + 5.5;
+                                panel3D.position.z = cat.position.z + 3;
                                 panel3D.blockLayout = true;     // Moving this line into add3DButtonsOnPanel will cause problem...not sure why
+
+                                panelBottom.position.z = cat.position.z;
                             });
                             add3DButtonsOnPanel(panel3D, user, textUI, scene);
+                            var foodButtons = display3DFoodButtons(panelBottom, scene);
+                            //var foodButtons = {};
+                            displayActions(foodButtons);
                         }
                     }
                     else{
@@ -212,25 +223,100 @@ function initializeScene(user){
     window.location.href = "index.html";
   }
 
+
+  ////////////////////////// 3D GUI //////////////////////////
+  function display3DFoodButtons(panel, scene){
+    //sphere1 should be replaced by dry food mesh
+    var sphere1 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.5});
+    var dryFoodButton = new BABYLON.GUI.MeshButton3D(sphere1, "dryFoodButton");
+    dryFoodButton.onPointerUpObservable.add(function(){
+        dryFoodButton.isVisible = false;
+        wetFoodButton.isVisible = false;
+        specialFoodButton.isVisible = false;
+    });   
+    panel.addControl(dryFoodButton);
+    dryFoodButton.isVisible = false;
+    
+
+    const sphere2 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.5});
+    var wetFoodButton = new BABYLON.GUI.MeshButton3D(sphere2, "wetFoodButton");
+    wetFoodButton.onPointerUpObservable.add(function(){
+        dryFoodButton.isVisible = false;
+        wetFoodButton.isVisible = false;
+        specialFoodButton.isVisible = false;
+    });   
+    panel.addControl(wetFoodButton);
+    wetFoodButton.isVisible = false;
+
+    const sphere3 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.5});
+    var specialFoodButton = new BABYLON.GUI.MeshButton3D(sphere3, "dryFoodButton");
+    specialFoodButton.onPointerUpObservable.add(function(){
+        dryFoodButton.isVisible = false;
+        wetFoodButton.isVisible = false;
+        specialFoodButton.isVisible = false;
+    });   
+    panel.addControl(specialFoodButton);
+    specialFoodButton.isVisible = false;
+
+    var foodButtons = {
+        dry: dryFoodButton,
+        wet: wetFoodButton,
+        special: specialFoodButton
+    };
+    return foodButtons;
+}
+  var clicks = 0;
+  function add3DButtonsOnPanel(panel, user, textUI, scene){
+    ////////////// test 3d button only /////////////////////////
+    var count = new BABYLON.GUI.Button3D("count");
+    var text1 = new BABYLON.GUI.TextBlock();
+    text1.text = "0";
+    text1.color = "white";
+    text1.fontSize = 48;
+    count.content = text1; 
+    panel.addControl(count);
+    ///////////////////////////////////////
+    const sphere1 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.5});
+    var button1 = new BABYLON.GUI.MeshButton3D(sphere1, "pushButton");
+    button1.onPointerUpObservable.add(function(){
+        clicks++;
+        text1.text = `${clicks}`;
+        //play animations here
+    });   
+    panel.addControl(button1);
+
+    const sphere2 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.5});
+    var button2 = new BABYLON.GUI.MeshButton3D(sphere2, "pushButton");
+    button2.onPointerUpObservable.add(function(){
+        clicks++;
+        text1.text = `${clicks}`;
+        //play animations here
+    });   
+    panel.addControl(button2);
+    
+    panel.blockLayout = false;
+  }
+  
+  //////////////////// 2D GUI  //////////////////// 
   function displayProperties(user){
+    const size = 80;
+    const textSize = 45;
+
     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
     var grid = new BABYLON.GUI.Grid(); 
     advancedTexture.addControl(grid); 
     grid.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;   
     grid.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
     
-    grid.widthInPixels = 220;
-    grid.heightInPixels = 400;
+    grid.widthInPixels = size*2;
+    grid.heightInPixels = size*3;
 
-    grid.addColumnDefinition(0.4);
-    grid.addColumnDefinition(0.6);
-    grid.addRowDefinition(1/4);
-    grid.addRowDefinition(1/4);
-    grid.addRowDefinition(1/4);
-    grid.addRowDefinition(1/4);
+    grid.addColumnDefinition(0.5);
+    grid.addColumnDefinition(0.5);
+    grid.addRowDefinition(1/3);
+    grid.addRowDefinition(1/3);
+    grid.addRowDefinition(1/3);
 
-    const size = 100;
-    const textSize = 60;
     var dryFoodIcon = new BABYLON.GUI.Image("dry", "assets/icon/dry_food.png");
     dryFoodIcon.widthInPixels = size;
     dryFoodIcon.heightInPixels = size;
@@ -246,18 +332,12 @@ function initializeScene(user){
     spFoodIcon.heightInPixels = 0.9*size;
     grid.addControl(spFoodIcon, 2, 0);
 
-    var coinIcon = new BABYLON.GUI.Image("coin", "assets/icon/coin.png");
-    coinIcon.widthInPixels = 0.9*size;
-    coinIcon.heightInPixels = 0.9*size;
-    grid.addControl(coinIcon, 3, 0);
-
     var dryCountText = new BABYLON.GUI.TextBlock();
     dryCountText.text = `${user.cat.dryFood}`;
     dryCountText.heightInPixels = size;
     dryCountText.color = "white";
     dryCountText.fontSize = textSize;
     dryCountText.fontFamily = "Comic Sans MS";
-    dryCountText.paddingRightInPixels = -10;
     grid.addControl(dryCountText, 0, 1);
 
     var wetCountText = new BABYLON.GUI.TextBlock();
@@ -266,7 +346,6 @@ function initializeScene(user){
     wetCountText.color = "white";
     wetCountText.fontSize = textSize;
     wetCountText.fontFamily = "Comic Sans MS";
-    wetCountText.paddingRightInPixels = -10;
     grid.addControl(wetCountText, 1, 1);
 
     var spCountText = new BABYLON.GUI.TextBlock();
@@ -275,66 +354,167 @@ function initializeScene(user){
     spCountText.color = "white";
     spCountText.fontSize = textSize;
     spCountText.fontFamily = "Comic Sans MS";
+    dryCountText.paddingRightInPixels = size/10;
     grid.addControl(spCountText, 2, 1);
-
-    var coinText = new BABYLON.GUI.TextBlock();
-    coinText.text = `${user.cat.currency}`;
-    coinText.heightInPixels = 0.9*size;
-    coinText.color = "white";
-    coinText.fontSize = textSize;
-    coinText.fontFamily = "Comic Sans MS";
-    grid.addControl(coinText, 3, 1);
 
     var textUI = {
         dry: dryCountText,
         wet: wetCountText,
-        special: spCountText,
-        coin: coinText
+        special: spCountText
     }
     return textUI;
   }
-  function add3DButtonsOnPanel(panel, user, textUI, scene){
-    // Add 3d GUI button to given panel
-    var button_feed_dry = new BABYLON.GUI.Button3D("feed_dry");
-    button_feed_dry.onPointerClickObservable.add(function () {
-        onFeedDryClicked(user, "dry", textUI);
-        scene.animationGroups[7].play(false);
-    });
-    var text1 = new BABYLON.GUI.TextBlock();
-    text1.text = "eat_dry";
-    text1.color = "white";
-    text1.fontSize = 24;
-    button_feed_dry.content = text1; 
-    button_feed_dry.width = 50;
-    button_feed_dry.height = 50;
-    panel.addControl(button_feed_dry);
+  function displayTopUI(user){
+    var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("ActionUI");
+    var grid = new BABYLON.GUI.Grid(); 
+    advancedTexture.addControl(grid); 
+    grid.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;   
+    grid.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    
+    grid.widthInPixels = 240;
+    grid.heightInPixels = 120;
 
-    var button_buy_dry = new BABYLON.GUI.Button3D("buy_dry");
-    button_buy_dry.onPointerClickObservable.add(function () {
-        onBuyFoodClicked(user, "dry", textUI);
-    });
-    var text2 = new BABYLON.GUI.TextBlock();
-    text2.text = "buy_dry";
-    text2.color = "white";
-    text2.fontSize = 24;
-    button_buy_dry.content = text2; 
-    button_buy_dry.width = 50;
-    button_buy_dry.height = 50;
-    panel.addControl(button_buy_dry);
+    grid.addColumnDefinition(50, true);
+    grid.addColumnDefinition(80, true);
+    grid.addColumnDefinition(100, true);
 
-    var button_exist = new BABYLON.GUI.Button3D("exit");
-    button_exist.onPointerClickObservable.add(function () {
+    var coinIcon = new BABYLON.GUI.Image("coin", "assets/icon/coin.png");
+    coinIcon.widthInPixels = 50;
+    coinIcon.heightInPixels = 50;
+    grid.addControl(coinIcon, 0, 0);
+
+    var coinText = new BABYLON.GUI.TextBlock();
+    coinText.text = `${user.cat.currency}`;
+    coinText.heightInPixels = 50;
+    coinText.color = "white";
+    coinText.fontSize = 30;
+    coinText.fontFamily = "Comic Sans MS";
+    grid.addControl(coinText, 0, 1);
+
+    var shopButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "assets/icon/shop.png");
+    shopButton.widthInPixels = 100;
+    shopButton.heightInPixels = 100;
+    shopButton.cornerRadius = 20;
+    shopButton.thickness = 5;
+    shopButton.children[0].widthInPixels = 80;
+    shopButton.children[0].heightInPixels = 80;
+    shopButton.children[0].paddingLeftInPixels = 10;
+    shopButton.color = "#FF7979";
+    shopButton.background = "#EB4D4B";
+    shopButton.onPointerClickObservable.add(function () {
+        //TODO: SHOP
+    });
+    grid.addControl(shopButton, 0, 2);
+
+    var exitButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "assets/icon/exit.png");
+    exitButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;   
+    exitButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    exitButton.widthInPixels = 120;
+    exitButton.heightInPixels = 120;
+    exitButton.cornerRadius = 20;
+    exitButton.thickness = 0;
+    exitButton.children[0].widthInPixels = 100;
+    exitButton.children[0].heightInPixels = 100;
+    exitButton.children[0].paddingLeftInPixels = 10;
+    exitButton.paddingTopInPixels = 20;
+    exitButton.paddingLeftInPixels = 10;
+    exitButton.onPointerClickObservable.add(function () {
         exitAR();
     });
-    var text3 = new BABYLON.GUI.TextBlock();
-    text3.text = "exit";
-    text3.color = "white";
-    text3.fontSize = 24;
-    button_exist.content = text3; 
-    button_exist.width = 50;
-    button_exist.height = 50;
-    panel.addControl(button_exist);
+    // exitButton.color = "#FF7979";
+    // exitButton.background = "#EB4D4B";
+    advancedTexture.addControl(exitButton);
+
+    return coinText;
+}
+
+function displayActions(foodButtons){
+    const size = 120;
+    var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("ActionUI");
+    var grid = new BABYLON.GUI.Grid(); 
+    advancedTexture.addControl(grid); 
+    grid.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;   
+    grid.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
     
-    panel.blockLayout = false;
-  }
-  
+    grid.widthInPixels = size*5;
+    grid.heightInPixels = size*1.8;
+
+    const ACTIONS = 3;
+
+    for(var i=0;i<ACTIONS;i++){
+        grid.addColumnDefinition(1/ACTIONS);
+    }
+    grid.addRowDefinition(2/3);
+    grid.addRowDefinition(1/3);
+
+    var feedButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "assets/icon/feed.png");
+    feedButton.widthInPixels = size;
+    feedButton.heightInPixels = size;
+    feedButton.cornerRadius = size;
+    feedButton.thickness = 4;
+    feedButton.children[0].widthInPixels = 0.8*size;
+    feedButton.children[0].heightInPixels = 2/3*size;
+    feedButton.children[0].paddingLeftInPixels = 15;
+    feedButton.color = "#FF7979";
+    feedButton.background = "#EB4D4B";
+
+    feedButton.onPointerClickObservable.add(function () {
+        //display3DFoodButtons(panelBottom);
+        foodButtons.dry.isVisible = true;
+        foodButtons.wet.isVisible = true;
+        foodButtons.special.isVisible = true;
+
+    });
+    grid.addControl(feedButton, 0, 0);
+
+    var playButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "assets/icon/play.png");
+    playButton.widthInPixels = size;
+    playButton.heightInPixels = size;
+    playButton.cornerRadius = size;
+    playButton.thickness = 4;
+    playButton.children[0].widthInPixels = 0.8*size;
+    playButton.children[0].heightInPixels = 2/3*size;
+    playButton.children[0].paddingLeftInPixels = 15;
+    playButton.color = "#FF7979";
+    playButton.background = "#EB4D4B";
+    grid.addControl(playButton, 0, 1);
+
+    var decorateButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "assets/icon/decorate.png");
+    decorateButton.widthInPixels = size;
+    decorateButton.heightInPixels = size;
+    decorateButton.cornerRadius = size;
+    decorateButton.thickness = 4;
+    decorateButton.children[0].widthInPixels = 0.8*size;
+    decorateButton.children[0].heightInPixels = 2/3*size;
+    decorateButton.children[0].paddingLeftInPixels = 15;
+    decorateButton.color = "#FF7979";
+    decorateButton.background = "#EB4D4B";
+    grid.addControl(decorateButton, 0, 2);
+
+    var feedText = new BABYLON.GUI.TextBlock();
+    feedText.text = `Feed`;
+    feedText.heightInPixels = 100;
+    feedText.color = "white";
+    feedText.fontSize = 30;
+    feedText.paddingTopInPixels = -50;
+    feedText.fontFamily = "Comic Sans MS";
+    grid.addControl(feedText, 1, 0);
+
+    var playText = new BABYLON.GUI.TextBlock();
+    playText.text = `Play`;
+    playText.heightInPixels = 100;
+    playText.color = "white";
+    playText.fontSize = 30;
+    playText.paddingTopInPixels = -50;
+    playText.fontFamily = "Comic Sans MS";
+    grid.addControl(playText, 1, 1);
+
+    var decorateText = new BABYLON.GUI.TextBlock();
+    decorateText.text = `Decorate`;
+    decorateText.heightInPixels = 100;
+    decorateText.color = "white";
+    decorateText.fontSize = 30;
+    decorateText.paddingTopInPixels = -50;
+    decorateText.fontFamily = "Comic Sans MS";
+    grid.addControl(decorateText, 1, 2);
+}
