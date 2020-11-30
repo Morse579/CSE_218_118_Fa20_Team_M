@@ -1,5 +1,5 @@
 # CSE_218_118_Fa20_Team_M
-Meow ~(-w-)~
+Meow o(-w-)o
 
 ### Usage
 You need to first `firebase login` to our public google account.
