@@ -1,4 +1,5 @@
 export{initializeScene}
+//import{onFeedClicked} from './update.js'
 import{functions} from './ARmain.js'
 
 function initializeScene(user){
@@ -115,7 +116,7 @@ function initializeScene(user){
 
                                 var bars = addBars(user, cat.position, mats);
                                 //add3DButtonsOnPanel(panel3D, scene, cat);
-                                var foodButtons = display3DFoodButtons(panelFood, user, textUI, scene, cat);
+                                var foodButtons = display3DFoodButtons(panelFood, user, textUI, scene, cat, bars, mats);
                                 var toyButtons = display3DToyButtons(panelToys, user, textUI, scene, cat);
                                 var decorButtons = display3DDecorButtons(panelDecor, user, textUI, scene, cat);
 
@@ -183,34 +184,35 @@ function initializeScene(user){
 
   function addBars(user, catPos, mats){
       var bars = {};
+      bars.hungerBar = [];
     for(var i=0;i<100;i++){
-        bars.hungerBar = BABYLON.MeshBuilder.CreateBox("box", {height: 0.1, width: 0.01, depth: 0.1});
-        bars.hungerBar.position.z = catPos.z + 2;
-        bars.hungerBar.position.y = catPos.y + 0.3;
-        bars.hungerBar.position.x = catPos.x - 0.5 + i*0.01;
+        bars.hungerBar[i] = BABYLON.MeshBuilder.CreateBox("box", {height: 0.1, width: 0.01, depth: 0.1});
+        bars.hungerBar[i].position.z = catPos.z + 2;
+        bars.hungerBar[i].position.y = catPos.y + 0.3;
+        bars.hungerBar[i].position.x = catPos.x - 0.5 + i*0.01;
         var hungerValue = user.cat.hunger;
         hungerValue = Math.max(0, hungerValue);
         hungerValue = Math.min(100, hungerValue);
         if(i<hungerValue){
-            bars.hungerBar.material = mats.red;	
+            bars.hungerBar[i].material = mats.red;	
         }
     }
-    
+    bars.moodBar = [];
     for(var i=0;i<100;i++){
-        bars.moodBar = BABYLON.MeshBuilder.CreateBox("box", {height: 0.1, width: 0.01, depth: 0.1});
-        bars.moodBar.position.z = catPos.z + 2;
-        bars.moodBar.position.y = catPos.y + 0.15;
-        bars.moodBar.position.x = catPos.x - 0.5 + i*0.01;
+        bars.moodBar[i] = BABYLON.MeshBuilder.CreateBox("box", {height: 0.1, width: 0.01, depth: 0.1});
+        bars.moodBar[i].position.z = catPos.z + 2;
+        bars.moodBar[i].position.y = catPos.y + 0.15;
+        bars.moodBar[i].position.x = catPos.x - 0.5 + i*0.01;
         var moodValue = user.cat.mood;
         moodValue = Math.max(0, moodValue);
         moodValue = Math.min(100, moodValue);
         if(i<moodValue){
-            bars.moodBar.material = mats.orange;	
+            bars.moodBar[i].material = mats.orange;	
         }
     }
     return bars;
   }
-  function display3DFoodButtons(panel, user, textUI, scene, cat){
+  function display3DFoodButtons(panel, user, textUI, scene, cat, bars, mats){
     panel.position.z = cat.position.z - 0.12;
     
     //sphere1 should be replaced by dry food mesh
@@ -220,6 +222,7 @@ function initializeScene(user){
         dryFoodButton.isVisible = false;
         wetFoodButton.isVisible = false;
         specialFoodButton.isVisible = false;
+        onFeedClicked(user, "dry", textUI, bars, mats);
     });   
     panel.addControl(dryFoodButton);
     dryFoodButton.isVisible = false;
@@ -240,6 +243,7 @@ function initializeScene(user){
 
             setTimeout(function(){
                 wetFood.setEnabled(false);
+                onFeedClicked(user, "wet", textUI, bars, mats);
             }, 5000);
         });
         setTimeout(function(){
@@ -265,6 +269,7 @@ function initializeScene(user){
 
             setTimeout(function(){
                 specialFood.setEnabled(false);
+                onFeedClicked(user, "special", textUI, bars, mats);
             }, 4000);
         });
         setTimeout(function(){
@@ -639,4 +644,114 @@ function showDecorButtons(decorButtons, cat, mats){
     if(cat.bell_rope > 0){
         decorButtons.bellRopeSphere.material = mats.pink;
     }
+}
+
+
+
+//////////////////// Update UI /////////////////////
+const FOOD_HUNGER = {
+    dry: 1,
+    wet: 2,
+    special: 5
+};
+const TOY_MOOD = {
+    stuffed_dogyarn: 3,
+    mouse: 5,
+    stuffed_dog: 7,
+    stuffed_elephant: 11
+};
+const DECOR_MOOD = {
+    bell_rope: 17,
+    cat_tree: 19
+};
+function onFeedClicked(user, foodType, textUI, bars, mats){
+    const feed = functions.httpsCallable('eat');
+    feed({email: user.email, catName: user.cat.name, type: foodType})
+    .then(res => {
+        //alert(res.data);
+    });
+    switch(foodType){
+    case "dry":
+        user.cat.dryFood -= 1;
+        user.cat.hunger += FOOD_HUNGER.dry;
+        textUI.dry.text = `${user.cat.dryFood}`;
+        for(var i=0;i<FOOD_HUNGER.dry;i++){
+        bars.hungerBar[user.cat.hunger-FOOD_HUNGER.dry+i].material = mats.red;
+        }
+        break;
+    case "wet":
+        user.cat.wetFood -= 1;
+        user.cat.hunger += FOOD_HUNGER.wet;
+        textUI.wet.text = `${user.cat.wetFood}`;
+        for(var i=0;i<FOOD_HUNGER.wet;i++){
+        bars.hungerBar[user.cat.hunger-FOOD_HUNGER.wet+i].material = mats.red;
+        }
+        break;
+    case "special":
+        user.cat.specialFood -= 1;
+        user.cat.hunger += FOOD_HUNGER.special;
+        textUI.special.text = `${user.cat.specialFood}`;
+        for(var i=0;i<FOOD_HUNGER.special;i++){
+        bars.hungerBar[user.cat.hunger-FOOD_HUNGER.special+i].material = mats.red;
+        }
+        break;
+    }
+
+}
+
+function onPlayClicked(user, playType, textUI, bars, mats){
+    const play = functions.httpsCallable('play');
+    play({email: user.email, catName: user.cat.name, type: playType})
+    .then(res => {
+        //alert(res.data);
+    });
+    switch(playType){
+    case "yarn":
+        user.cat.mood += TOY_MOOD.yarn;
+        for(var i=0;i<TOY_MOOD.yarn;i++){
+            bars.moodBar[user.cat.mood-TOY_MOOD.yarn+i].material = mats.orange;
+        }
+        break;
+    case "mouse":
+        user.cat.mood += TOY_MOOD.mouse;
+        for(var i=0;i<TOY_MOOD.mouse;i++){
+            bars.moodBar[user.cat.mood-TOY_MOOD.mouse+i].material = mats.orange;
+        }
+        break;
+    case "stuffed_dog":
+        user.cat.mood += TOY_MOOD.stuffed_dog;
+        for(var i=0;i<TOY_MOOD.stuffed_dog;i++){
+            bars.moodBar[user.cat.mood-TOY_MOOD.stuffed_dog+i].material = mats.orange;
+        }
+        break;
+    case "stuffed_elephant":
+        user.cat.mood += TOY_MOOD.stuffed_elephant;
+        for(var i=0;i<TOY_MOOD.stuffed_elephant;i++){
+            bars.moodBar[user.cat.mood-TOY_MOOD.stuffed_elephant+i].material = mats.orange;
+        }
+        break;
+    }
+}
+
+function onDecorClicked(user, decorType, textUI, bars, mats){
+    const decor = functions.httpsCallable('placeDecor');
+    decor({email: user.email, catName: user.cat.name, type: decorType})
+    .then(res => {
+        //alert(res.data);
+    });
+    switch(decorType){
+    case "bell_rope":
+        user.cat.mood += DECOR_MOOD.bell_rope;
+        for(var i=0;i<DECOR_MOOD.bell_rope;i++){
+            bars.moodBar[user.cat.mood-DECOR_MOOD.bell_rope+i].material = mats.orange;
+        }
+        break;
+    case "cat_tree":
+        user.cat.mood += DECOR_MOOD.cat_tree;
+        for(var i=0;i<DECOR_MOOD.cat_tree;i++){
+            bars.moodBar[user.cat.mood-DECOR_MOOD.cat_tree+i].material = mats.orange;
+        }
+        break;
+    }
+
 }
