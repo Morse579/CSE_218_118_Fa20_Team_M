@@ -143,7 +143,7 @@ function initializeScene(user){
                                 panelBottom.position.z = cat.position.z;
                                 var mats = createMats();
                                 var bars = addBars(user, cat.position, mats);
-                                //add3DButtonsOnPanel(panel3D, scene, cat);
+                                add3DButtonsOnPanel(panel3D, scene, cat);
                                 var foodButtons = display3DFoodButtons(panelBottom, user, textUI, scene, cat);
                                 displayActions(foodButtons, scene);
                             });
@@ -365,8 +365,8 @@ function initializeScene(user){
   
   //////////////////// 2D GUI  //////////////////// 
   function displayProperties(user){
-    const size = 120;
-    const textSize = 60;
+    const size = 80;
+    const textSize = 45;
 
     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
     var grid = new BABYLON.GUI.Grid(); 
@@ -403,6 +403,7 @@ function initializeScene(user){
     dryCountText.heightInPixels = size;
     dryCountText.color = "white";
     dryCountText.fontSize = textSize;
+    dryCountText.fontFamily = "Comic Sans MS";
     grid.addControl(dryCountText, 0, 1);
 
     var wetCountText = new BABYLON.GUI.TextBlock();
@@ -410,6 +411,7 @@ function initializeScene(user){
     wetCountText.heightInPixels = size;
     wetCountText.color = "white";
     wetCountText.fontSize = textSize;
+    wetCountText.fontFamily = "Comic Sans MS";
     grid.addControl(wetCountText, 1, 1);
 
     var spCountText = new BABYLON.GUI.TextBlock();
@@ -417,6 +419,8 @@ function initializeScene(user){
     spCountText.heightInPixels = size;
     spCountText.color = "white";
     spCountText.fontSize = textSize;
+    spCountText.fontFamily = "Comic Sans MS";
+    dryCountText.paddingRightInPixels = size/10;
     grid.addControl(spCountText, 2, 1);
 
     var textUI = {
@@ -432,37 +436,35 @@ function initializeScene(user){
     advancedTexture.addControl(grid); 
     grid.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;   
     grid.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-    grid.paddingTopInPixels = 30;
-    grid.paddingRightInPixels = 30;
     
-    grid.widthInPixels = 450 + grid.paddingRightInPixels;
-    grid.heightInPixels = 150 + grid.paddingTopInPixels;
+    grid.widthInPixels = 240;
+    grid.heightInPixels = 120;
 
-    grid.addColumnDefinition(120, true);
-    grid.addColumnDefinition(180, true);
-    grid.addColumnDefinition(150, true);
+    grid.addColumnDefinition(50, true);
+    grid.addColumnDefinition(80, true);
+    grid.addColumnDefinition(100, true);
 
     var coinIcon = new BABYLON.GUI.Image("coin", "assets/icon/coin.png");
-    coinIcon.widthInPixels = 120;
-    coinIcon.heightInPixels = 120;
+    coinIcon.widthInPixels = 50;
+    coinIcon.heightInPixels = 50;
     grid.addControl(coinIcon, 0, 0);
 
     var coinText = new BABYLON.GUI.TextBlock();
     coinText.text = `${user.cat.currency}`;
-    coinText.heightInPixels = 120;
+    coinText.heightInPixels = 50;
     coinText.color = "white";
-    coinText.fontSize = 60;
+    coinText.fontSize = 30;
     coinText.fontFamily = "Comic Sans MS";
     grid.addControl(coinText, 0, 1);
 
     var shopButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "assets/icon/shop.png");
-    shopButton.widthInPixels = 150;
-    shopButton.heightInPixels = 150;
-    shopButton.cornerRadius = 30;
+    shopButton.widthInPixels = 100;
+    shopButton.heightInPixels = 100;
+    shopButton.cornerRadius = 20;
     shopButton.thickness = 5;
-    shopButton.children[0].widthInPixels = 120;
-    shopButton.children[0].heightInPixels = 120;
-    shopButton.children[0].paddingLeftInPixels = 15;
+    shopButton.children[0].widthInPixels = 80;
+    shopButton.children[0].heightInPixels = 80;
+    shopButton.children[0].paddingLeftInPixels = 10;
     shopButton.color = "#FF7979";
     shopButton.background = "#EB4D4B";
     shopButton.onPointerClickObservable.add(function () {
@@ -473,12 +475,15 @@ function initializeScene(user){
     var exitButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "assets/icon/exit.png");
     exitButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;   
     exitButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-    exitButton.widthInPixels = 180;
-    exitButton.heightInPixels = 180;
-    exitButton.cornerRadius = 30;
+    exitButton.widthInPixels = 120;
+    exitButton.heightInPixels = 120;
+    exitButton.cornerRadius = 20;
     exitButton.thickness = 0;
-    exitButton.paddingTopInPixels = 30;
-    exitButton.paddingLeftInPixels = 30;
+    exitButton.children[0].widthInPixels = 100;
+    exitButton.children[0].heightInPixels = 100;
+    exitButton.children[0].paddingLeftInPixels = 10;
+    exitButton.paddingTopInPixels = 20;
+    exitButton.paddingLeftInPixels = 10;
     exitButton.onPointerClickObservable.add(function () {
         exitAR();
     });
@@ -490,14 +495,14 @@ function initializeScene(user){
 }
 
 function displayActions(foodButtons, scene){
-    const size = 180;
+    const size = 120;
     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("ActionUI");
     var grid = new BABYLON.GUI.Grid(); 
     advancedTexture.addControl(grid); 
     grid.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;   
     grid.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
     
-    grid.widthInPixels = size*4;
+    grid.widthInPixels = size*5;
     grid.heightInPixels = size*1.8;
 
     const ACTIONS = 3;
@@ -514,10 +519,10 @@ function displayActions(foodButtons, scene){
     feedButton.widthInPixels = size;
     feedButton.heightInPixels = size;
     feedButton.cornerRadius = size;
-    feedButton.thickness = 6;
+    feedButton.thickness = 4;
     feedButton.children[0].widthInPixels = 0.8*size;
     feedButton.children[0].heightInPixels = 2/3*size;
-    feedButton.children[0].paddingLeftInPixels = 22;
+    feedButton.children[0].paddingLeftInPixels = 15;
     feedButton.color = "#FF7979";
     feedButton.background = "#EB4D4B";
 
@@ -538,7 +543,7 @@ function displayActions(foodButtons, scene){
     playButton.thickness = 4;
     playButton.children[0].widthInPixels = 0.8*size;
     playButton.children[0].heightInPixels = 2/3*size;
-    playButton.children[0].paddingLeftInPixels = 22;
+    playButton.children[0].paddingLeftInPixels = 15;
     playButton.color = "#FF7979";
     playButton.background = "#EB4D4B";
     grid.addControl(playButton, 0, 1);
@@ -550,33 +555,35 @@ function displayActions(foodButtons, scene){
     decorateButton.thickness = 4;
     decorateButton.children[0].widthInPixels = 0.8*size;
     decorateButton.children[0].heightInPixels = 2/3*size;
-    decorateButton.children[0].paddingLeftInPixels = 22;
+    decorateButton.children[0].paddingLeftInPixels = 15;
     decorateButton.color = "#FF7979";
     decorateButton.background = "#EB4D4B";
     grid.addControl(decorateButton, 0, 2);
 
-    const textSize = 150;
     var feedText = new BABYLON.GUI.TextBlock();
     feedText.text = `Feed`;
-    feedText.heightInPixels = textSize;
+    feedText.heightInPixels = 100;
     feedText.color = "white";
-    feedText.fontSize = 0.3*textSize;
-    feedText.paddingTopInPixels = -0.5*textSize;
+    feedText.fontSize = 30;
+    feedText.paddingTopInPixels = -50;
+    feedText.fontFamily = "Comic Sans MS";
     grid.addControl(feedText, 1, 0);
 
     var playText = new BABYLON.GUI.TextBlock();
     playText.text = `Play`;
-    playText.heightInPixels = textSize;
+    playText.heightInPixels = 100;
     playText.color = "white";
-    playText.fontSize = 0.3*textSize;
-    playText.paddingTopInPixels = -0.5*textSize;
+    playText.fontSize = 30;
+    playText.paddingTopInPixels = -50;
+    playText.fontFamily = "Comic Sans MS";
     grid.addControl(playText, 1, 1);
 
     var decorateText = new BABYLON.GUI.TextBlock();
     decorateText.text = `Decorate`;
-    decorateText.heightInPixels = textSize;
+    decorateText.heightInPixels = 100;
     decorateText.color = "white";
-    decorateText.fontSize = 0.3*textSize;
-    decorateText.paddingTopInPixels = -0.5*textSize;
+    decorateText.fontSize = 30;
+    decorateText.paddingTopInPixels = -50;
+    decorateText.fontFamily = "Comic Sans MS";
     grid.addControl(decorateText, 1, 2);
 }
