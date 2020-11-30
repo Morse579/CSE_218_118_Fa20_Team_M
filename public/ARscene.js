@@ -461,17 +461,18 @@ function display3DDecorButtons(panel, user, textUI, scene, cat, bars, mats){
     var catTreeButton = new BABYLON.GUI.MeshButton3D(sphere1, "catTreeButton");
     catTreeButton.onPointerUpObservable.add(function(){
         hideDecorButtons();
-        var catTreeMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/decor/Cat_climbing_tower_obj/", "Cat climbing tower.obj", scene, function (mesh) {
+        var catTreeMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/decor/arbre_a_chat_cat_tree/", "scene.gltf", scene, function (mesh) {
             var catTree = mesh[0];
-            catTree.rotation = new BABYLON.Vector3(0, Math.PI, 0);
-            catTree.scaling = new BABYLON.Vector3(0.0005, 0.0005, 0.0005);
-            catTree.position.x = cat.position.x + 0.5;
+            catTree.rotation = new BABYLON.Vector3(0, Math.PI/5, 0);
+            catTree.scaling = new BABYLON.Vector3(0.35, 0.35, 0.35);
+            catTree.position.x = cat.position.x - 0.22;
             catTree.position.y = cat.position.y;
-            catTree.position.z = cat.position.z;
+            catTree.position.z = cat.position.z + 0.25;
         });
         setTimeout(function(){
             scene.animationGroups[19].play(false);
-        }, 1500);
+            onDecorClicked(user, "cat_tree", textUI, bars, mats);
+        }, 2500);
     });   
     panel.addControl(catTreeButton);
     catTreeButton.isVisible = false;
@@ -480,6 +481,18 @@ function display3DDecorButtons(panel, user, textUI, scene, cat, bars, mats){
     var bellRopeButton = new BABYLON.GUI.MeshButton3D(sphere2, "bellRopeButton");
     bellRopeButton.onPointerUpObservable.add(function(){
         hideDecorButtons();
+        var bellRopeMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/decor/bell_rope/", "scene.gltf", scene, function (mesh) {
+            var bellRope = mesh[0];
+            bellRope.rotation = new BABYLON.Vector3(0, 0, 0);
+            bellRope.scaling = new BABYLON.Vector3(0.0012, 0.0012, 0.0012);
+            bellRope.position.x = cat.position.x + 0.5;
+            bellRope.position.y = cat.position.y + 0.6;
+            bellRope.position.z = cat.position.z + 1.2;
+        });
+        setTimeout(function(){
+            scene.animationGroups[5].play(false);
+            onDecorClicked(user, "bell_rope", textUI, bars, mats);
+        }, 3500);
     });   
     panel.addControl(bellRopeButton);
     bellRopeButton.isVisible = false;
