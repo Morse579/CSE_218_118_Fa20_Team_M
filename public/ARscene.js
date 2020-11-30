@@ -143,7 +143,7 @@ function initializeScene(user){
                                 panelBottom.position.z = cat.position.z;
                                 var mats = createMats();
                                 var bars = addBars(user, cat.position, mats);
-                                add3DButtonsOnPanel(panel3D, scene, cat);
+                                // add3DButtonsOnPanel(panel3D, scene, cat);
                                 var foodButtons = display3DFoodButtons(panelBottom, user, textUI, scene, cat);
                                 displayActions(foodButtons, scene);
                             });
@@ -171,7 +171,16 @@ function initializeScene(user){
   function getCatColorFile(color){
     var fileToLoad;
     switch(color) {
-        case "yellow":
+        case "siam":
+            fileToLoad = "ChibiCatV2_unity_siam.gltf";
+            break;
+        case "grey":
+            fileToLoad = "ChibiCatV2_unity_grey.gltf";
+            break;
+        case "carey":
+            fileToLoad = "ChibiCatV2_unity_carey.gltf";
+            break;
+        case "orange":
             fileToLoad = "ChibiCatV2_unity_orange.gltf";
             break;
         case "black":
@@ -181,7 +190,7 @@ function initializeScene(user){
             fileToLoad = "ChibiCatV2_unity_white.gltf";
             break;
         default:
-            fileToLoad = "ChibiCatV2_unity_siam.gltf"
+            fileToLoad = "ChibiCatV2_unity_white2.gltf"
     }
     return fileToLoad;
   }
@@ -267,6 +276,30 @@ function initializeScene(user){
         dryFoodButton.isVisible = false;
         wetFoodButton.isVisible = false;
         specialFoodButton.isVisible = false;
+        var yarnMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/toy/yarn/", "yarn.obj", scene, function (mesh) {
+            var yarn = mesh[0];
+            yarn.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
+            yarn.scaling = new BABYLON.Vector3(0.018, 0.018, 0.018);
+            yarn.position.x = cat.position.x - 0.01;
+            yarn.position.y = cat.position.y;
+            yarn.position.z = cat.position.z - 0.13;
+
+            setTimeout(function(){
+                yarn.setEnabled(false);
+            }, 4000);
+        });
+        setTimeout(function(){
+            scene.animationGroups[3].play(false);
+        }, 1500);
+
+        setTimeout(function(){
+            scene.animationGroups[4].play(true);
+        }, 2000);
+
+        setTimeout(function(){
+            scene.animationGroups[4].pause();
+            scene.animationGroups[22].play(false);
+        }, 4500);
     });   
     panel.addControl(dryFoodButton);
     dryFoodButton.isVisible = false;
