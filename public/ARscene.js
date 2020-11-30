@@ -376,7 +376,7 @@ function display3DToyButtons(panel, user, textUI, scene, cat){
             dog.scaling = new BABYLON.Vector3(0.002, 0.002, 0.002);
             dog.position.x = cat.position.x;
             dog.position.y = cat.position.y;
-            dog.position.z = cat.position.z - 0.2;
+            dog.position.z = cat.position.z - 0.18;
 
             setTimeout(function(){
                 dog.setEnabled(false);
@@ -457,6 +457,17 @@ function display3DDecorButtons(panel, user, textUI, scene, cat){
     var catTreeButton = new BABYLON.GUI.MeshButton3D(sphere1, "catTreeButton");
     catTreeButton.onPointerUpObservable.add(function(){
         hideDecorButtons();
+        var catTreeMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/decor/Cat_climbing_tower_obj/", "Cat climbing tower.obj", scene, function (mesh) {
+            var catTree = mesh[0];
+            catTree.rotation = new BABYLON.Vector3(0, Math.PI, 0);
+            catTree.scaling = new BABYLON.Vector3(0.0005, 0.0005, 0.0005);
+            catTree.position.x = cat.position.x + 0.5;
+            catTree.position.y = cat.position.y;
+            catTree.position.z = cat.position.z;
+        });
+        setTimeout(function(){
+            scene.animationGroups[19].play(false);
+        }, 1500);
     });   
     panel.addControl(catTreeButton);
     catTreeButton.isVisible = false;
