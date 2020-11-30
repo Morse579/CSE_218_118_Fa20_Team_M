@@ -27,6 +27,7 @@ const ACTION_OUTCOME = {
 const AGES = ["1","3","15"];
 const APPEARANCES = ["yellow", "black", "white"];
 const BACKGROUNDS = ["1","2","3","4","5"];
+const SPECIALTASKS = ["specTask1", "specTask2"];
 
 const AGE_OUTCOME = {
     "1": [2,3,4,5],
@@ -96,6 +97,108 @@ exports.eat = functions.https.onCall(async (data, context) =>{
     return "eat success";
 });
 
+exports.play = functions.https.onCall(async (data, context) =>{
+    let ref = db.collection("User").doc(data.email).collection("cat").doc(data.catName);
+    switch(data.type) {
+        case "yarn":
+            if (user.cat.yarn === false) {
+                return "play failure: user doesn't own yarn";
+            }
+            await ref.update(
+                {
+                    playYarnCount : admin.firestore.FieldValue.increment(1),
+                    mood: admin.firestore.FieldValue.increment(TOY_MOOD.yarn),
+                    outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.yarn[0]),
+                    outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.yarn[1]),
+                    outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.yarn[2]),
+                    outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.yarn[3])
+                }
+            )
+          break;
+        case "mouse":
+            if (user.cat.mouse === false) {
+                return "play failure: user doesn't own mouse";
+            }
+            await ref.update(
+                {
+                    playMouseCount : admin.firestore.FieldValue.increment(1),
+                    mood: admin.firestore.FieldValue.increment(TOY_MOOD.mouse),
+                    outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.mouse[0]),
+                    outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.mouse[1]),
+                    outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.mouse[2]),
+                    outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.mouse[3])
+                }
+            )
+          break;
+        case "stuffed_dog":
+            if (user.cat.stuffed_dog === false) {
+                return "play failure: user doesn't own stuffed_dog";
+            }
+            await ref.update(
+                {
+                    playDogCount : admin.firestore.FieldValue.increment(1),
+                    mood: admin.firestore.FieldValue.increment(TOY_MOOD.stuffed_dog),
+                    outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.stuffed_dog[0]),
+                    outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.stuffed_dog[1]),
+                    outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.stuffed_dog[2]),
+                    outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.stuffed_dog[3])
+                }
+            )
+          break;
+        case "stuffed_elephant":
+            if (user.cat.stuffed_elephant === false) {
+                return "play failure: user doesn't own stuffed_elephant";
+            }
+            await ref.update(
+                {
+                    playElephantCount : admin.firestore.FieldValue.increment(1),
+                    mood: admin.firestore.FieldValue.increment(TOY_MOOD.stuffed_elephant),
+                    outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.stuffed_elephant[0]),
+                    outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.stuffed_elephant[1]),
+                    outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.stuffed_elephant[2]),
+                    outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.stuffed_elephant[3])
+                }
+            )
+      }
+    return "play success";
+});
+
+exports.placeDecor = functions.https.onCall(async (data, context) =>{
+    let ref = db.collection("User").doc(data.email).collection("cat").doc(data.catName);
+    switch(data.type) {
+        case "bell_rope":
+            if (user.cat.bell_rope === 0) {
+                return "place decor failure: user doesn't have bell_rope";
+            }
+            await ref.update(
+                {
+                    placeRopeCount : admin.firestore.FieldValue.increment(1),
+                    mood: admin.firestore.FieldValue.increment(DECOR_MOOD.bell_rope),
+                    outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.bell_rope[0]),
+                    outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.bell_rope[1]),
+                    outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.bell_rope[2]),
+                    outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.bell_rope[3])
+                }
+            )
+          break;
+        case "cat_tree":
+            if (user.cat.cat_tree === 0) {
+                return "place decor failure: user doesn't have cat_tree";
+            }
+            await ref.update(
+                {
+                    placeTreeCount : admin.firestore.FieldValue.increment(1),
+                    mood: admin.firestore.FieldValue.increment(DECOR_MOOD.cat_tree),
+                    outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.cat_tree[0]),
+                    outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.cat_tree[1]),
+                    outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.cat_tree[2]),
+                    outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.cat_tree[3])
+                }
+            )
+      }
+    return "place decor success";
+});
+
 exports.buyFood = functions.https.onCall(async (data, context) =>{
     let ref = db.collection("User").doc(data.email).collection("cat").doc(data.catName);
     switch(data.type) {
@@ -124,6 +227,66 @@ exports.buyFood = functions.https.onCall(async (data, context) =>{
             )
       }
     return "buy food success";
+});
+
+exports.buyToy = functions.https.onCall(async (data, context) =>{
+    let ref = db.collection("User").doc(data.email).collection("cat").doc(data.catName);
+    switch(data.type) {
+        case "yarn":
+            if (user.cat.yarn === true) {
+                return "buy toy failure: user already owns yarn";
+            }
+            await ref.update({
+                yarn: true,
+                currency: admin.firestore.FieldValue.increment(-TOY_PRICE.yarn)
+            })
+          break;
+        case "mouse":
+            if (user.cat.mouse === true) {
+                return "buy toy failure: user already owns mouse";
+            }
+            await ref.update({
+                mouse: true,
+                currency: admin.firestore.FieldValue.increment(-TOY_PRICE.mouse)
+            })
+          break;
+        case "stuffed_dog":
+            if (user.cat.stuffed_dog === true) {
+                return "buy toy failure: user already owns stuffed_dog";
+            }
+            await ref.update({
+                stuffed_dog: true,
+                currency: admin.firestore.FieldValue.increment(-TOY_PRICE.stuffed_dog)
+            })
+          break;
+        case "stuffed_elephant":
+            if (user.cat.stuffed_elephant === true) {
+                return "buy toy failure: user already owns stuffed_elephant";
+            }
+            await ref.update({
+                stuffed_elephant: true,
+                currency: admin.firestore.FieldValue.increment(-TOY_PRICE.stuffed_elephant)
+            })
+      }
+    return "buy toy success";
+});
+
+exports.buyDecor = functions.https.onCall(async (data, context) =>{
+    let ref = db.collection("User").doc(data.email).collection("cat").doc(data.catName);
+    switch(data.type) {
+        case "bell_rope":
+            await ref.update({
+                bell_rope: admin.firestore.FieldValue.increment(1),
+                currency: admin.firestore.FieldValue.increment(-DECOR_PRICE.bell_rope)
+            })
+          break;
+        case "cat_tree":
+            await ref.update({
+                cat_tree: admin.firestore.FieldValue.increment(1),
+                currency: admin.firestore.FieldValue.increment(-DECOR_PRICE.cat_tree)
+            })
+      }
+    return "buy decor success";
 });
 
 exports.loadUser = functions.https.onCall(async (data, context) =>{
@@ -206,6 +369,12 @@ exports.initCat = functions.https.onCall(async (data, context) =>{
         dryFood: 10,
         wetFood: 0,
         specialFood: 0,
+        yarn: false,
+        mouse: false,
+        stuffed_dog: false,
+        stuffed_elephant: false,
+        bell_rope: 0,
+        cat_tree: 0,
         feedDryCount: 0,
         feedWetCount: 0,
         feedSpecialCount: 0
