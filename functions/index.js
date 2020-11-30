@@ -3,14 +3,11 @@ const HUNGER_DECREASE_PER_HOUR = 1;
 const MOOD_DECREASE_PER_HOUR = 1;
 const LONGEST_UNATTEND_TIME = 24;
 const DAILY_CHECKIN_REWARDS = 5;
-const FOOD_CONSUMPTION = 1;
 const MIN_HUNGER = -20;
 const MIN_MOOD = -20;
 const SPECTASK1_COUNT = 10;
 const SPECTASK2_COUNT = 5;
 
-const HUNGER_INCREASE = 2;
-const FOOD_INCREASE = 1;
 const FOOD_PRICE = {
     dry: 1,
     wet: 2,
@@ -323,7 +320,7 @@ exports.loadUser = functions.https.onCall(async (data, context) =>{
 
     // case 2: 7 days after starting the story, end game
     if(days > 7){
-        //checkSpecialTaskCompletion(user.cat);
+        //checkSpecialTaskCompletion(user.cat, catRef);
         user.cat.status = calculateOutcome(user.cat);
         return JSON.stringify(user);
     }
@@ -433,11 +430,11 @@ function calculateOutcome(cat){
     return 0;
 }
 
-// function checkSpecialTaskCompletion(cat){
+// function checkSpecialTaskCompletion(cat, catRef){
 //     switch(cat.specialTask){
 //         case "specTask1":
 //             if (cat.feedSpecialCount > SPECTASK1_COUNT) {
-//                 await ref.update(
+//                 await catRef.update(
 //                     {
 //                         specialTaskCompleted: true,
 //                         outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[0]),
@@ -451,7 +448,7 @@ function calculateOutcome(cat){
 //         case "specTask2":
 //             let totalPlayCount = cat.playDogCount + cat.playElephantCount + cat.playMouseCount + cat.playYarnCount;
 //             if (totalPlayCount > SPECTASK2_COUNT) {
-//                 await ref.update(
+//                 await catRef.update(
 //                     {
 //                         specialTaskCompleted: true,
 //                         outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[0]),
@@ -462,17 +459,6 @@ function calculateOutcome(cat){
 //                 )
 //             }
 //           break;
-//         case "specTask3":
-//             // TODO vet???
-//             await ref.update(
-//                 {
-//                     specialTaskCompleted: true,
-//                     outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask3[0]),
-//                     outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask3[1]),
-//                     outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask3[2]),
-//                     outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask3[3])
-//                 }
-//             )
 //         }
 //     return 0;
 // }

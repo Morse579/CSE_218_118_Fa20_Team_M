@@ -66,6 +66,7 @@ function onStartButtonClick(){
     document.getElementById("cancelGameplay").addEventListener('click', function(){dialog.close()});
 }
 
+
 function initCat(){
     console.log("init cat...");
     let catName = document.getElementById("catName").value;
@@ -77,11 +78,32 @@ function initCat(){
         userInfo.cat = JSON.parse(res.data);
         userInfo.hasCat = true;
         console.log(userInfo.cat);
-        showARScene();
+        displayCatProfile(userInfo.cat);
     });
 }
 
-//TODO
+const spTasks = {
+    "specTask1": "I’m really craving some sardine. Could I have five of that?",
+    "specTask2": "I’m feeling so lonely. Can you play with me using some toy for 10 times?"
+}
+
+const backgrounds = {
+    "1": "stray cat",
+    "2": "spent their entire life at the pound", 
+    "3": "ran away from their home",
+    "4": "recently abandoned by owner",
+    "5": "traveller cat"
+}
+
+function displayCatProfile(cat){
+    var msg = spTasks[cat.specialTask];
+    var background = backgrounds[cat.background];
+    document.querySelector("#catDialog div").innerHTML = `<p>${cat.name}'s age: ${cat.age}</p>
+    <p>${cat.name}'s appearance: ${cat.appearance}</p> <p>${cat.name}'s background: ${background}</p>
+    <p>${cat.name}'s wish: ${msg}</p>`;
+    document.getElementById("catDialog").showModal();
+    document.getElementById("enterBtn").addEventListener("click", showARScene);
+}
 function showARScene(){
     console.log("showing AR scene");
     console.log(userInfo);
@@ -109,7 +131,6 @@ function endStory(){
         endDialog.close();
         location.reload();
     });
-
 }
 
 document.getElementById("loadCat").addEventListener('click', loadCatInfo);
