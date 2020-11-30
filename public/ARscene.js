@@ -241,7 +241,7 @@ function initializeScene(user){
         specialFoodButton.isVisible = false;
         var wetFoodMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (mesh, particleSystems, skeletons) {
             var wetFood = mesh[0];
-            wetFood.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+            wetFood.rotation = new BABYLON.Vector3(0, Math.PI, 0);
             wetFood.scaling = new BABYLON.Vector3(0.035, 0.035, 0.035);
             wetFood.position.x = cat.position.x;
             wetFood.position.y = cat.position.y;
@@ -295,10 +295,36 @@ function initializeScene(user){
 }
 
 function display3DToyButtons(panel, user, textUI, scene, cat){
+    panel.position.z = cat.position.z - 0.12;
+
     var sphere1 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.05});
     var mouseButton = new BABYLON.GUI.MeshButton3D(sphere1, "mouseButton");
     mouseButton.onPointerUpObservable.add(function(){
         hideToyButtons();
+        var mouseMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/toy/mouse/", "scene.gltf", scene, function (mesh) {
+            var mouse = mesh[0];
+            mouse.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
+            mouse.scaling = new BABYLON.Vector3(0.007, 0.007, 0.007);
+            mouse.position.x = cat.position.x;
+            mouse.position.y = cat.position.y;
+            mouse.position.z = cat.position.z - 0.13;
+
+            setTimeout(function(){
+                mouse.setEnabled(false);
+            }, 3500);
+        });
+        setTimeout(function(){
+            scene.animationGroups[3].play(false);
+        }, 1500);
+
+        setTimeout(function(){
+            scene.animationGroups[4].play(true);
+        }, 2000);
+
+        setTimeout(function(){
+            scene.animationGroups[4].pause();
+            scene.animationGroups[22].play(false);
+        }, 4500);
     });   
     panel.addControl(mouseButton);
     mouseButton.isVisible = false;
@@ -311,7 +337,7 @@ function display3DToyButtons(panel, user, textUI, scene, cat){
             var yarn = mesh[0];
             yarn.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
             yarn.scaling = new BABYLON.Vector3(0.018, 0.018, 0.018);
-            yarn.position.x = cat.position.x - 0.005;
+            yarn.position.x = cat.position.x + 0.03;
             yarn.position.y = cat.position.y;
             yarn.position.z = cat.position.z - 0.13;
 
@@ -339,6 +365,30 @@ function display3DToyButtons(panel, user, textUI, scene, cat){
     var dogButton = new BABYLON.GUI.MeshButton3D(sphere3, "dogButton");
     dogButton.onPointerUpObservable.add(function(){
         hideToyButtons();
+        var dogMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/toy/stuffed2/", "scene.gltf", scene, function (mesh) {
+            var dog = mesh[0];
+            dog.rotation = new BABYLON.Vector3(0, Math.PI, 0);
+            dog.scaling = new BABYLON.Vector3(0.002, 0.002, 0.002);
+            dog.position.x = cat.position.x;
+            dog.position.y = cat.position.y;
+            dog.position.z = cat.position.z - 0.2;
+
+            setTimeout(function(){
+                dog.setEnabled(false);
+            }, 5500);
+        });
+        setTimeout(function(){
+            scene.animationGroups[3].play(false);
+        }, 4500);
+
+        setTimeout(function(){
+            scene.animationGroups[4].play(true);
+        }, 5000);
+
+        setTimeout(function(){
+            scene.animationGroups[4].pause();
+            scene.animationGroups[22].play(false);
+        }, 7500);
     });   
     panel.addControl(dogButton);
     dogButton.isVisible = false;
@@ -347,6 +397,30 @@ function display3DToyButtons(panel, user, textUI, scene, cat){
     var elephantButton = new BABYLON.GUI.MeshButton3D(sphere4, "elephantButton");
     elephantButton.onPointerUpObservable.add(function(){
         hideToyButtons();
+        var elephantMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/toy/stuffed1/", "scene.gltf", scene, function (mesh) {
+            var elephant = mesh[0];
+            elephant.rotation = new BABYLON.Vector3(0, Math.PI, 0);
+            elephant.scaling = new BABYLON.Vector3(0.0005, 0.0005, 0.0005);
+            elephant.position.x = cat.position.x;
+            elephant.position.y = cat.position.y;
+            elephant.position.z = cat.position.z - 0.1;
+
+            setTimeout(function(){
+                elephant.setEnabled(false);
+            }, 3500);
+        });
+        setTimeout(function(){
+            scene.animationGroups[3].play(false);
+        }, 1500);
+
+        setTimeout(function(){
+            scene.animationGroups[4].play(true);
+        }, 2000);
+
+        setTimeout(function(){
+            scene.animationGroups[4].pause();
+            scene.animationGroups[22].play(false);
+        }, 4500);
     });   
     panel.addControl(elephantButton);
     elephantButton.isVisible = false;
@@ -372,6 +446,8 @@ function display3DToyButtons(panel, user, textUI, scene, cat){
 }
 
 function display3DDecorButtons(panel, user, textUI, scene, cat){
+    panel.position.z = cat.position.z - 0.12;
+
     var sphere1 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.05});
     var catTreeButton = new BABYLON.GUI.MeshButton3D(sphere1, "catTreeButton");
     catTreeButton.onPointerUpObservable.add(function(){
