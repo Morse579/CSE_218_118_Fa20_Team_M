@@ -117,8 +117,8 @@ function initializeScene(user){
                                 var bars = addBars(user, cat.position, mats);
                                 //add3DButtonsOnPanel(panel3D, scene, cat);
                                 var foodButtons = display3DFoodButtons(panelFood, user, textUI, scene, cat, bars, mats);
-                                var toyButtons = display3DToyButtons(panelToys, user, textUI, scene, cat);
-                                var decorButtons = display3DDecorButtons(panelDecor, user, textUI, scene, cat);
+                                var toyButtons = display3DToyButtons(panelToys, user, textUI, scene, cat, bars, mats);
+                                var decorButtons = display3DDecorButtons(panelDecor, user, textUI, scene, cat, bars, mats);
 
                                 displayActions(foodButtons, toyButtons, decorButtons, scene, mats, user);
                             });
@@ -299,7 +299,7 @@ function initializeScene(user){
     return foodButtons;
 }
 
-function display3DToyButtons(panel, user, textUI, scene, cat){
+function display3DToyButtons(panel, user, textUI, scene, cat, bars, mats){
     panel.position.z = cat.position.z - 0.12;
 
     var sphere1 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.05});
@@ -316,6 +316,7 @@ function display3DToyButtons(panel, user, textUI, scene, cat){
 
             setTimeout(function(){
                 mouse.setEnabled(false);
+                onPlayClicked(user, "mouse", textUI, bars, mats);
             }, 3500);
         });
         setTimeout(function(){
@@ -348,6 +349,7 @@ function display3DToyButtons(panel, user, textUI, scene, cat){
 
             setTimeout(function(){
                 yarn.setEnabled(false);
+                onPlayClicked(user, "yarn", textUI, bars, mats);
             }, 3500);
         });
         setTimeout(function(){
@@ -380,6 +382,7 @@ function display3DToyButtons(panel, user, textUI, scene, cat){
 
             setTimeout(function(){
                 dog.setEnabled(false);
+                onPlayClicked(user, "stuffed_dog", textUI, bars, mats);
             }, 5500);
         });
         setTimeout(function(){
@@ -412,6 +415,7 @@ function display3DToyButtons(panel, user, textUI, scene, cat){
 
             setTimeout(function(){
                 elephant.setEnabled(false);
+                onPlayClicked(user, "stuffed_elephant", textUI, bars, mats);
             }, 3500);
         });
         setTimeout(function(){
@@ -450,7 +454,7 @@ function display3DToyButtons(panel, user, textUI, scene, cat){
     return toyButtons;
 }
 
-function display3DDecorButtons(panel, user, textUI, scene, cat){
+function display3DDecorButtons(panel, user, textUI, scene, cat, bars, mats){
     panel.position.z = cat.position.z - 0.12;
 
     var sphere1 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.05});
@@ -764,7 +768,7 @@ const FOOD_HUNGER = {
     special: 5
 };
 const TOY_MOOD = {
-    stuffed_dogyarn: 3,
+    yarn: 3,
     mouse: 5,
     stuffed_dog: 7,
     stuffed_elephant: 11

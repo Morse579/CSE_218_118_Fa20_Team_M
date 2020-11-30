@@ -323,7 +323,7 @@ exports.loadUser = functions.https.onCall(async (data, context) =>{
 
     // case 2: 7 days after starting the story, end game
     if(days > 7){
-        checkSpecialTaskCompletion(user.cat);
+        //checkSpecialTaskCompletion(user.cat);
         user.cat.status = calculateOutcome(user.cat);
         return JSON.stringify(user);
     }
@@ -433,49 +433,49 @@ function calculateOutcome(cat){
     return 0;
 }
 
-function checkSpecialTaskCompletion(cat){
-    switch(cat.specialTask){
-        case "specTask1":
-            if (cat.feedSpecialCount > SPECTASK1_COUNT) {
-                await ref.update(
-                    {
-                        specialTaskCompleted: true,
-                        outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[0]),
-                        outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[1]),
-                        outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[2]),
-                        outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[3])
-                    }
-                )
-            }
-          break;
-        case "specTask2":
-            let totalPlayCount = cat.playDogCount + cat.playElephantCount + cat.playMouseCount + cat.playYarnCount;
-            if (totalPlayCount > SPECTASK2_COUNT) {
-                await ref.update(
-                    {
-                        specialTaskCompleted: true,
-                        outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[0]),
-                        outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[1]),
-                        outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[2]),
-                        outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[3])
-                    }
-                )
-            }
-          break;
-        case "specTask3":
-            // TODO vet???
-            await ref.update(
-                {
-                    specialTaskCompleted: true,
-                    outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask3[0]),
-                    outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask3[1]),
-                    outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask3[2]),
-                    outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask3[3])
-                }
-            )
-        }
-    return 0;
-}
+// function checkSpecialTaskCompletion(cat){
+//     switch(cat.specialTask){
+//         case "specTask1":
+//             if (cat.feedSpecialCount > SPECTASK1_COUNT) {
+//                 await ref.update(
+//                     {
+//                         specialTaskCompleted: true,
+//                         outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[0]),
+//                         outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[1]),
+//                         outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[2]),
+//                         outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[3])
+//                     }
+//                 )
+//             }
+//           break;
+//         case "specTask2":
+//             let totalPlayCount = cat.playDogCount + cat.playElephantCount + cat.playMouseCount + cat.playYarnCount;
+//             if (totalPlayCount > SPECTASK2_COUNT) {
+//                 await ref.update(
+//                     {
+//                         specialTaskCompleted: true,
+//                         outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[0]),
+//                         outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[1]),
+//                         outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[2]),
+//                         outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[3])
+//                     }
+//                 )
+//             }
+//           break;
+//         case "specTask3":
+//             // TODO vet???
+//             await ref.update(
+//                 {
+//                     specialTaskCompleted: true,
+//                     outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask3[0]),
+//                     outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask3[1]),
+//                     outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask3[2]),
+//                     outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask3[3])
+//                 }
+//             )
+//         }
+//     return 0;
+// }
 
 //TODO: hunger and mood should be updated according to time
 function updateCatData(user, data){
