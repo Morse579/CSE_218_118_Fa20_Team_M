@@ -6,8 +6,6 @@ const DAILY_CHECKIN_REWARDS = 5;
 const FOOD_CONSUMPTION = 1;
 const MIN_HUNGER = -20;
 const MIN_MOOD = -20;
-const SPECTASK1_COUNT = 10;
-const SPECTASK2_COUNT = 5;
 
 const HUNGER_INCREASE = 2;
 const FOOD_INCREASE = 1;
@@ -21,72 +19,31 @@ const FOOD_HUNGER = {
     wet: 2,
     special: 5
 };
-const TOY_PRICE = {
-    yarn: 3,
-    mouse: 5,
-    stuffed_dog: 7,
-    stuffed_elephant: 11
-};
-const TOY_MOOD = {
-    yarn: 3,
-    mouse: 5,
-    stuffed_dog: 7,
-    stuffed_elephant: 11
-};
-const DECOR_PRICE = {
-    bell_rope: 17,
-    cat_tree: 19
-};
-const DECOR_MOOD = {
-    bell_rope: 17,
-    cat_tree: 19
-};
 const ACTION_OUTCOME = {
-
-    // eat
     dryFood: [0,0,0,0],
-    wetFood: [7,5,3,0], 
-    specialFood: [13,11,5,2],
-
-    // toy
-    yarn: [3,3,1,3],
-    mouse: [5,5,3,5],
-    stuffed_dog: [7,7,5,7],
-    stuffed_elephant: [11,11,7,11],
-
-    // decor
-    bell_rope: [17,17,13,17],
-    cat_tree: [19,19,17,19],
-
-    // special tasks TODO
-    specTask1: [23,23,-23,-23],
-    specTask2: [23,23,-23,-23],
-    specTask3: [23,23,-23,-23]
+    wetFood: [10,5,3,4],
+    specialFood: [20,40, 6,8]
 };
-const AGES = ["0.5","3","15"];
-const APPEARANCES = ["siam", "grey","white", "orange", "carey", "black"];
+const AGES = ["1","3","15"];
+const APPEARANCES = ["yellow", "black", "white"];
 const BACKGROUNDS = ["1","2","3","4","5"];
-const SPECIALTASKS = ["specTask1", "specTask2", "specTask3"];
 
 const AGE_OUTCOME = {
-    "0.5": [5,3,1,0],
-    "3": [3,5,7,1],
-    "15": [1,7,1,13]
+    "1": [2,3,4,5],
+    "3": [6,3,7,2],
+    "15": [6,2,6,3]
 }
 const APPEARANCE_OUTCOME = {
-    "carey": [3,11,9,0],
-    "black": [1,13,13,0],
-    "grey": [13,1,3,0],
-    "orange": [7,7,5,0],
-    "white": [11,3,3,0],
-    "siam": [13,1,3,0]
+    "yellow": [2,3,4,5],
+    "black": [6,3,7,2],
+    "white": [6,2,6,3]
 }
 const BACKGROUND_OUTCOME = {
-    "1": [5,7,5,13],
-    "2": [13,7,3,2],
-    "3": [5,7,11,2],
-    "4": [5,7,5,2],
-    "5": [5,2,13,5]
+    "1": [2,3,4,5],
+    "2": [6,3,7,2],
+    "3": [6,2,6,3],
+    "4": [6,8,0,0],
+    "5": [7,2,9,9]
 }
 const cors = require('cors')({ origin: true });
 const admin = require('firebase-admin');
@@ -139,96 +96,6 @@ exports.eat = functions.https.onCall(async (data, context) =>{
     return "eat success";
 });
 
-exports.play = functions.https.onCall(async (data, context) =>{
-    let ref = db.collection("User").doc(data.email).collection("cat").doc(data.catName);
-    switch(data.type) {
-        case "yarn":
-            await ref.update(
-                {
-                    yarn: admin.firestore.FieldValue.increment(-1),
-                    playYarnCount : admin.firestore.FieldValue.increment(1),
-                    mood: admin.firestore.FieldValue.increment(TOY_MOOD.yarn),
-                    outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.yarn[0]),
-                    outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.yarn[1]),
-                    outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.yarn[2]),
-                    outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.yarn[3])
-                }
-            )
-          break;
-        case "mouse":
-            await ref.update(
-                {
-                    mouse: admin.firestore.FieldValue.increment(-1),
-                    playMouseCount : admin.firestore.FieldValue.increment(1),
-                    mood: admin.firestore.FieldValue.increment(TOY_MOOD.mouse),
-                    outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.mouse[0]),
-                    outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.mouse[1]),
-                    outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.mouse[2]),
-                    outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.mouse[3])
-                }
-            )
-          break;
-        case "stuffed_dog":
-            await ref.update(
-                {
-                    stuffed_dog: admin.firestore.FieldValue.increment(-1),
-                    playDogCount : admin.firestore.FieldValue.increment(1),
-                    mood: admin.firestore.FieldValue.increment(TOY_MOOD.stuffed_dog),
-                    outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.stuffed_dog[0]),
-                    outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.stuffed_dog[1]),
-                    outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.stuffed_dog[2]),
-                    outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.stuffed_dog[3])
-                }
-            )
-          break;
-        case "stuffed_elephant":
-            await ref.update(
-                {
-                    stuffed_elephant: admin.firestore.FieldValue.increment(-1),
-                    playElephantCount : admin.firestore.FieldValue.increment(1),
-                    mood: admin.firestore.FieldValue.increment(TOY_MOOD.stuffed_elephant),
-                    outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.stuffed_elephant[0]),
-                    outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.stuffed_elephant[1]),
-                    outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.stuffed_elephant[2]),
-                    outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.stuffed_elephant[3])
-                }
-            )
-      }
-    return "play success";
-});
-
-exports.placeDecor = functions.https.onCall(async (data, context) =>{
-    let ref = db.collection("User").doc(data.email).collection("cat").doc(data.catName);
-    switch(data.type) {
-        case "bell_rope":
-            await ref.update(
-                {
-                    bell_rope: admin.firestore.FieldValue.increment(-1),
-                    placeRopeCount : admin.firestore.FieldValue.increment(1),
-                    mood: admin.firestore.FieldValue.increment(DECOR_MOOD.bell_rope),
-                    outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.bell_rope[0]),
-                    outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.bell_rope[1]),
-                    outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.bell_rope[2]),
-                    outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.bell_rope[3])
-                }
-            )
-          break;
-        case "cat_tree":
-            await ref.update(
-                {
-                    cat_tree: admin.firestore.FieldValue.increment(-1),
-                    placeTreeCount : admin.firestore.FieldValue.increment(1),
-                    mood: admin.firestore.FieldValue.increment(DECOR_MOOD.cat_tree),
-                    outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.cat_tree[0]),
-                    outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.cat_tree[1]),
-                    outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.cat_tree[2]),
-                    outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.cat_tree[3])
-                }
-            )
-      }
-    return "place decor success";
-});
-
 exports.buyFood = functions.https.onCall(async (data, context) =>{
     let ref = db.collection("User").doc(data.email).collection("cat").doc(data.catName);
     switch(data.type) {
@@ -259,54 +126,6 @@ exports.buyFood = functions.https.onCall(async (data, context) =>{
     return "buy food success";
 });
 
-exports.buyToy = functions.https.onCall(async (data, context) =>{
-    let ref = db.collection("User").doc(data.email).collection("cat").doc(data.catName);
-    switch(data.type) {
-        case "yarn":
-            await ref.update({
-                yarn: admin.firestore.FieldValue.increment(1),
-                currency: admin.firestore.FieldValue.increment(-TOY_PRICE.yarn)
-            })
-          break;
-        case "mouse":
-            await ref.update({
-                mouse: admin.firestore.FieldValue.increment(1),
-                currency: admin.firestore.FieldValue.increment(-TOY_PRICE.mouse)
-            })
-          break;
-        case "stuffed_dog":
-            await ref.update({
-                stuffed_dog: admin.firestore.FieldValue.increment(1),
-                currency: admin.firestore.FieldValue.increment(-TOY_PRICE.stuffed_dog)
-            })
-          break;
-        case "stuffed_elephant":
-            await ref.update({
-                stuffed_elephant: admin.firestore.FieldValue.increment(1),
-                currency: admin.firestore.FieldValue.increment(-TOY_PRICE.stuffed_elephant)
-            })
-      }
-    return "buy toy success";
-});
-
-exports.buyDecor = functions.https.onCall(async (data, context) =>{
-    let ref = db.collection("User").doc(data.email).collection("cat").doc(data.catName);
-    switch(data.type) {
-        case "bell_rope":
-            await ref.update({
-                bell_rope: admin.firestore.FieldValue.increment(1),
-                currency: admin.firestore.FieldValue.increment(-DECOR_PRICE.bell_rope)
-            })
-          break;
-        case "cat_tree":
-            await ref.update({
-                cat_tree: admin.firestore.FieldValue.increment(1),
-                currency: admin.firestore.FieldValue.increment(-DECOR_PRICE.cat_tree)
-            })
-      }
-    return "buy decor success";
-});
-
 exports.loadUser = functions.https.onCall(async (data, context) =>{
     let user = {};
 
@@ -331,7 +150,6 @@ exports.loadUser = functions.https.onCall(async (data, context) =>{
 
     // case 2: 7 days after starting the story, end game
     if(days > 7){
-        checkSpecialTaskCompletion(user.cat);
         user.cat.status = calculateOutcome(user.cat);
         return JSON.stringify(user);
     }
@@ -369,7 +187,6 @@ exports.initCat = functions.https.onCall(async (data, context) =>{
     let randomAge = getRandomItem(AGES);
     let randomApperance = getRandomItem(APPEARANCES);
     let randomBackground = getRandomItem(BACKGROUNDS);
-    let randomSpecTask = getRandomItem(SPECIALTASKS);
 
     let cat = {
         name: data.name,
@@ -377,7 +194,6 @@ exports.initCat = functions.https.onCall(async (data, context) =>{
         age: randomAge,
         appearance: randomApperance,
         background: randomBackground,
-        specialTask: randomSpecTask,
         currency: data.currency,
         startTime: data.time,
         lastLogin: data.time,
@@ -390,22 +206,9 @@ exports.initCat = functions.https.onCall(async (data, context) =>{
         dryFood: 10,
         wetFood: 0,
         specialFood: 0,
-        yarn: 0,
-        mouse: 0,
-        stuffed_dog: 0,
-        stuffed_elephant: 0,
-        bell_rope: 0,
-        cat_tree: 0,
         feedDryCount: 0,
         feedWetCount: 0,
-        feedSpecialCount: 0,
-        playYarnCount: 0,
-        playMouseCount: 0,
-        playDogCount: 0,
-        playElephantCount: 0,
-        placeRopeCount: 0,
-        placeTreeCount: 0,
-        specialTaskCompleted: false
+        feedSpecialCount: 0
     }
     const res = await db.collection("User").doc(data.email).collection("cat").doc(data.name).set(cat);
     return JSON.stringify(cat);
@@ -440,50 +243,6 @@ function calculateOutcome(cat){
         case cat.outcome4:
             return 4;
     }
-    return 0;
-}
-
-function checkSpecialTaskCompletion(cat){
-    switch(cat.specialTask){
-        case "specTask1":
-            if (cat.feedSpecialCount > SPECTASK1_COUNT) {
-                await ref.update(
-                    {
-                        specialTaskCompleted: true,
-                        outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[0]),
-                        outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[1]),
-                        outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[2]),
-                        outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[3])
-                    }
-                )
-            }
-          break;
-        case "specTask2":
-            let totalPlayCount = cat.playDogCount + cat.playElephantCount + cat.playMouseCount + cat.playYarnCount;
-            if (totalPlayCount > SPECTASK2_COUNT) {
-                await ref.update(
-                    {
-                        specialTaskCompleted: true,
-                        outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[0]),
-                        outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[1]),
-                        outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[2]),
-                        outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[3])
-                    }
-                )
-            }
-          break;
-        case "specTask3":
-            // TODO vet???
-            await ref.update(
-                {
-                    specialTaskCompleted: true,
-                    outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask3[0]),
-                    outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask3[1]),
-                    outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask3[2]),
-                    outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask3[3])
-                }
-            )
-        }
     return 0;
 }
 
