@@ -5,8 +5,8 @@ const LONGEST_UNATTEND_TIME = 24;
 const DAILY_CHECKIN_REWARDS = 5;
 const MIN_HUNGER = -20;
 const MIN_MOOD = -20;
-const SPECTASK1_COUNT = 10;
-const SPECTASK2_COUNT = 5;
+const SPECTASK1_COUNT = 5;
+const SPECTASK2_COUNT = 10;
 
 const FOOD_PRICE = {
     dry: 1,
@@ -320,7 +320,35 @@ exports.loadUser = functions.https.onCall(async (data, context) =>{
 
     // case 2: 7 days after starting the story, end game
     if(days > 7){
-        //checkSpecialTaskCompletion(user.cat, catRef);
+        let totalPlayCount = user.cat.playDogCount + user.cat.playElephantCount + user.cat.playMouseCount + user.cat.playYarnCount;
+        switch(user.cat.specialTask){
+            case "specTask1":
+                if (user.cat.feedSpecialCount >= SPECTASK1_COUNT) {
+                    await catRef.update(
+                        {
+                            specialTaskCompleted: true,
+                            outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[0]),
+                            outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[1]),
+                            outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[2]),
+                            outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[3])
+                        }
+                    )
+                }
+                break;
+            case "specTask2":
+                if (totalPlayCount >= SPECTASK2_COUNT) {
+                    await catRef.update(
+                        {
+                            specialTaskCompleted: true,
+                            outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[0]),
+                            outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[1]),
+                            outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[2]),
+                            outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[3])
+                        }
+                    )
+                }
+                break;
+        }
         user.cat.status = calculateOutcome(user.cat);
         return JSON.stringify(user);
     }
@@ -429,39 +457,6 @@ function calculateOutcome(cat){
     }
     return 0;
 }
-
-// function checkSpecialTaskCompletion(cat, catRef){
-//     switch(cat.specialTask){
-//         case "specTask1":
-//             if (cat.feedSpecialCount > SPECTASK1_COUNT) {
-//                 await catRef.update(
-//                     {
-//                         specialTaskCompleted: true,
-//                         outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[0]),
-//                         outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[1]),
-//                         outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[2]),
-//                         outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[3])
-//                     }
-//                 )
-//             }
-//           break;
-//         case "specTask2":
-//             let totalPlayCount = cat.playDogCount + cat.playElephantCount + cat.playMouseCount + cat.playYarnCount;
-//             if (totalPlayCount > SPECTASK2_COUNT) {
-//                 await catRef.update(
-//                     {
-//                         specialTaskCompleted: true,
-//                         outcome1: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[0]),
-//                         outcome2: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[1]),
-//                         outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[2]),
-//                         outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[3])
-//                     }
-//                 )
-//             }
-//           break;
-//         }
-//     return 0;
-// }
 
 //TODO: hunger and mood should be updated according to time
 function updateCatData(user, data){

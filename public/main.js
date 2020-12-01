@@ -122,6 +122,9 @@ function endStory(){
     });
     const endDialog = document.getElementById("endDialog");
     endDialog.showModal();
+    if(userInfo.cat.specialTaskCompleted){
+        document.getElementById("spTask").innerHTML = `${userInfo.cat.name}'s message: Thank you for realizing my dream!`;
+    }
     document.getElementById("status").innerHTML = `<p>Thank you for taking care of ${userInfo.cat.name}!</p>
     <p>End story ${userInfo.cat.status}: ${userInfo.cat.name} goes back to the shelter and is adopted by a new host later.</p>`;
     document.getElementById("stats").innerHTML = `In the 7 days, <br> You fed ${userInfo.cat.name} N times, <br>
