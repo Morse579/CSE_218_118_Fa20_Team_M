@@ -332,7 +332,12 @@ exports.loadUser = functions.https.onCall(async (data, context) =>{
                             outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[2]),
                             outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask1[3])
                         }
-                    )
+                    );
+                    user.cat.outcome1 += ACTION_OUTCOME.specTask1[0];
+                    user.cat.outcome2 += ACTION_OUTCOME.specTask1[1];
+                    user.cat.outcome3 += ACTION_OUTCOME.specTask1[2];
+                    user.cat.outcome4 += ACTION_OUTCOME.specTask1[3];
+                    user.specialTaskCompleted = true;
                 }
                 break;
             case "specTask2":
@@ -345,7 +350,12 @@ exports.loadUser = functions.https.onCall(async (data, context) =>{
                             outcome3: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[2]),
                             outcome4: admin.firestore.FieldValue.increment(ACTION_OUTCOME.specTask2[3])
                         }
-                    )
+                    );
+                    user.cat.outcome1 += ACTION_OUTCOME.specTask2[0];
+                    user.cat.outcome2 += ACTION_OUTCOME.specTask2[1];
+                    user.cat.outcome3 += ACTION_OUTCOME.specTask2[2];
+                    user.cat.outcome4 += ACTION_OUTCOME.specTask2[3];
+                    user.specialTaskCompleted = true;
                 }
                 break;
         }
