@@ -36,12 +36,12 @@ function initialize(user){
         document.getElementById("history").hidden = false;
         if(userInfo.hasCat){
             if(userInfo.cat.status === 0){
-                document.getElementById("continue").hidden = false;
+                document.getElementById("continue").style.hidden = false;
             }else{
-                document.getElementById("end").hidden = false;
+                document.getElementById("end").style.hidden = false;
             }
         }else{
-            document.getElementById("start").hidden = false;
+            document.getElementById("start").style.hidden = false;
         }
     });
 }
