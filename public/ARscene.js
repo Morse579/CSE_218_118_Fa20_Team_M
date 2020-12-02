@@ -18,7 +18,7 @@ function initializeScene(user){
         light.intensity = 0.7;
 
         // BGM and sound effect
-        const music = new BABYLON.Sound("bgm", "./assets/sounds/bensound-ukulele.mp3", scene, null, { loop: true, autoplay: false });
+        const music = new BABYLON.Sound("bgm", "./assets/sounds/bensound-ukulele.mp3", scene, null, { loop: true, autoplay: true });
         const meow = new BABYLON.Sound("meow", "./assets/sounds/cat-meow.mp3", scene);
 
         const xr = await scene.createDefaultXRExperienceAsync({
@@ -55,8 +55,7 @@ function initializeScene(user){
         var catFile = getCatColorFile(user.cat.appearance);
 
         // Display 2D GUI: food, currency, shop and exit icon
-        var textUI = {};
-        //displayProperties(user);
+        var textUI = displayProperties(user);
         displayTopUI(user, textUI);
 
         var mats = createMats();
@@ -567,7 +566,7 @@ function display3DDecorButtons(panel, user, textUI, scene, cat, bars, mats){
     grid.addRowDefinition(1/3);
     grid.addRowDefinition(1/3);
 
-    var dryFoodIcon = new BABYLON.GUI.Image("dry", "assets/icon/wet_food.png");
+    var dryFoodIcon = new BABYLON.GUI.Image("dry", "assets/icon/dry_food.png");
     dryFoodIcon.widthInPixels = size;
     dryFoodIcon.heightInPixels = size;
     grid.addControl(dryFoodIcon, 0, 0);
