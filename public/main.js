@@ -35,13 +35,18 @@ function initialize(user){
         userInfo.email = user.email;
         document.getElementById("history").hidden = false;
         if(userInfo.hasCat){
+            document.getElementById("start").style.display = "none";
             if(userInfo.cat.status === 0){
-                document.getElementById("continue").style.display = "none";
-            }else{
+                document.getElementById("continue").style.display = "block";
                 document.getElementById("end").style.display = "none";
+            }else{
+                document.getElementById("continue").style.display = "none";
+                document.getElementById("end").style.display = "block";
             }
         }else{
-            document.getElementById("start").style.hidden = "none";
+            document.getElementById("start").style.display = "block";
+            document.getElementById("continue").style.display = "none";
+            document.getElementById("end").style.display = "none";
         }
     });
 }
