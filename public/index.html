@@ -190,9 +190,10 @@
         </div>
 
         <!-- The Modal -->
-        <div id="StartGameModal" class="modal">
+	<!--  <div id="StartGameModal" class="modal"> -->
 
           <!-- Modal content -->
+	  <!--
             <div class="modal-content">
                 <div class="modal-header">
                     <span class="close_startgame">&times;</span>
@@ -204,11 +205,50 @@
                     </div> 
                     <button id="createBtn">Create</button>
                     <button id="cancelBtn">Cancel</button>
-                </div>
+		</div> -->
         <!--    <div class="modal-footer">
               <h3>Modal Footer</h3>
-            </div> -->
+            </div> 
+	    </div> -->
+        <dialog id="initCatDialog">
+            <div class="form"> 
+                <label>Name your cat</label><br>
+                <input id="catName" type="text" minlength="1" maxlength="20"><br>
+            </div> 
+            <button id="createBtn">Create</button>
+            <button id="cancelBtn">Cancel</button>
+        </dialog>
+        <dialog id="gameplayDialog">
+            <div>
+                <h3>Background</h3>
+                <p>Players are a caretaker in the Triton Cat Shelter. Players will 
+                    be assigned to a cat for a short amount of time before they get 
+                    adopted by their permanent owner.</p>
+                <h3>Gameplay</h3>
+                <p>Players should take care of the cat for 7 days. During the time, players
+                    should feed, pet, and decorate the living space for the cat to keep the cat
+                    happy and satisfied. After 7 days, the story will have an end based on how
+                    well players take care of the cat.</p>
             </div>
+            <button id="nextBtn">Next</button>
+            <button id="cancelGameplay">Cancel</button>
+        </dialog>
+        <dialog id="endDialog">
+            <div>
+                <h3>End of the story</h3>
+                <p id="spTask"></p>
+                <div id="status"></div>
+                <p id="stats"></p>
+            </div>
+            <button id="cancelEnd">OK</button>
+        </dialog>
+
+        <dialog id="catDialog">
+            <div>
+
+            </div>
+            <button id="enterBtn">Enter AR Scene</button>
+        </dialog>
 
         </div>
 
