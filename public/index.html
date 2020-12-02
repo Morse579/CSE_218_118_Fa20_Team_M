@@ -31,7 +31,8 @@
 
         .btn:hover {background: #90DAF7;}
 
-        .start {background-color: green;}
+        .start {background-color: #93EEA1;}
+        .continue {background-color: green;}
         .info {background-color: dodgerblue;}
         .history {background-color: orange;}
         .logout {background-color: black;}
@@ -46,8 +47,13 @@
 
         .aligncenter {
                 text-align: center;
+                max-width: screen.width;
         }
 
+	.form {
+                max-width: screen.width;
+                width: auto;
+	}
         .modal {
                 display: none; /* Hidden by default */
                 position: fixed; /* Stay in place */
@@ -55,11 +61,13 @@
                 padding-top: 100px; /* Location of the box */
                 left: 0;
                 top: 0;
-                width: 100%; /* Full width */
+                width: auto; /* Full width */
                 height: 100%; /* Full height */
-                overflow: auto; /* Enable scroll if needed */
+                max-width: screen.width;
+                overflow: hidden; /* Enable scroll if needed */
                 background-color: rgb(0,0,0); /* Fallback color */
                 background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+		margin: auto;
         }
 
         .modal-content {
@@ -69,6 +77,7 @@
                 padding: 0;
                 border: 1px solid #888;
                 width: 80%;
+                max-width: screen.width * 0.8;
                 box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
                 -webkit-animation-name: animatetop;
                 -webkit-animation-duration: 0.4s;
@@ -136,14 +145,15 @@
             <h1 style="text-align:center">AR Meow Meow</h1>
         </header>
         <div class="flex-container">
-            <div><button class="btn start" id="start btn">Start Game</button> </div>
+            <div><button class="btn start" id="start">New Game</button> </div>
+            <div><button class="btn continue" id="continue">Continue Game</button> </div>
             <div><button class="btn info" id="info btn">Info</button></div>
-            <div><button class="btn history">View History</button></div>  
-            <div><button class="btn logout">Log Out</button></div>
+            <div><button class="btn history" id="history">View History</button></div>  
+            <div><button class="btn logout" id="logout">Log Out</button></div>
         </div>
 
         <p class="aligncenter">
-            <img src="https://media.giphy.com/media/3kRa3yvntxlFm/giphy.gif">
+            <img src="https://media.giphy.com/media/3kRa3yvntxlFm/giphy.gif" style= "max-height: screen.height - btn.height * 4 - screen.height/5; max-width: screen.width; width: auto; height: auto;">
         </p>
 
         <!-- Info Modal -->
