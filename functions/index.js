@@ -91,6 +91,43 @@ const functions = require('firebase-functions');
 admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
 
+exports.updateClub = functions.https.onCall(async (data, context) =>{
+    let ref = db.collection("Room").doc("club");
+    let snapshot = await ref.get();
+    let clubData = snapshot.data();
+    return JSON.stringify(clubData);
+});
+
+exports.changeState = functions.https.onCall(async (data, context) =>{
+    let ref = db.collection("Room").doc("club");
+    
+    switch(data.state){
+        case "feedWet":
+            await ref.update({
+                feedWetCount: admin.firestore.FieldValue.increment(1),
+                state : data.state
+            });
+            break;
+        case "feedSpecial":
+            await ref.update({
+                feedSpecialCount: admin.firestore.FieldValue.increment(1),
+                state : data.state
+            });
+            break;
+        case "decorate":
+            await ref.update({
+                decorateCount: admin.firestore.FieldValue.increment(1),
+                state : data.state
+            });
+            break;
+        case "none":
+            await ref.update({
+                state : data.state
+            });
+            break;
+    }
+});
+
 exports.eat = functions.https.onCall(async (data, context) =>{
     let ref = db.collection("User").doc(data.email).collection("cat").doc(data.catName);
     switch(data.type) {
