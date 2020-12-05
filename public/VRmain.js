@@ -61,7 +61,7 @@ var createScene = async function () {
     BABYLON.SceneLoader.ImportMesh("", "./assets/space/conference_room1/", "scene.gltf", scene, 
                                     function (roomMeshes, roomParticleSystems, roomSkeletons) {
         alert("VR room loaded.");
-        room = roomMeshes[0];
+        var room = roomMeshes[0];
         room.rotation = new BABYLON.Vector3(0, 0, 0);
         room.position = new BABYLON.Vector3(0, 0.5, 0);
         room.scaling = new BABYLON.Vector3(0.03, 0.03, 0.03);
