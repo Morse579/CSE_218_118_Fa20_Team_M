@@ -144,7 +144,7 @@ var createScene = async function () {
                         animationGroups3[24].play(false);
                     }
 
-                    // bound invisible control to cat 2
+                    // bound invisible control to cat 3
                     const cat3Control = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 2});
                     cat3Control.position = new BABYLON.Vector3(9, 1.3, 1)
                     var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
