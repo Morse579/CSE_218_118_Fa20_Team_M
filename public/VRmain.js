@@ -1,10 +1,27 @@
+import{displayBoard} from './VRboard.js'
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCHuFcfj3D2vXpxuJWbJViYa1SJPUkEAZM",
+    authDomain: "ar-meowmeow.firebaseapp.com",
+    databaseURL: "https://ar-meowmeow.firebaseio.com",
+    projectId: "ar-meowmeow",
+    storageBucket: "ar-meowmeow.appspot.com",
+    messagingSenderId: "426725357319",
+    appId: "1:426725357319:web:5c5851563c99b1c282b7a2",
+    measurementId: "G-WZ7ZJL7E5V"
+  };
+
+firebase.initializeApp(firebaseConfig);
+const functions = firebase.functions();
+const interval = 10000;
+
 var canvas = document.getElementById("renderCanvas"); // Get the canvas element
 var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
-cat1 = {};
+var cat1 = {};
 cat1.hunger = 50;
 
-cat2 = {};
+var cat2 = {};
 cat2.hunger = 20;
 
 const initPos = [new BABYLON.Vector3(0, 1, 8), new BABYLON.Vector3(-8, 1, 1), new BABYLON.Vector3(8, 1, 1)];
@@ -21,7 +38,7 @@ var createScene = async function () {
     light.intensity = 0.7;
 
     // BGM and sound effect
-    const music1 = new BABYLON.Sound("bgm", "./assets/sounds/bensound-ukulele.mp3", scene, null, {loop: true, autoplay: true});
+    const music1 = new BABYLON.Sound("bgm", "./assets/sounds/bensound-ukulele.mp3", scene, null, {loop: true, autoplay: false});
     const music2 = new BABYLON.Sound("bgm", "./assets/sounds/bensound-littleidea.mp3", scene, null, {loop: true, autoplay: false});
     const meow = new BABYLON.Sound("meow", "./assets/sounds/cat-meow.mp3", scene);
     const music = [music1, music2];
@@ -42,6 +59,8 @@ var createScene = async function () {
     const xr = await scene.createDefaultXRExperienceAsync({
         floorMeshes: [env.ground]
     });
+
+    //displayBoard();
 
     const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 1});
     sphere.position.y = 1;
@@ -258,6 +277,15 @@ var createScene = async function () {
         startingPoint = current;
     }
 
+    function getUpdate(){
+        console.log("hello");
+        const updateClub = functions.httpsCallable('updateClub');
+        updateClub({}).then(res => {
+            console.log(JSON.parse(res.data));
+        });
+        setTimeout(getUpdate, interval); 
+    }; 
+    //setTimeout(getUpdate, interval);
     return scene;
 }
 //////////
@@ -278,9 +306,6 @@ function addBars(mats){
         bars.hungerBar[0][i].position.y = 5;
         bars.hungerBar[0][i].position.x = -1.5 + i*0.02;
         var hungerValue = cat1.hunger;
-        //hungerValue = Math.max(0, hungerValue);
-        //hungerValue = Math.min(100, hungerValue);
-        console.log(hungerValue);
         if(i<hungerValue){
             bars.hungerBar[0][i].material = mats.pink;	
         }
@@ -326,6 +351,7 @@ function display3DInteractionButtons(panel, bars, mats, cats, anim, food, box, m
     gatherButton.onPointerUpObservable.add(function(){
         playCatEatTogetherAnimation(cats, anim, food);
         updateHungerLevel(bars, mats);
+        sendUpdate("feedSpecial");
     });   
     panel.addControl(gatherButton);
 
@@ -339,7 +365,17 @@ function display3DInteractionButtons(panel, bars, mats, cats, anim, food, box, m
     };
     return foodButtons;
 }
+function sendUpdate(type){
+    const changeState = functions.httpsCallable('changeState');
+    changeState({state: type})
+    .then(res => {
+    });
+    setTimeout(function(){
+        console.log("5s later");
+        changeState({state: "none"});
+    }, interval);
 
+}
 function updateHungerLevel(bars, mats){
     cat1.hunger += 10;
     for(var i = cat1.hunger-10;i<cat1.hunger;i++){

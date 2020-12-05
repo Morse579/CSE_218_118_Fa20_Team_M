@@ -91,6 +91,61 @@ const functions = require('firebase-functions');
 admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
 
+exports.updateClub = functions.https.onCall(async (data, context) =>{
+    let ref = db.collection("Room").doc("club");
+    let snapshot = await ref.get();
+    let clubData = snapshot.data();
+    let today = new Date().getDate();
+    if(today === clubData.date){
+        return JSON.stringify(clubData);
+    }else{
+        clubData.date = today;
+        clubData.decorateCount = 0;
+        clubData.feedSpecialCount = 0;
+        clubData.feedWetCount = 0;
+        clubData.state = "none";
+
+        await ref.update({
+            date: today,
+            decorateCount: 0,
+            feedWetCount: 0,
+            feedSpecialCount: 0,
+            state: "none"
+        });
+        return JSON.stringify(clubData);
+    }
+});
+
+exports.changeState = functions.https.onCall(async (data, context) =>{
+    let ref = db.collection("Room").doc("club");
+    
+    switch(data.state){
+        case "feedWet":
+            await ref.update({
+                feedWetCount: admin.firestore.FieldValue.increment(1),
+                state : data.state
+            });
+            break;
+        case "feedSpecial":
+            await ref.update({
+                feedSpecialCount: admin.firestore.FieldValue.increment(1),
+                state : data.state
+            });
+            break;
+        case "decorate":
+            await ref.update({
+                decorateCount: admin.firestore.FieldValue.increment(1),
+                state : data.state
+            });
+            break;
+        case "none":
+            await ref.update({
+                state : data.state
+            });
+            break;
+    }
+});
+
 exports.eat = functions.https.onCall(async (data, context) =>{
     let ref = db.collection("User").doc(data.email).collection("cat").doc(data.catName);
     switch(data.type) {

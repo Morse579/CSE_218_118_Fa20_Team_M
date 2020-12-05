@@ -736,9 +736,6 @@ function displayActions(foodButtons,toyButtons, decorButtons, scene, mats, user)
         grid.addControl(texts[i], 1, i);
     }
 }
-
-
-
 function showFoodButtons(foodButtons, cat, mats){
     foodButtons.dry.isVisible = true;
     foodButtons.wet.isVisible = true;
