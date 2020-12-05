@@ -13,7 +13,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const functions = firebase.functions();
-const interval = 8000;
+const interval = 10000;
 
 var canvas = document.getElementById("renderCanvas"); // Get the canvas element
 var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
@@ -278,7 +278,7 @@ var createScene = async function () {
                             });
                             setTimeout(getUpdate, interval); 
                         };
-                        // setTimeout(getUpdate, interval);
+                        setTimeout(getUpdate, interval);
                     });
                 });  
             });
