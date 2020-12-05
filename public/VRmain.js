@@ -79,6 +79,7 @@ var createScene = async function () {
     box.position.y = 0.2;
     box.rotation = new BABYLON.Vector3(Math.PI/4, Math.PI/4, Math.PI/4);
     box.setEnabled(false);
+    box.move = false;
 
     var ground = BABYLON.MeshBuilder.CreateGround("ground", {width:1000, height:1000}, scene, true);
     ground.position.y = 0.2;
@@ -129,6 +130,7 @@ var createScene = async function () {
                         trigger: BABYLON.ActionManager.OnPickTrigger,
                     },
                     function () {
+                        sendIndividualUpdate(0, "feedWet");
                         playCatEatAnimation(scene, animationGroups1, animationGroups1[20]);
                     }
                 )
@@ -238,6 +240,9 @@ var createScene = async function () {
                                         pointerUp();
                                         if(box.isEnabled()){
                                             console.log(box.position);
+                                            sendBoxPosUpdate(box.position);
+                                            box.move = true;
+                                            setTimeout(()=>{box.move = false}, interval);
                                         }
                                     break;
                                 case BABYLON.PointerEventTypes.POINTERMOVE:          
@@ -255,6 +260,20 @@ var createScene = async function () {
                                 var update = JSON.parse(res.data);
                                 if(update.state === "feedSpecial" && !cat1.play){
                                     playCatEatTogetherAnimation(cats, roots, anim, specialFood);
+                                }
+                                if(update.indivState1 === "feedWet" && !cat1.play){
+                                    //play cat1 eat wet
+                                }
+                                if(update.indivState2 === "feedWet" && !cat2.play){
+                                    //play cat2 eat wet
+                                }
+                                if(update.indivState3 === "feedWet" && !cat3.play){
+                                    //play cat3 eat wet
+                                }
+                                if(update.displayDecor && !box.move){
+                                    box.setEnabled(true);
+                                    box.position.x = update.boxPosX;
+                                    box.position.z = update.boxPosZ;
                                 }
                             });
                             setTimeout(getUpdate, interval); 
@@ -383,6 +402,7 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
     const sphere2 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.5});
     var decorButton = new BABYLON.GUI.MeshButton3D(sphere2, "wetFoodButton");
     decorButton.onPointerUpObservable.add(function(){
+        sendDisplayBoxUpdate();
         box.setEnabled(true);
     });   
     panel.addControl(decorButton);
@@ -412,10 +432,32 @@ function sendUpdate(type){
     .then(res => {
     });
     setTimeout(function(){
-        console.log("5s later");
+        console.log(`${interval/1000}s later`);
         changeState({state: "none"});
     }, interval);
+}
 
+function sendIndividualUpdate(num, type){
+    const changeIndivState = functions.httpsCallable('changeIndivState');
+    changeIndivState({index: num, state: type})
+    .then(res => {
+    });
+    setTimeout(function(){
+        console.log(`${interval/1000}s later`);
+        changeIndivState({index: num, state: "none"});
+    }, interval);
+}
+
+function sendDisplayBoxUpdate(){
+    const displayDecor = functions.httpsCallable('displayDecor');
+    displayDecor({}).then(res => {});
+}
+
+function sendBoxPosUpdate(position){
+    const updateBoxPos = functions.httpsCallable('updateBoxPos');
+    updateBoxPos({x: position.x, z: position.z})
+    .then(res => {
+    });
 }
 function updateHungerLevel(bars, cats, mats){
     cats[0].hunger += 10;
