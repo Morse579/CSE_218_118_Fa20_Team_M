@@ -104,37 +104,46 @@ exports.updateClub = functions.https.onCall(async (data, context) =>{
         clubData.feedSpecialCount = 0;
         clubData.feedWetCount = 0;
         clubData.state = "none";
+        clubData.indivState1 = "none";
+        clubData.indivState2 = "none";
+        clubData.indivState3 = "none";
 
         await ref.update({
             date: today,
             decorateCount: 0,
             feedWetCount: 0,
             feedSpecialCount: 0,
-            state: "none"
+            state: "none",
+            indivState1: "none",
+            indivState2: "none",
+            indivState3: "none"
         });
         return JSON.stringify(clubData);
     }
+});
+
+exports.displayDecor = functions.https.onCall(async (data, context) =>{
+    let ref = db.collection("Room").doc("club");
+    await ref.update({
+        displayDecor: true
+    });
+});
+
+exports.updateBoxPos = functions.https.onCall(async (data, context) =>{
+    let ref = db.collection("Room").doc("club");
+    await ref.update({
+        boxPosX: data.x,
+        boxPosZ: data.z
+    });
 });
 
 exports.changeState = functions.https.onCall(async (data, context) =>{
     let ref = db.collection("Room").doc("club");
     
     switch(data.state){
-        case "feedWet":
-            await ref.update({
-                feedWetCount: admin.firestore.FieldValue.increment(1),
-                state : data.state
-            });
-            break;
         case "feedSpecial":
             await ref.update({
                 feedSpecialCount: admin.firestore.FieldValue.increment(1),
-                state : data.state
-            });
-            break;
-        case "decorate":
-            await ref.update({
-                decorateCount: admin.firestore.FieldValue.increment(1),
                 state : data.state
             });
             break;
@@ -143,6 +152,54 @@ exports.changeState = functions.https.onCall(async (data, context) =>{
                 state : data.state
             });
             break;
+    }
+});
+
+exports.changeIndivState = functions.https.onCall(async (data, context) =>{
+    let ref = db.collection("Room").doc("club");
+
+    if(data.index === 0){
+        switch(data.state){
+            case "feedWet":
+                await ref.update({
+                    feedWetCount: admin.firestore.FieldValue.increment(1),
+                    indivState1 : data.state
+                });
+                break;
+            case "none":
+                await ref.update({
+                    indivState1 : data.state
+                });
+                break;
+        }
+    }else if(data.index === 1){
+        switch(data.state){
+            case "feedWet":
+                await ref.update({
+                    feedWetCount: admin.firestore.FieldValue.increment(1),
+                    indivState2 : data.state
+                });
+                break;
+            case "none":
+                await ref.update({
+                    indivState2 : data.state
+                });
+                break;
+        }
+    }else if(data.index === 2){
+        switch(data.state){
+            case "feedWet":
+                await ref.update({
+                    feedWetCount: admin.firestore.FieldValue.increment(1),
+                    indivState3 : data.state
+                });
+                break;
+            case "none":
+                await ref.update({
+                    indivState3 : data.state
+                });
+                break;
+        }
     }
 });
 
