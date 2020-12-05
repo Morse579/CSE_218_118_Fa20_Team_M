@@ -95,7 +95,25 @@ exports.updateClub = functions.https.onCall(async (data, context) =>{
     let ref = db.collection("Room").doc("club");
     let snapshot = await ref.get();
     let clubData = snapshot.data();
-    return JSON.stringify(clubData);
+    let today = new Date().getDate();
+    if(today === clubData.date){
+        return JSON.stringify(clubData);
+    }else{
+        clubData.date = today;
+        clubData.decorateCount = 0;
+        clubData.feedSpecialCount = 0;
+        clubData.feedWetCount = 0;
+        clubData.state = "none";
+
+        await ref.update({
+            date: today,
+            decorateCount: 0,
+            feedWetCount: 0,
+            feedSpecialCount: 0,
+            state: "none"
+        });
+        return JSON.stringify(clubData);
+    }
 });
 
 exports.changeState = functions.https.onCall(async (data, context) =>{

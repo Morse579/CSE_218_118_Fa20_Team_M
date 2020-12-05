@@ -1,3 +1,5 @@
+import{displayBoard} from './VRboard.js'
+
 const firebaseConfig = {
     apiKey: "AIzaSyCHuFcfj3D2vXpxuJWbJViYa1SJPUkEAZM",
     authDomain: "ar-meowmeow.firebaseapp.com",
@@ -16,10 +18,10 @@ const interval = 10000;
 var canvas = document.getElementById("renderCanvas"); // Get the canvas element
 var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
-cat1 = {};
+var cat1 = {};
 cat1.hunger = 50;
 
-cat2 = {};
+var cat2 = {};
 cat2.hunger = 20;
 
 // Code for AR scene goes here
@@ -33,7 +35,7 @@ var createScene = async function () {
     light.intensity = 0.7;
 
     // BGM and sound effect
-    const music = new BABYLON.Sound("bgm", "./assets/sounds/bensound-ukulele.mp3", scene, null, { loop: true, autoplay: true });
+    const music = new BABYLON.Sound("bgm", "./assets/sounds/bensound-ukulele.mp3", scene, null, { loop: true, autoplay: false });
     const meow = new BABYLON.Sound("meow", "./assets/sounds/cat-meow.mp3", scene);
 
     var mats = {};
@@ -47,6 +49,8 @@ var createScene = async function () {
     const xr = await scene.createDefaultXRExperienceAsync({
         floorMeshes: [env.ground]
     });
+
+    displayBoard();
 
     const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 1});
     sphere.position.y = 1;
@@ -123,7 +127,7 @@ var createScene = async function () {
         });
         setTimeout(getUpdate, interval); 
     }; 
-    setTimeout(getUpdate, interval);
+    //setTimeout(getUpdate, interval);
 
     return scene;
 }
