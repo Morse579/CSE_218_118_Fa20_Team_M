@@ -18,14 +18,8 @@ const interval = 8000;
 var canvas = document.getElementById("renderCanvas"); // Get the canvas element
 var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
-var cat1 = {};
-cat1.hunger = 50;
-
-var cat2 = {};
-cat2.hunger = 20;
-
-const initPos = [new BABYLON.Vector3(0, 1, 8), new BABYLON.Vector3(-8, 1, 1), new BABYLON.Vector3(8, 1, 1)];
-const gatherPos = [new BABYLON.Vector3(0, 1, 1), new BABYLON.Vector3(-3, 1, 0), new BABYLON.Vector3(3, 1, 0)];
+const initPos = [new BABYLON.Vector3(0, 0.2, 8), new BABYLON.Vector3(-8, 0.2, 1), new BABYLON.Vector3(8, 0.2, 1)];
+const gatherPos = [new BABYLON.Vector3(0, 0.2, 1), new BABYLON.Vector3(-3, 0.2, 0), new BABYLON.Vector3(3, 0.2, 0)];
 
 // Code for AR scene goes here
 var createScene = async function () {
@@ -42,6 +36,21 @@ var createScene = async function () {
     const music2 = new BABYLON.Sound("bgm", "./assets/sounds/bensound-littleidea.mp3", scene, null, {loop: true, autoplay: false});
     const meow = new BABYLON.Sound("meow", "./assets/sounds/cat-meow.mp3", scene);
     const music = [music1, music2];
+
+    // Food/mood bar parent node
+    var root1 = new BABYLON.TransformNode("root"); 
+    root1.position = initPos[0];
+    root1.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+
+    var root2 = new BABYLON.TransformNode("root");
+    root2.position = initPos[1];
+    root2.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+
+    var root3 = new BABYLON.TransformNode("root");
+    root3.position = initPos[2];
+    root3.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+    
+    var roots = [root1, root2, root3];
 
     var mats = {};
     mats.grey = new BABYLON.StandardMaterial("mat3");
@@ -67,12 +76,12 @@ var createScene = async function () {
     sphere.setEnabled(false);
 
     const box = BABYLON.Mesh.CreateBox("box", 1, scene);
-    box.position.y = 1;
+    box.position.y = 0.2;
     box.rotation = new BABYLON.Vector3(Math.PI/4, Math.PI/4, Math.PI/4);
     box.setEnabled(false);
 
     var ground = BABYLON.MeshBuilder.CreateGround("ground", {width:1000, height:1000}, scene, true);
-    ground.position.y = 1;
+    ground.position.y = 0.2;
     var groundMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
     groundMaterial.alpha = 0;
     ground.material = groundMaterial;
@@ -82,7 +91,7 @@ var createScene = async function () {
         // alert("VR room loaded.");
         var room = roomMeshes[0];
         room.rotation = new BABYLON.Vector3(0, 0, 0);
-        room.position = new BABYLON.Vector3(0, 0.5, 0);
+        room.position = new BABYLON.Vector3(0, 0.1, 0);
         room.scaling = new BABYLON.Vector3(0.03, 0.03, 0.03);
         room.isPickable = false;
 
@@ -93,6 +102,7 @@ var createScene = async function () {
             cat1.rotation = new BABYLON.Vector3(0, Math.PI, 0);
             cat1.position = initPos[0];
             cat1.play = false;
+            cat1.hunger = 50;
             if (animationGroups1.length > 0) {
                 var cat_anim = ['static', 'cat_attack_jump', 'cat_attack_left', 'cat_catch', 'cat_catch_play', 
                                 'cat_clean1', 'cat_death_right', 'cat_eat', 'cat_gallop', 'cat_gallop_right', 
@@ -106,7 +116,7 @@ var createScene = async function () {
 
             // bound invisible control to cat 1
             const cat1Control = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 1.8});
-            cat1Control.position = new BABYLON.Vector3(0, 1.7, 8)
+            cat1Control.position = new BABYLON.Vector3(0, 0.9, 8)
             var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
             myMaterial.alpha = 0;
             cat1Control.material = myMaterial;
@@ -131,13 +141,14 @@ var createScene = async function () {
                 cat2.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
                 cat2.position = initPos[1];
                 cat2.play = false;
+                cat2.hunger = 20;
                 if (animationGroups2.length > 0) {
                     animationGroups2[5].play(false);
                 }
 
                 // bound invisible control to cat 2
                 const cat2Control = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 2});
-                cat2Control.position = new BABYLON.Vector3(-8, 1.7, 1)
+                cat2Control.position = new BABYLON.Vector3(-8, 0.9, 1)
                 var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
                 myMaterial.alpha = 0;
                 cat2Control.material = myMaterial;
@@ -162,13 +173,14 @@ var createScene = async function () {
                     cat3.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
                     cat3.position = initPos[2];
                     cat3.play = false;
+                    cat3.hunger = 70;
                     if (animationGroups3.length > 0) {
                         animationGroups3[24].play(false);
                     }
 
                     // bound invisible control to cat 3
                     const cat3Control = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 2});
-                    cat3Control.position = new BABYLON.Vector3(9, 1.3, 1)
+                    cat3Control.position = new BABYLON.Vector3(9, 0.5, 1)
                     var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
                     myMaterial.alpha = 0;
                     cat3Control.material = myMaterial;
@@ -195,18 +207,18 @@ var createScene = async function () {
                         
                         specialFood.rotation = new BABYLON.Vector3(0, Math.PI/2, -Math.PI/2);
                         specialFood.scaling = new BABYLON.Vector3(40, 40, 40);
-                        specialFood.position = new BABYLON.Vector3(0, 1, 0);
+                        specialFood.position = new BABYLON.Vector3(0, 0.2, 0);
                     
 
                         // 3D gui - for mesh interaction
                         var manager = new BABYLON.GUI.GUI3DManager(scene);
-                        var bars = addBars(mats);
+                        var bars = addBars(mats, cats, roots);
                         var panelBottom = new BABYLON.GUI.StackPanel3D();
                         manager.addControl(panelBottom);
                         panelBottom.margin = 0.2;
                         panelBottom.position.y = sphere.position.y;
                         panelBottom.position.z = sphere.position.z - 2;
-                        var foodButtons = display3DInteractionButtons(panelBottom, bars, mats, cats, anim, specialFood, box, music);
+                        var foodButtons = display3DInteractionButtons(panelBottom, bars, mats, cats, roots, anim, specialFood, box, music);
 
                         // cat meow
                         scene.onPointerObservable.add((pointerInfo) => {
@@ -215,7 +227,10 @@ var createScene = async function () {
                                     meow.play();
                                     break;   
                                 case BABYLON.PointerEventTypes.POINTERDOWN:
-                                    if(pointerInfo.pickInfo.hit && pointerInfo.pickInfo.pickedMesh != ground && pointerInfo.pickInfo.pickedMesh != room) {
+                                    if(pointerInfo.pickInfo.hit && pointerInfo.pickInfo.pickedMesh != ground 
+                                            && pointerInfo.pickInfo.pickedMesh != cat1Control
+                                            && pointerInfo.pickInfo.pickedMesh != cat2Control
+                                            && pointerInfo.pickInfo.pickedMesh != cat3Control) {
                                         pointerDown(pointerInfo.pickInfo.pickedMesh)
                                     }
                                     break;
@@ -239,12 +254,12 @@ var createScene = async function () {
                                 console.log(JSON.parse(res.data));
                                 var update = JSON.parse(res.data);
                                 if(update.state === "feedSpecial" && !cat1.play){
-                                    playCatEatTogetherAnimation(cats, anim, specialFood);
+                                    playCatEatTogetherAnimation(cats, roots, anim, specialFood);
                                 }
                             });
                             setTimeout(getUpdate, interval); 
                         };
-                        setTimeout(getUpdate, interval);
+                        // setTimeout(getUpdate, interval);
                     });
                 });  
             });
@@ -305,15 +320,18 @@ createScene().then(scene => {
     });
 });
 
-function addBars(mats){
+function addBars(mats, cats, roots){
     var bars = {};
     bars.hungerBar = [];
     bars.hungerBar[0] = [];
     for(var i=0;i<100;i++){
         bars.hungerBar[0][i] = BABYLON.MeshBuilder.CreateBox("box", {height: 0.2, width: 0.02, depth: 0.2});
+        bars.hungerBar[0][i].parent = roots[0];
         bars.hungerBar[0][i].position.y = 5;
-        bars.hungerBar[0][i].position.x = -1.5 + i*0.02;
-        var hungerValue = cat1.hunger;
+        bars.hungerBar[0][i].position.x = -1 + i*0.02;
+        var hungerValue = cats[0].hunger;
+        hungerValue = Math.max(0, hungerValue);
+        hungerValue = Math.min(100, hungerValue);
         if(i<hungerValue){
             bars.hungerBar[0][i].material = mats.pink;	
         }
@@ -322,20 +340,35 @@ function addBars(mats){
     bars.hungerBar[1] = [];
     for(var i=0;i<100;i++){
         bars.hungerBar[1][i] = BABYLON.MeshBuilder.CreateBox("box", {height: 0.2, width: 0.02, depth: 0.2});
+        bars.hungerBar[1][i].parent = roots[1];
         bars.hungerBar[1][i].position.y = 5;
-        bars.hungerBar[1][i].position.x = 1 + i*0.02;
-        var hungerValue = cat2.hunger;
+        bars.hungerBar[1][i].position.x = -1 + i*0.02;
+        var hungerValue = cats[1].hunger;
         hungerValue = Math.max(0, hungerValue);
         hungerValue = Math.min(100, hungerValue);
         if(i<hungerValue){
             bars.hungerBar[1][i].material = mats.pink;	
         }
     }
+
+    bars.hungerBar[2] = [];
+    for(var i=0;i<100;i++){
+        bars.hungerBar[2][i] = BABYLON.MeshBuilder.CreateBox("box", {height: 0.2, width: 0.02, depth: 0.2});
+        bars.hungerBar[2][i].parent = roots[2];
+        bars.hungerBar[2][i].position.y = 5;
+        bars.hungerBar[2][i].position.x = -1 + i*0.02;
+        var hungerValue = cats[2].hunger;
+        hungerValue = Math.max(0, hungerValue);
+        hungerValue = Math.min(100, hungerValue);
+        if(i<hungerValue){
+            bars.hungerBar[2][i].material = mats.pink;	
+        }
+    }
   
   return bars;
 }
 
-function display3DInteractionButtons(panel, bars, mats, cats, anim, food, box, music){
+function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food, box, music){
     // console.log("display 3d food buttons");
 
     // change bgm button
@@ -357,8 +390,8 @@ function display3DInteractionButtons(panel, bars, mats, cats, anim, food, box, m
     const sphere3 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.5});
     var gatherButton = new BABYLON.GUI.MeshButton3D(sphere3, "gatherButton");
     gatherButton.onPointerUpObservable.add(function(){
-        playCatEatTogetherAnimation(cats, anim, food);
-        updateHungerLevel(bars, mats);
+        playCatEatTogetherAnimation(cats, roots, anim, food);
+        updateHungerLevel(bars, cats, mats);
         sendUpdate("feedSpecial");
     });   
     panel.addControl(gatherButton);
@@ -384,14 +417,18 @@ function sendUpdate(type){
     }, interval);
 
 }
-function updateHungerLevel(bars, mats){
-    cat1.hunger += 10;
-    for(var i = cat1.hunger-10;i<cat1.hunger;i++){
+function updateHungerLevel(bars, cats, mats){
+    cats[0].hunger += 10;
+    for(var i = cats[0].hunger-10;i<cats[0].hunger;i++){
         bars.hungerBar[0][i].material = mats.pink;
     }
-    cat2.hunger += 10;
-    for(var i = cat2.hunger-10;i<cat2.hunger;i++){
+    cats[1].hunger += 10;
+    for(var i = cats[1].hunger-10;i<cats[1].hunger;i++){
         bars.hungerBar[1][i].material = mats.pink;
+    }
+    cats[2].hunger += 10;
+    for(var i = cats[2].hunger-10;i<cats[2].hunger;i++){
+        bars.hungerBar[2][i].material = mats.pink;
     }
 }
 
@@ -415,7 +452,7 @@ function playCatEatAnimation(scene, animationGroups, afterEatingAnim){
         }, 4000);
 }
 
-function playCatEatTogetherAnimation(cats, anim, food){
+function playCatEatTogetherAnimation(cats, roots, anim, food){
     cats[0].play = true;
     cats[1].play = true;
     cats[2].play = true;
@@ -431,6 +468,8 @@ function playCatEatTogetherAnimation(cats, anim, food){
     anim[0][27].play(true);
     BABYLON.Animation.CreateAndStartAnimation("anim", cats[0], "position", 30, 
                         60, initPos[0], gatherPos[0], BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+    BABYLON.Animation.CreateAndStartAnimation("anim", roots[0], "position", 30, 
+                        60, initPos[0], gatherPos[0], BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
     setTimeout(function(){
         anim[0][7].play(true);
     }, 2000);
@@ -441,6 +480,8 @@ function playCatEatTogetherAnimation(cats, anim, food){
         anim[0][7].stop();
         anim[0][27].play(true);
         BABYLON.Animation.CreateAndStartAnimation("anim", cats[0], "position", 30, 
+                        60, gatherPos[0], initPos[0], BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+        BABYLON.Animation.CreateAndStartAnimation("anim", roots[0], "position", 30, 
                         60, gatherPos[0], initPos[0], BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
     }, 8000);
 
@@ -461,6 +502,8 @@ function playCatEatTogetherAnimation(cats, anim, food){
     anim[1][27].play(true);
     BABYLON.Animation.CreateAndStartAnimation("anim", cats[1], "position", 30, 
                         40, initPos[1], gatherPos[1], BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+    BABYLON.Animation.CreateAndStartAnimation("anim", roots[1], "position", 30, 
+                        40, initPos[1], gatherPos[1], BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
     setTimeout(function(){
         anim[1][7].play(true);
     }, 1333);
@@ -471,6 +514,8 @@ function playCatEatTogetherAnimation(cats, anim, food){
         anim[1][7].stop();
         anim[1][27].play(true);
         BABYLON.Animation.CreateAndStartAnimation("anim", cats[1], "position", 30, 
+                        40, gatherPos[1], initPos[1], BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+        BABYLON.Animation.CreateAndStartAnimation("anim", roots[1], "position", 30, 
                         40, gatherPos[1], initPos[1], BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
     }, 8000);
 
@@ -485,6 +530,8 @@ function playCatEatTogetherAnimation(cats, anim, food){
     anim[2][27].play(true);
     BABYLON.Animation.CreateAndStartAnimation("anim", cats[2], "position", 30, 
                         40, initPos[2], gatherPos[2], BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+    BABYLON.Animation.CreateAndStartAnimation("anim", roots[2], "position", 30, 
+                        40, initPos[2], gatherPos[2], BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
     setTimeout(function(){
         anim[2][7].play(true);
     }, 1333);
@@ -495,6 +542,8 @@ function playCatEatTogetherAnimation(cats, anim, food){
         anim[2][7].stop();
         anim[2][27].play(true);
         BABYLON.Animation.CreateAndStartAnimation("anim", cats[2], "position", 30, 
+                        40, gatherPos[2], initPos[2], BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+        BABYLON.Animation.CreateAndStartAnimation("anim", roots[2], "position", 30, 
                         40, gatherPos[2], initPos[2], BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
     }, 8000);
 
