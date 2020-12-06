@@ -13,7 +13,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const functions = firebase.functions();
-const interval = 10000;
+const interval = 8000;
 
 var canvas = document.getElementById("renderCanvas"); // Get the canvas element
 var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
@@ -281,7 +281,7 @@ var createScene = async function () {
                             }
                             setTimeout(getUpdate, interval); 
                         };
-                        setTimeout(getUpdate, interval);
+                        setTimeout(getUpdate, 0);
                     });
                 });  
             });
@@ -446,10 +446,10 @@ function sendUpdate(type){
     changeState({state: type})
     .then(res => {
     });
-    setTimeout(function(){
-        console.log(`${interval/1000}s later`);
-        changeState({state: "none"});
-    }, interval);
+    // setTimeout(function(){
+    //     console.log(`${interval/1000}s later`);
+    //     changeState({state: "none"});
+    // }, interval);
 }
 
 function sendIndividualUpdate(num, type){
@@ -457,10 +457,10 @@ function sendIndividualUpdate(num, type){
     changeIndivState({index: num, state: type})
     .then(res => {
     });
-    setTimeout(function(){
-        console.log(`${interval/1000}s later`);
-        changeIndivState({index: num, state: "none"});
-    }, interval);
+    // setTimeout(function(){
+    //     console.log(`${interval/1000}s later`);
+    //     changeIndivState({index: num, state: "none"});
+    // }, interval);
 }
 
 function sendDisplayBoxUpdate(){
