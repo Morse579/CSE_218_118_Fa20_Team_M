@@ -153,7 +153,8 @@
     </head>
     <body id="id_body">
         <header>
-            <h1 style="text-align:center">AR Meow Meow</h1>
+            <h1 style="text-align:center">AR Meow Meow: A Cat cAREe Centre</h1>
+	    <h4 style="text-align:center">Adopt a Virtual Cat in Your Actual Home</h4>
         </header>
         <div class="flex-container">
             <div><button class="btn start" id="start">New Game</button> </div>
@@ -225,17 +226,31 @@
             <button id="createBtn">Create</button>
             <button id="cancelBtn">Cancel</button>
         </dialog>
+        <dialog id="catBackgroundDialog">
+	    <div>
+                <p id="intro"></p>
+                <p id="catbackground"></p>
+                <p id="cattask"></p>
+            </div>
+        </dialog>
         <dialog id="gameplayDialog">
             <div>
-                <h3>Background</h3>
-                <p>Players are a caretaker in the Triton Cat Shelter. Players will 
-                    be assigned to a cat for a short amount of time before they get 
-                    adopted by their permanent owner.</p>
-                <h3>Gameplay</h3>
-                <p>Players should take care of the cat for 7 days. During the time, players
-                    should feed, pet, and decorate the living space for the cat to keep the cat
-                    happy and satisfied. After 7 days, the story will have an end based on how
-                    well players take care of the cat.</p>
+                <h3>Our Story</h3>
+                <p>Meow, looks like you discovered our little world of nonexistence. My name 
+		   Purrcilla. I wandered the streets for 12 years before coming back here. 
+		   Here are my fellow "ar meow meow" cARe center residents. 
+		   We have been waiting for someone to welcome us into the real world for 
+		   MEOWnths. Will you look after us until we find our permanent homes?</p>
+                <h3>Your Story</h3>
+                <p>This is how cARe centre works:
+		   One of us comes home with you for 7 days. 
+		   We get to see and experience the real world and you get to hear our stories.
+		   Please be mindful of our hunger and mood and try to be patien with the
+		   special needs that some of us may have. 
+		   Don't disappoint us, as we may leave you if we can no longer feel your presence;
+		   but if you stay with us until the end, you will see where your love has led us.
+		   
+		   Meow, are you ready to meet your first cat?</p>
             </div>
             <button id="nextBtn">Next</button>
             <button id="cancelGameplay">Cancel</button>
@@ -243,6 +258,7 @@
         <dialog id="endDialog">
             <div>
                 <h3>End of the story</h3>
+		<p id="cat message"></p>
                 <p id="spTask"></p>
                 <div id="status"></div>
                 <p id="stats"></p>

@@ -127,6 +127,8 @@ function endStory(){
     });
     const endDialog = document.getElementById("endDialog");
     endDialog.showModal();
+    document.getElementById("cat message").innerHTML = `Hello ${userInfo.username}! This is ${userInfo.cat.name}! It's been awhile!`;
+    document.getElementById("cat outcome").innerHTML = ``; //TODO
     if(userInfo.cat.specialTaskCompleted){
         document.getElementById("spTask").innerHTML = `${userInfo.cat.name}'s message: Thank you for realizing my dream!`;
     }
