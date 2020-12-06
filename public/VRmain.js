@@ -68,6 +68,9 @@ var createScene = async function () {
 
     mats.pink = new BABYLON.StandardMaterial("mat4");
     mats.pink.diffuseTexture = new BABYLON.Texture("assets/color/pink.jpg");
+    
+    mats.orange = new BABYLON.StandardMaterial("mat4");
+    mats.orange.diffuseTexture = new BABYLON.Texture("assets/color/orange.jpg");
 
     var env =  scene.createDefaultEnvironment({ 
         createSkybox: true,
@@ -141,6 +144,7 @@ var createScene = async function () {
             cat1.position = initPos[0];
             cat1.play = false;
             cat1.hunger = 50;
+            cat1.mood = 100;
             if (animationGroups1.length > 0) {
                 var cat_anim = ['static', 'cat_attack_jump', 'cat_attack_left', 'cat_catch', 'cat_catch_play', 
                                 'cat_clean1', 'cat_death_right', 'cat_eat', 'cat_gallop', 'cat_gallop_right', 
@@ -184,6 +188,7 @@ var createScene = async function () {
                 cat2.position = initPos[1];
                 cat2.play = false;
                 cat2.hunger = 20;
+                cat2.mood = 40;
                 if (animationGroups2.length > 0) {
                     animationGroups2[5].play(false);
                 }
@@ -220,6 +225,7 @@ var createScene = async function () {
                     cat3.position = initPos[2];
                     cat3.play = false;
                     cat3.hunger = 70;
+                    cat3.mood = 140;
                     if (animationGroups3.length > 0) {
                         animationGroups3[24].play(false);
                     }
@@ -407,48 +413,37 @@ createScene().then(scene => {
 function addBars(mats, cats, roots){
     var bars = {};
     bars.hungerBar = [];
-    bars.hungerBar[0] = [];
-    for(var i=0;i<100;i++){
-        bars.hungerBar[0][i] = BABYLON.MeshBuilder.CreateBox("box", {height: 0.2, width: 0.02, depth: 0.2});
-        bars.hungerBar[0][i].parent = roots[0];
-        bars.hungerBar[0][i].position.y = 5;
-        bars.hungerBar[0][i].position.x = -1 + i*0.02;
-        var hungerValue = cats[0].hunger;
-        hungerValue = Math.max(0, hungerValue);
-        hungerValue = Math.min(100, hungerValue);
-        if(i<hungerValue){
-            bars.hungerBar[0][i].material = mats.pink;	
+    bars.moodBar = [];
+    
+    for(var j=0;j<3;j++){
+        bars.hungerBar[j] = [];
+        for(var i=0;i<100;i++){
+            bars.hungerBar[j][i] = BABYLON.MeshBuilder.CreateBox("box", {height: 0.2, width: 0.02, depth: 0.2});
+            bars.hungerBar[j][i].parent = roots[j];
+            bars.hungerBar[j][i].position.y = 5;
+            bars.hungerBar[j][i].position.x = -1 + i*0.02;
+            var hungerValue = cats[j].hunger;
+            hungerValue = Math.max(0, hungerValue);
+            hungerValue = Math.min(100, hungerValue);
+            if(i<hungerValue){
+                bars.hungerBar[j][i].material = mats.pink;	
+            }
         }
-    }
-
-    bars.hungerBar[1] = [];
-    for(var i=0;i<100;i++){
-        bars.hungerBar[1][i] = BABYLON.MeshBuilder.CreateBox("box", {height: 0.2, width: 0.02, depth: 0.2});
-        bars.hungerBar[1][i].parent = roots[1];
-        bars.hungerBar[1][i].position.y = 5;
-        bars.hungerBar[1][i].position.x = -1 + i*0.02;
-        var hungerValue = cats[1].hunger;
-        hungerValue = Math.max(0, hungerValue);
-        hungerValue = Math.min(100, hungerValue);
-        if(i<hungerValue){
-            bars.hungerBar[1][i].material = mats.pink;	
+        bars.moodBar[j] = [];
+        for(var i=0;i<100;i++){
+            bars.moodBar[j][i] = BABYLON.MeshBuilder.CreateBox("box", {height: 0.2, width: 0.02, depth: 0.2});
+            bars.moodBar[j][i].parent = roots[j];
+            bars.moodBar[j][i].position.y = 4;
+            bars.moodBar[j][i].position.x = -1 + i*0.02;
+            var moodValue = cats[j].mood;
+            moodValue = Math.max(0, moodValue);
+            moodValue = Math.min(100, moodValue);
+            if(i<moodValue){
+                bars.moodBar[j][i].material = mats.orange;	
+            }
         }
+    
     }
-
-    bars.hungerBar[2] = [];
-    for(var i=0;i<100;i++){
-        bars.hungerBar[2][i] = BABYLON.MeshBuilder.CreateBox("box", {height: 0.2, width: 0.02, depth: 0.2});
-        bars.hungerBar[2][i].parent = roots[2];
-        bars.hungerBar[2][i].position.y = 5;
-        bars.hungerBar[2][i].position.x = -1 + i*0.02;
-        var hungerValue = cats[2].hunger;
-        hungerValue = Math.max(0, hungerValue);
-        hungerValue = Math.min(100, hungerValue);
-        if(i<hungerValue){
-            bars.hungerBar[2][i].material = mats.pink;	
-        }
-    }
-  
   return bars;
 }
 
