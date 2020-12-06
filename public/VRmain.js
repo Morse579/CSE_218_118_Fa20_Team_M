@@ -75,9 +75,12 @@ var createScene = async function () {
     sphere.position.y = 1;
     sphere.setEnabled(false);
 
-    const box = BABYLON.Mesh.CreateBox("box", 1, scene);
-    box.position.y = 0.2;
-    box.rotation = new BABYLON.Vector3(Math.PI/4, Math.PI/4, Math.PI/4);
+    // Bound to cat tree
+    var box = BABYLON.MeshBuilder.CreateBox("box", {height: 1, width: 6, depth: 3});
+    var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
+    myMaterial.alpha = 0;
+    box.material = myMaterial;
+    box.position.y = 0.25;
     box.setEnabled(false);
     box.move = false;
 
@@ -91,7 +94,7 @@ var createScene = async function () {
                                     function (roomMeshes, roomParticleSystems, roomSkeletons) {
         // alert("VR room loaded.");
         var room = roomMeshes[0];
-        room.rotation = new BABYLON.Vector3(0, 0, 0);
+        room.rotation = new BABYLON.Vector3(0, Math.PI, 0);
         room.position = new BABYLON.Vector3(0, 0.1, 0);
         room.scaling = new BABYLON.Vector3(0.03, 0.03, 0.03);
         room.isPickable = false;
@@ -130,7 +133,8 @@ var createScene = async function () {
                         trigger: BABYLON.ActionManager.OnPickTrigger,
                     },
                     function () {
-                        sendIndividualUpdate(0, "feedWet");
+                        // sendIndividualUpdate(0, "feedWet");
+                        meow.play();
                         playCatEatAnimation(scene, animationGroups1, animationGroups1[20]);
                     }
                 )
@@ -163,6 +167,7 @@ var createScene = async function () {
                             trigger: BABYLON.ActionManager.OnPickTrigger,
                         },
                         function () {
+                            meow.play();
                             playCatEatAnimation(scene, animationGroups2, animationGroups2[5]);
                         }
                     )
@@ -195,6 +200,7 @@ var createScene = async function () {
                                 trigger: BABYLON.ActionManager.OnPickTrigger,
                             },
                             function () {
+                                meow.play();
                                 playCatEatAnimation(scene, animationGroups3, animationGroups3[24]);
                             }
                         )
@@ -203,86 +209,100 @@ var createScene = async function () {
                     var cats = [cat1, cat2, cat3];
                     var anim = [animationGroups1, animationGroups2, animationGroups3];
 
-                    var specialFoodMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/food/sardine/", "scene.gltf", scene, function (meshFood, particleSystemsFood, skeletonsFood) {
+                    var specialFoodMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/food/sardine/", "scene.gltf", scene, function (meshFood) {
                         var specialFood = meshFood[0];
                         specialFood.setEnabled(false);
                         
                         specialFood.rotation = new BABYLON.Vector3(0, Math.PI/2, -Math.PI/2);
                         specialFood.scaling = new BABYLON.Vector3(40, 40, 40);
                         specialFood.position = new BABYLON.Vector3(0, 0.2, 0);
-                    
 
-                        // 3D gui - for mesh interaction
-                        var manager = new BABYLON.GUI.GUI3DManager(scene);
-                        var bars = addBars(mats, cats, roots);
-                        var panelBottom = new BABYLON.GUI.StackPanel3D();
-                        manager.addControl(panelBottom);
-                        panelBottom.margin = 0.2;
-                        panelBottom.position.y = sphere.position.y;
-                        panelBottom.position.z = sphere.position.z - 2;
-                        var foodButtons = display3DInteractionButtons(panelBottom, bars, mats, cats, roots, anim, specialFood, box, music);
+                        var catTreeMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/decor/arbre_a_chat_cat_tree/", "scene.gltf", scene, function (meshCatTree) {
+                            var catTree = meshCatTree[0];
 
-                        // cat meow
-                        scene.onPointerObservable.add((pointerInfo) => {
-                            switch (pointerInfo.type) {
-                                case BABYLON.PointerEventTypes.POINTERTAP:
-                                    meow.play();
-                                    break;   
-                                case BABYLON.PointerEventTypes.POINTERDOWN:
-                                    if(pointerInfo.pickInfo.hit && pointerInfo.pickInfo.pickedMesh != ground 
-                                            && pointerInfo.pickInfo.pickedMesh != cat1Control
-                                            && pointerInfo.pickInfo.pickedMesh != cat2Control
-                                            && pointerInfo.pickInfo.pickedMesh != cat3Control) {
-                                        pointerDown(pointerInfo.pickInfo.pickedMesh)
-                                    }
-                                    break;
-                                case BABYLON.PointerEventTypes.POINTERUP:
+                            for(var i = 1; i < meshCatTree.length; i++){
+                                meshCatTree[i].isPickable = false;
+                            }
+
+                            catTree.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
+                            catTree.scaling = new BABYLON.Vector3(6, 6, 6);
+                            catTree.setParent(box);
+                            catTree.position.z += 1;
+
+                            // 3D gui - for mesh interaction
+                            var manager = new BABYLON.GUI.GUI3DManager(scene);
+                            var bars = addBars(mats, cats, roots);
+                            var panelBottom = new BABYLON.GUI.StackPanel3D();
+                            manager.addControl(panelBottom);
+                            panelBottom.margin = 0.2;
+                            panelBottom.position.y = sphere.position.y;
+                            panelBottom.position.z = sphere.position.z - 2;
+                            var foodButtons = display3DInteractionButtons(panelBottom, bars, mats, cats, roots, anim, specialFood, box, music);
+
+                            // cat meow
+                            scene.onPointerObservable.add((pointerInfo) => {
+                                switch (pointerInfo.type) { 
+                                    case BABYLON.PointerEventTypes.POINTERDOWN:
+                                        if(pointerInfo.pickInfo.hit && pointerInfo.pickInfo.pickedMesh != ground 
+                                                && pointerInfo.pickInfo.pickedMesh != cat1Control
+                                                && pointerInfo.pickInfo.pickedMesh != cat2Control
+                                                && pointerInfo.pickInfo.pickedMesh != cat3Control) {
+                                            pointerDown(pointerInfo.pickInfo.pickedMesh)
+                                        }
+                                        break;
+                                    case BABYLON.PointerEventTypes.POINTERUP:
                                         pointerUp();
                                         if(box.isEnabled()){
                                             console.log(box.position);
-                                            sendBoxPosUpdate(box.position);
+                                            // sendBoxPosUpdate(box.position);
                                             box.move = true;
                                             setTimeout(()=>{box.move = false}, interval);
                                         }
-                                    break;
-                                case BABYLON.PointerEventTypes.POINTERMOVE:          
+                                        break;
+                                    case BABYLON.PointerEventTypes.POINTERMOVE:          
                                         pointerMove();
-                                    break;   
-                            }
-                        });
-
-                        // get updated info
-                        function getUpdate(){
-                            console.log("hello");
-                            const updateClub = functions.httpsCallable('updateClub');
-                            updateClub({}).then(res => {
-                                console.log(JSON.parse(res.data));
-                                var update = JSON.parse(res.data);
-                                if(update.state === "feedSpecial" && !cat1.play){
-                                    playCatEatTogetherAnimation(cats, roots, anim, specialFood);
-                                }
-                                if(update.indivState1 === "feedWet" && !cat1.play){
-                                    //play cat1 eat wet
-                                }
-                                if(update.indivState2 === "feedWet" && !cat2.play){
-                                    //play cat2 eat wet
-                                }
-                                if(update.indivState3 === "feedWet" && !cat3.play){
-                                    //play cat3 eat wet
-                                }
-                                if(update.displayDecor && !box.move){
-                                    box.setEnabled(true);
-                                    box.position.x = update.boxPosX;
-                                    box.position.z = update.boxPosZ;
+                                        break;
+                                    case BABYLON.PointerEventTypes.POINTERTAP:          
+                                        if(pointerInfo.pickInfo.hit && pointerInfo.pickInfo.pickedMesh == box) {
+                                            box.rotation.y += Math.PI/2;
+                                        }
+                                        break;
                                 }
                             });
-                            setTimeout(getUpdate, interval); 
-                        };
-                        setTimeout(getUpdate, interval);
-                    });
-                });  
-            });
-        });    
+
+                            // get updated info
+                            function getUpdate(){
+                                console.log("hello");
+                                const updateClub = functions.httpsCallable('updateClub');
+                                updateClub({}).then(res => {
+                                    console.log(JSON.parse(res.data));
+                                    var update = JSON.parse(res.data);
+                                    if(update.state === "feedSpecial" && !cat1.play){
+                                        playCatEatTogetherAnimation(cats, roots, anim, specialFood);
+                                    }
+                                    if(update.indivState1 === "feedWet" && !cat1.play){
+                                        //play cat1 eat wet
+                                    }
+                                    if(update.indivState2 === "feedWet" && !cat2.play){
+                                        //play cat2 eat wet
+                                    }
+                                    if(update.indivState3 === "feedWet" && !cat3.play){
+                                        //play cat3 eat wet
+                                    }
+                                    if(update.displayDecor && !box.move){
+                                        box.setEnabled(true);
+                                        box.position.x = update.boxPosX;
+                                        box.position.z = update.boxPosZ;
+                                    }
+                                });
+                                setTimeout(getUpdate, interval); 
+                            };
+                            // setTimeout(getUpdate, interval);
+                        });
+                    });  
+                });
+            });    
+        });
     });
 
     // Control drag movement
@@ -402,7 +422,7 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
     const sphere2 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.5});
     var decorButton = new BABYLON.GUI.MeshButton3D(sphere2, "wetFoodButton");
     decorButton.onPointerUpObservable.add(function(){
-        sendDisplayBoxUpdate();
+        // sendDisplayBoxUpdate();
         box.setEnabled(true);
     });   
     panel.addControl(decorButton);
@@ -412,7 +432,7 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
     gatherButton.onPointerUpObservable.add(function(){
         playCatEatTogetherAnimation(cats, roots, anim, food);
         updateHungerLevel(bars, cats, mats);
-        sendUpdate("feedSpecial");
+        // sendUpdate("feedSpecial");
     });   
     panel.addControl(gatherButton);
 
