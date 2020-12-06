@@ -254,7 +254,7 @@ var createScene = async function () {
                                         pointerUp();
                                         if(box.isEnabled()){
                                             console.log(box.position);
-                                            // sendBoxPosUpdate(box.position);
+                                            sendBoxPosUpdate(box.position);
                                             box.move = true;
                                             setTimeout(()=>{box.move = false}, interval);
                                         }
@@ -297,7 +297,7 @@ var createScene = async function () {
                                 });
                                 setTimeout(getUpdate, interval); 
                             };
-                            // setTimeout(getUpdate, interval);
+                            setTimeout(getUpdate, interval);
                         });
                     });  
                 });
@@ -422,7 +422,7 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
     const sphere2 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.5});
     var decorButton = new BABYLON.GUI.MeshButton3D(sphere2, "wetFoodButton");
     decorButton.onPointerUpObservable.add(function(){
-        // sendDisplayBoxUpdate();
+        sendDisplayBoxUpdate();
         box.setEnabled(true);
     });   
     panel.addControl(decorButton);
@@ -432,7 +432,7 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
     gatherButton.onPointerUpObservable.add(function(){
         playCatEatTogetherAnimation(cats, roots, anim, food);
         updateHungerLevel(bars, cats, mats);
-        // sendUpdate("feedSpecial");
+        sendUpdate("feedSpecial");
     });   
     panel.addControl(gatherButton);
 
