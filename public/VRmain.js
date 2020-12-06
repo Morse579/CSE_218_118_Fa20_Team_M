@@ -87,15 +87,39 @@ var createScene = async function () {
     var groundMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
     groundMaterial.alpha = 0;
     ground.material = groundMaterial;
+    var prevCanPosY = null;
+    // var canPosX = 7;  // right corner
+    // var canPosZ = 9;  // right corner
+    var canPosX = 2;
+    var canPosZ = 3;
+    var cans = [];
+    var canCount = 5;
 
     BABYLON.SceneLoader.ImportMesh("", "./assets/space/conference_room1/", "scene.gltf", scene, 
                                     function (roomMeshes, roomParticleSystems, roomSkeletons) {
         // alert("VR room loaded.");
         var room = roomMeshes[0];
-        room.rotation = new BABYLON.Vector3(0, 0, 0);
+        room.rotation = new BABYLON.Vector3(0, Math.PI, 0);
         room.position = new BABYLON.Vector3(0, 0.1, 0);
         room.scaling = new BABYLON.Vector3(0.03, 0.03, 0.03);
         room.isPickable = false;
+
+        for (var i = 0; i < canCount; i++) {
+            BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+                var can = newMeshes[0];
+                cans.push(can);
+                can.position.x = canPosX;
+                if (!prevCanPosY) {
+                    can.position.y = room.position.y + 0.1;
+                }
+                else {
+                    can.position.y = prevCanPosY + 0.2;
+                }
+                can.position.z = canPosZ;
+                can.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+                prevCanPosY = can.position.y;
+            });
+        }
 
         var meshStaticCat = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/CatV2glTFSeparated/",
                                     "ChibiCatV2_unity_orange.gltf", scene, function (newMeshes1, particleSystems1, skeletons1, animationGroups1) {
@@ -132,7 +156,8 @@ var createScene = async function () {
                     },
                     function () {
                         sendIndividualUpdate(0, "feedWet");
-                        playCatEatAnimation(scene, animationGroups1, animationGroups1[20]);
+                        playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1);
+                        //console.log(cans.length);
                     }
                 )
             );
@@ -164,7 +189,9 @@ var createScene = async function () {
                             trigger: BABYLON.ActionManager.OnPickTrigger,
                         },
                         function () {
-                            playCatEatAnimation(scene, animationGroups2, animationGroups2[5]);
+                            sendIndividualUpdate(1, "feedWet");
+                            playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2);
+                            //console.log(cans.length);
                         }
                     )
                 );
@@ -196,7 +223,9 @@ var createScene = async function () {
                                 trigger: BABYLON.ActionManager.OnPickTrigger,
                             },
                             function () {
-                                playCatEatAnimation(scene, animationGroups3, animationGroups3[24]);
+                                sendIndividualUpdate(2, "feedWet");
+                                playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3);
+                                //console.log(cans.length);
                             }
                         )
                     );
@@ -240,7 +269,7 @@ var createScene = async function () {
                                 case BABYLON.PointerEventTypes.POINTERUP:
                                         pointerUp();
                                         if(box.isEnabled()){
-                                            console.log(box.position);
+                                            //console.log(box.position);
                                             sendBoxPosUpdate(box.position);
                                             box.move = true;
                                             setTimeout(()=>{box.move = false}, interval);
@@ -264,13 +293,14 @@ var createScene = async function () {
                                         playCatEatTogetherAnimation(cats, roots, anim, specialFood);
                                     }
                                     if(update.indivState1 === "feedWet" && !cat1.play){
-                                        //play cat1 eat wet
+                                        playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1);
+                                        //console.log(cans.length);
                                     }
                                     if(update.indivState2 === "feedWet" && !cat2.play){
-                                        //play cat2 eat wet
+                                        playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2);
                                     }
                                     if(update.indivState3 === "feedWet" && !cat3.play){
-                                        //play cat3 eat wet
+                                        playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3);
                                     }
                                     if(update.displayDecor && !box.move){
                                         box.setEnabled(true);
@@ -500,13 +530,35 @@ function changeBackgroundMusic(music){
     }
 }
 
-function playCatEatAnimation(scene, animationGroups, afterEatingAnim){
-   
-        animationGroups[7].play(false);
+function playCatEatAnimation(scene, animationGroups, afterEatingAnim, cans, cat, index){
+    cat.play = true;
+    var can_eaten = cans[cans.length - 1];
+    cans.pop();
 
-        setTimeout(function(){
-            afterEatingAnim.play(false);
-        }, 4000);
+    if(index === 1){
+        can_eaten.position.x = cat.position.x;
+        can_eaten.position.y = cat.position.y;
+        can_eaten.position.z = cat.position.z - 1.3;
+    }else if(index === 2){
+        can_eaten.position.x = cat.position.x + 1.3;
+        can_eaten.position.y = cat.position.y;
+        can_eaten.position.z = cat.position.z;
+    }else if(index === 3){
+        can_eaten.position.x = cat.position.x - 1.3;
+        can_eaten.position.y = cat.position.y;
+        can_eaten.position.z = cat.position.z;
+    }
+    //console.log("after move");
+    
+    animationGroups[7].play(false);
+
+    setTimeout(function(){
+        afterEatingAnim.play(false);
+        can_eaten.setEnabled(false);
+    }, 4000);
+    setTimeout(()=>{
+        cat.play = false;
+    }, interval);
 }
 
 function playCatEatTogetherAnimation(cats, roots, anim, food){
