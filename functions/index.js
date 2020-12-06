@@ -491,6 +491,44 @@ exports.loadCat = functions.https.onCall(async (data, context) =>{
     return JSON.stringify(cat);
 });
 
+exports.loadClubRoom = functions.https.onCall(async(data, context) => {
+    let cats = [];
+    let users = ["alice@218.com", "bob@218.com", "carol@218.com"];
+
+    let catRef = db.collection("User").doc("alice@218.com").collection("cat");
+    let snapshot = await catRef.where('status', '==', 0).get();
+    if (!snapshot.empty) {
+        snapshot.forEach(doc => {
+            cats.push(doc.data());
+        });
+    }
+
+    catRef = db.collection("User").doc("bob@218.com").collection("cat");
+    snapshot = await catRef.where('status', '==', 0).get();
+    if (!snapshot.empty) {
+        snapshot.forEach(doc => {
+            cats.push(doc.data());
+        });
+    }
+
+    catRef = db.collection("User").doc("carol@218.com").collection("cat");
+    snapshot = await catRef.where('status', '==', 0).get();
+    if (!snapshot.empty) {
+        snapshot.forEach(doc => {
+            cats.push(doc.data());
+        });
+    }
+    
+    for(var j=0;j<cats.length;j++){
+        let temp = {};
+        temp.hunger = cats[j].hunger;
+        temp.mood = cats[j].mood;
+        temp.appearance = cats[j].appearance;
+        temp.name = cats[j].name;
+        cats[j] = temp;
+    }
+    return JSON.stringify(cats);
+});
 exports.initCat = functions.https.onCall(async (data, context) =>{
     // set cat attributes randomly
     let randomAge = getRandomItem(AGES);
