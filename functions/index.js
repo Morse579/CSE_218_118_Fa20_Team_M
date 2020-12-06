@@ -139,67 +139,55 @@ exports.updateBoxPos = functions.https.onCall(async (data, context) =>{
 
 exports.changeState = functions.https.onCall(async (data, context) =>{
     let ref = db.collection("Room").doc("club");
+
+    await ref.update({
+        feedSpecialCount: admin.firestore.FieldValue.increment(1),
+        state : data.state
+    });
+
+    setTimeout(async () => {
+        let ref = db.collection("Room").doc("club");
+        await ref.update({
+            state : "none"
+        });
+    }, 8000);
     
-    switch(data.state){
-        case "feedSpecial":
-            await ref.update({
-                feedSpecialCount: admin.firestore.FieldValue.increment(1),
-                state : data.state
-            });
-            break;
-        case "none":
-            await ref.update({
-                state : data.state
-            });
-            break;
-    }
 });
 
 exports.changeIndivState = functions.https.onCall(async (data, context) =>{
     let ref = db.collection("Room").doc("club");
+    const interval = 8000;
 
     if(data.index === 0){
-        switch(data.state){
-            case "feedWet":
-                await ref.update({
-                    feedWetCount: admin.firestore.FieldValue.increment(1),
-                    indivState1 : data.state
-                });
-                break;
-            case "none":
-                await ref.update({
-                    indivState1 : data.state
-                });
-                break;
-        }
+        await ref.update({
+            feedWetCount: admin.firestore.FieldValue.increment(1),
+            indivState1 : data.state
+        });
+        setTimeout(async () => {
+            await ref.update({
+                indivState1 : "none"
+            });
+        }, interval);
     }else if(data.index === 1){
-        switch(data.state){
-            case "feedWet":
-                await ref.update({
-                    feedWetCount: admin.firestore.FieldValue.increment(1),
-                    indivState2 : data.state
-                });
-                break;
-            case "none":
-                await ref.update({
-                    indivState2 : data.state
-                });
-                break;
-        }
+        await ref.update({
+            feedWetCount: admin.firestore.FieldValue.increment(1),
+            indivState2 : data.state
+        });
+        setTimeout(async () => {
+            await ref.update({
+                indivState2 : "none"
+            });
+        }, interval);
     }else if(data.index === 2){
-        switch(data.state){
-            case "feedWet":
-                await ref.update({
-                    feedWetCount: admin.firestore.FieldValue.increment(1),
-                    indivState3 : data.state
-                });
-                break;
-            case "none":
-                await ref.update({
-                    indivState3 : data.state
-                });
-                break;
-        }
+        await ref.update({
+            feedWetCount: admin.firestore.FieldValue.increment(1),
+            indivState3 : data.state
+        });
+        setTimeout(async () => {
+            await ref.update({
+                indivState3 : "none"
+            });
+        }, interval);
     }
 });
 

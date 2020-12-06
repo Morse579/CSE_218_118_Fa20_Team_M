@@ -21,6 +21,7 @@ var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 const initPos = [new BABYLON.Vector3(0, 0.2, 8), new BABYLON.Vector3(-8, 0.2, 1), new BABYLON.Vector3(8, 0.2, 1)];
 const gatherPos = [new BABYLON.Vector3(0, 0.2, 1), new BABYLON.Vector3(-3, 0.2, 0), new BABYLON.Vector3(3, 0.2, 0)];
 
+var updateOn = true;
 // Code for AR scene goes here
 var createScene = async function () {
     // Set up basic scene with camera, light, sounds, etc.
@@ -89,6 +90,13 @@ var createScene = async function () {
     var groundMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
     groundMaterial.alpha = 0;
     ground.material = groundMaterial;
+    var prevCanPosY = null;
+    // var canPosX = 7;  // right corner
+    // var canPosZ = 9;  // right corner
+    var canPosX = 2;
+    var canPosZ = 3;
+    var cans = [];
+    var canCount = 5;
 
     BABYLON.SceneLoader.ImportMesh("", "./assets/space/conference_room1/", "scene.gltf", scene, 
                                     function (roomMeshes, roomParticleSystems, roomSkeletons) {
@@ -98,6 +106,23 @@ var createScene = async function () {
         room.position = new BABYLON.Vector3(0, 0.1, 0);
         room.scaling = new BABYLON.Vector3(0.03, 0.03, 0.03);
         room.isPickable = false;
+
+        for (var i = 0; i < canCount; i++) {
+            BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+                var can = newMeshes[0];
+                cans.push(can);
+                can.position.x = canPosX;
+                if (!prevCanPosY) {
+                    can.position.y = room.position.y + 0.1;
+                }
+                else {
+                    can.position.y = prevCanPosY + 0.2;
+                }
+                can.position.z = canPosZ;
+                can.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+                prevCanPosY = can.position.y;
+            });
+        }
 
         var meshStaticCat = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/CatV2glTFSeparated/",
                                     "ChibiCatV2_unity_orange.gltf", scene, function (newMeshes1, particleSystems1, skeletons1, animationGroups1) {
@@ -133,9 +158,9 @@ var createScene = async function () {
                         trigger: BABYLON.ActionManager.OnPickTrigger,
                     },
                     function () {
-                        // sendIndividualUpdate(0, "feedWet");
                         meow.play();
-                        playCatEatAnimation(scene, animationGroups1, animationGroups1[20]);
+                        sendIndividualUpdate(0, "feedWet");
+                        playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1);
                     }
                 )
             );
@@ -168,7 +193,8 @@ var createScene = async function () {
                         },
                         function () {
                             meow.play();
-                            playCatEatAnimation(scene, animationGroups2, animationGroups2[5]);
+                            sendIndividualUpdate(1, "feedWet");
+                            playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2);
                         }
                     )
                 );
@@ -201,7 +227,8 @@ var createScene = async function () {
                             },
                             function () {
                                 meow.play();
-                                playCatEatAnimation(scene, animationGroups3, animationGroups3[24]);
+                                sendIndividualUpdate(2, "feedWet");
+                                playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3);
                             }
                         )
                     );
@@ -253,7 +280,7 @@ var createScene = async function () {
                                     case BABYLON.PointerEventTypes.POINTERUP:
                                         pointerUp();
                                         if(box.isEnabled()){
-                                            console.log(box.position);
+                                            //console.log(box.position);
                                             sendBoxPosUpdate(box.position);
                                             box.move = true;
                                             setTimeout(()=>{box.move = false}, interval);
@@ -272,38 +299,40 @@ var createScene = async function () {
 
                             // get updated info
                             function getUpdate(){
-                                console.log("hello");
-                                const updateClub = functions.httpsCallable('updateClub');
-                                updateClub({}).then(res => {
-                                    console.log(JSON.parse(res.data));
-                                    var update = JSON.parse(res.data);
-                                    if(update.state === "feedSpecial" && !cat1.play){
-                                        playCatEatTogetherAnimation(cats, roots, anim, specialFood);
-                                    }
-                                    if(update.indivState1 === "feedWet" && !cat1.play){
-                                        //play cat1 eat wet
-                                    }
-                                    if(update.indivState2 === "feedWet" && !cat2.play){
-                                        //play cat2 eat wet
-                                    }
-                                    if(update.indivState3 === "feedWet" && !cat3.play){
-                                        //play cat3 eat wet
-                                    }
-                                    if(update.displayDecor && !box.move){
-                                        box.setEnabled(true);
-                                        box.position.x = update.boxPosX;
-                                        box.position.z = update.boxPosZ;
-                                    }
-                                });
+                                console.log("update on: "+ updateOn);
+                                if(updateOn){
+                                    const updateClub = functions.httpsCallable('updateClub');
+                                    updateClub({}).then(res => {
+                                        console.log(JSON.parse(res.data));
+                                        var update = JSON.parse(res.data);
+                                        if(update.state === "feedSpecial" && !cat1.play){
+                                            playCatEatTogetherAnimation(cats, roots, anim, specialFood);
+                                        }
+                                        if(update.indivState1 === "feedWet" && !cat1.play){
+                                            playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1);
+                                        }
+                                        if(update.indivState2 === "feedWet" && !cat2.play){
+                                            playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2);
+                                        }
+                                        if(update.indivState3 === "feedWet" && !cat3.play){
+                                            playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3);
+                                        }
+                                        if(update.displayDecor && !box.move){
+                                            box.setEnabled(true);
+                                            box.position.x = update.boxPosX;
+                                            box.position.z = update.boxPosZ;
+                                        }
+                                    });
+                                }
                                 setTimeout(getUpdate, interval); 
                             };
-                            setTimeout(getUpdate, interval);
-                        });
-                    });  
-                });
-            });    
-        });
-    });
+                            setTimeout(getUpdate, 0);
+                        });     // cat tree
+                    });         // special food
+                });             // cat3
+            });                 // cat2
+        });                     // cat1
+    });                         // room
 
     // Control drag movement
     var startingPoint;
@@ -436,6 +465,18 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
     });   
     panel.addControl(gatherButton);
 
+    var button = new BABYLON.GUI.Button3D("sync");
+    panel.addControl(button);
+    button.onPointerUpObservable.add(function(){
+        updateOn = !updateOn;
+    });   
+    
+    var text1 = new BABYLON.GUI.TextBlock();
+    text1.text = "SYNC";
+    text1.color = "white";
+    text1.fontSize = 40;
+    button.content = text1;  
+
     var foodButtons = {
         music: musicButton,
         decor: decorButton,
@@ -451,10 +492,10 @@ function sendUpdate(type){
     changeState({state: type})
     .then(res => {
     });
-    setTimeout(function(){
-        console.log(`${interval/1000}s later`);
-        changeState({state: "none"});
-    }, interval);
+    // setTimeout(function(){
+    //     console.log(`${interval/1000}s later`);
+    //     changeState({state: "none"});
+    // }, interval);
 }
 
 function sendIndividualUpdate(num, type){
@@ -462,10 +503,10 @@ function sendIndividualUpdate(num, type){
     changeIndivState({index: num, state: type})
     .then(res => {
     });
-    setTimeout(function(){
-        console.log(`${interval/1000}s later`);
-        changeIndivState({index: num, state: "none"});
-    }, interval);
+    // setTimeout(function(){
+    //     console.log(`${interval/1000}s later`);
+    //     changeIndivState({index: num, state: "none"});
+    // }, interval);
 }
 
 function sendDisplayBoxUpdate(){
@@ -505,13 +546,35 @@ function changeBackgroundMusic(music){
     }
 }
 
-function playCatEatAnimation(scene, animationGroups, afterEatingAnim){
-   
-        animationGroups[7].play(false);
+function playCatEatAnimation(scene, animationGroups, afterEatingAnim, cans, cat, index){
+    cat.play = true;
+    var can_eaten = cans[cans.length - 1];
+    cans.pop();
 
-        setTimeout(function(){
-            afterEatingAnim.play(false);
-        }, 4000);
+    if(index === 1){
+        can_eaten.position.x = cat.position.x;
+        can_eaten.position.y = cat.position.y;
+        can_eaten.position.z = cat.position.z - 1.3;
+    }else if(index === 2){
+        can_eaten.position.x = cat.position.x + 1.3;
+        can_eaten.position.y = cat.position.y;
+        can_eaten.position.z = cat.position.z;
+    }else if(index === 3){
+        can_eaten.position.x = cat.position.x - 1.3;
+        can_eaten.position.y = cat.position.y;
+        can_eaten.position.z = cat.position.z;
+    }
+    //console.log("after move");
+    
+    animationGroups[7].play(false);
+
+    setTimeout(function(){
+        afterEatingAnim.play(false);
+        can_eaten.setEnabled(false);
+    }, 4000);
+    setTimeout(()=>{
+        cat.play = false;
+    }, interval);
 }
 
 function playCatEatTogetherAnimation(cats, roots, anim, food){
