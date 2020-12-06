@@ -18,11 +18,11 @@ const interval = 10000;
 const loadRoom = functions.httpsCallable('loadClubRoom');
 loadRoom({}).then(res => {
     console.log(JSON.parse(res.data));
-    let cats = JSON.parse(res.data);
-    initVRscene(cats);
+    let catsInfo = JSON.parse(res.data);
+    initVRscene(catsInfo);
 });
 
-function initVRscene(cats){
+function initVRscene(catsInfo){
 
 var canvas = document.getElementById("renderCanvas"); // Get the canvas element
 var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
