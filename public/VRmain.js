@@ -85,15 +85,39 @@ var createScene = async function () {
     var groundMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
     groundMaterial.alpha = 0;
     ground.material = groundMaterial;
+    var prevCanPosY = null;
+    // var canPosX = 7;  // right corner
+    // var canPosZ = 9;  // right corner
+    var canPosX = 2;
+    var canPosZ = 3;
+    var cans = [];
+    var canCount = 5;
 
     BABYLON.SceneLoader.ImportMesh("", "./assets/space/conference_room1/", "scene.gltf", scene, 
                                     function (roomMeshes, roomParticleSystems, roomSkeletons) {
         // alert("VR room loaded.");
         var room = roomMeshes[0];
-        room.rotation = new BABYLON.Vector3(0, 0, 0);
+        room.rotation = new BABYLON.Vector3(0, Math.PI, 0);
         room.position = new BABYLON.Vector3(0, 0.1, 0);
         room.scaling = new BABYLON.Vector3(0.03, 0.03, 0.03);
         room.isPickable = false;
+
+        for (var i = 0; i < canCount; i++) {
+            BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+                var can = newMeshes[0];
+                cans.push(can);
+                can.position.x = canPosX;
+                if (!prevCanPosY) {
+                    can.position.y = room.position.y + 0.1;
+                }
+                else {
+                    can.position.y = prevCanPosY + 0.2;
+                }
+                can.position.z = canPosZ;
+                can.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+                prevCanPosY = can.position.y;
+            });
+        }
 
         var meshStaticCat = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/CatV2glTFSeparated/",
                                     "ChibiCatV2_unity_orange.gltf", scene, function (newMeshes1, particleSystems1, skeletons1, animationGroups1) {
@@ -129,7 +153,14 @@ var createScene = async function () {
                         trigger: BABYLON.ActionManager.OnPickTrigger,
                     },
                     function () {
-                        playCatEatAnimation(scene, animationGroups1, animationGroups1[20]);
+                        var can_eaten = cans[cans.length - 1];
+                        cans.pop();
+                        can_eaten.position.x = cat1.position.x;
+                        can_eaten.position.y = cat1.position.y;
+                        can_eaten.position.z = cat1.position.z - 1.3;
+                        console.log("after move");
+                        playCatEatAnimation(scene, animationGroups1, animationGroups1[20], can_eaten);
+                        console.log(cans.length);
                     }
                 )
             );
@@ -161,7 +192,14 @@ var createScene = async function () {
                             trigger: BABYLON.ActionManager.OnPickTrigger,
                         },
                         function () {
-                            playCatEatAnimation(scene, animationGroups2, animationGroups2[5]);
+                            var can_eaten = cans[cans.length - 1];
+                            cans.pop();
+                            can_eaten.position.x = cat2.position.x + 1.3;
+                            can_eaten.position.y = cat2.position.y;
+                            can_eaten.position.z = cat2.position.z;
+                            console.log("after move");
+                            playCatEatAnimation(scene, animationGroups2, animationGroups2[5], can_eaten);
+                            console.log(cans.length);
                         }
                     )
                 );
@@ -193,7 +231,14 @@ var createScene = async function () {
                                 trigger: BABYLON.ActionManager.OnPickTrigger,
                             },
                             function () {
-                                playCatEatAnimation(scene, animationGroups3, animationGroups3[24]);
+                                var can_eaten = cans[cans.length - 1];
+                                cans.pop();
+                                can_eaten.position.x = cat3.position.x - 1.3;
+                                can_eaten.position.y = cat3.position.y;
+                                can_eaten.position.z = cat3.position.z;
+                                console.log("after move");
+                                playCatEatAnimation(scene, animationGroups3, animationGroups3[24], can_eaten);
+                                console.log(cans.length);
                             }
                         )
                     );
@@ -443,12 +488,12 @@ function changeBackgroundMusic(music){
     }
 }
 
-function playCatEatAnimation(scene, animationGroups, afterEatingAnim){
-   
+function playCatEatAnimation(scene, animationGroups, afterEatingAnim, can_eaten){
         animationGroups[7].play(false);
 
         setTimeout(function(){
             afterEatingAnim.play(false);
+            can_eaten.setEnabled(false);
         }, 4000);
 }
 
