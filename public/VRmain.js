@@ -21,6 +21,7 @@ var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 const initPos = [new BABYLON.Vector3(0, 0.2, 8), new BABYLON.Vector3(-8, 0.2, 1), new BABYLON.Vector3(8, 0.2, 1)];
 const gatherPos = [new BABYLON.Vector3(0, 0.2, 1), new BABYLON.Vector3(-3, 0.2, 0), new BABYLON.Vector3(3, 0.2, 0)];
 
+var updateOn = true;
 // Code for AR scene goes here
 var createScene = async function () {
     // Set up basic scene with camera, light, sounds, etc.
@@ -253,29 +254,31 @@ var createScene = async function () {
 
                         // get updated info
                         function getUpdate(){
-                            console.log("hello");
-                            const updateClub = functions.httpsCallable('updateClub');
-                            updateClub({}).then(res => {
-                                console.log(JSON.parse(res.data));
-                                var update = JSON.parse(res.data);
-                                if(update.state === "feedSpecial" && !cat1.play){
-                                    playCatEatTogetherAnimation(cats, roots, anim, specialFood);
-                                }
-                                if(update.indivState1 === "feedWet" && !cat1.play){
-                                    //play cat1 eat wet
-                                }
-                                if(update.indivState2 === "feedWet" && !cat2.play){
-                                    //play cat2 eat wet
-                                }
-                                if(update.indivState3 === "feedWet" && !cat3.play){
-                                    //play cat3 eat wet
-                                }
-                                if(update.displayDecor && !box.move){
-                                    box.setEnabled(true);
-                                    box.position.x = update.boxPosX;
-                                    box.position.z = update.boxPosZ;
-                                }
-                            });
+                            console.log("update on: "+ updateOn);
+                            if(updateOn){
+                                const updateClub = functions.httpsCallable('updateClub');
+                                updateClub({}).then(res => {
+                                    console.log(JSON.parse(res.data));
+                                    var update = JSON.parse(res.data);
+                                    if(update.state === "feedSpecial" && !cat1.play){
+                                        playCatEatTogetherAnimation(cats, roots, anim, specialFood);
+                                    }
+                                    if(update.indivState1 === "feedWet" && !cat1.play){
+                                        //play cat1 eat wet
+                                    }
+                                    if(update.indivState2 === "feedWet" && !cat2.play){
+                                        //play cat2 eat wet
+                                    }
+                                    if(update.indivState3 === "feedWet" && !cat3.play){
+                                        //play cat3 eat wet
+                                    }
+                                    if(update.displayDecor && !box.move){
+                                        box.setEnabled(true);
+                                        box.position.x = update.boxPosX;
+                                        box.position.z = update.boxPosZ;
+                                    }
+                                });
+                            }
                             setTimeout(getUpdate, interval); 
                         };
                         setTimeout(getUpdate, interval);
@@ -415,6 +418,18 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
         sendUpdate("feedSpecial");
     });   
     panel.addControl(gatherButton);
+
+    var button = new BABYLON.GUI.Button3D("sync");
+    panel.addControl(button);
+    button.onPointerUpObservable.add(function(){
+        updateOn = !updateOn;
+    });   
+    
+    var text1 = new BABYLON.GUI.TextBlock();
+    text1.text = "SYNC";
+    text1.color = "white";
+    text1.fontSize = 40;
+    button.content = text1;  
 
     var foodButtons = {
         music: musicButton,
