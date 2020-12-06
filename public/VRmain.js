@@ -70,7 +70,7 @@ var createScene = async function () {
         floorMeshes: [env.ground]
     });
 
-    //displayBoard();
+    displayBoard();
 
     const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 1});
     sphere.position.y = 1;

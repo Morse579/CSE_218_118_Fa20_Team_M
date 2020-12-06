@@ -150,13 +150,13 @@ exports.changeState = functions.https.onCall(async (data, context) =>{
         await ref.update({
             state : "none"
         });
-    }, 8000);
+    }, 10000);
     
 });
 
 exports.changeIndivState = functions.https.onCall(async (data, context) =>{
     let ref = db.collection("Room").doc("club");
-    const interval = 8000;
+    const interval = 10000;
 
     if(data.index === 0){
         await ref.update({
