@@ -1,6 +1,6 @@
 export{initializeScene}
-//import{onFeedClicked} from './update.js'
 import{functions} from './ARmain.js'
+import{displayShop} from './shop.js'
 
 function initializeScene(user){
     var canvas = document.getElementById("renderCanvas"); // Get the canvas element
@@ -56,7 +56,7 @@ function initializeScene(user){
 
         // Display 2D GUI: food, currency, shop and exit icon
         var textUI = displayProperties(user);
-        textUI.coin =  displayTopUI(user);
+        displayTopUI(user, textUI);
 
         var mats = createMats();
 
@@ -609,7 +609,7 @@ function display3DDecorButtons(panel, user, textUI, scene, cat, bars, mats){
     }
     return textUI;
   }
-  function displayTopUI(user){
+  function displayTopUI(user, textUI){
     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("ActionUI");
     var grid = new BABYLON.GUI.Grid(); 
     advancedTexture.addControl(grid); 
@@ -649,7 +649,7 @@ function display3DDecorButtons(panel, user, textUI, scene, cat, bars, mats){
     shopButton.color = "#FF7979";
     shopButton.background = "#EB4D4B";
     shopButton.onPointerClickObservable.add(function () {
-        //TODO: SHOP
+        displayShop(advancedTexture, user, textUI, coinText);
     });
     grid.addControl(shopButton, 0, 2);
 

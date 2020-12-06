@@ -91,6 +91,106 @@ const functions = require('firebase-functions');
 admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
 
+exports.updateClub = functions.https.onCall(async (data, context) =>{
+    let ref = db.collection("Room").doc("club");
+    let snapshot = await ref.get();
+    let clubData = snapshot.data();
+    let today = new Date().getDate();
+    if(today === clubData.date){
+        return JSON.stringify(clubData);
+    }else{
+        clubData.date = today;
+        clubData.decorateCount = 0;
+        clubData.feedSpecialCount = 0;
+        clubData.feedWetCount = 0;
+        clubData.state = "none";
+        clubData.indivState1 = "none";
+        clubData.indivState2 = "none";
+        clubData.indivState3 = "none";
+
+        await ref.update({
+            date: today,
+            decorateCount: 0,
+            feedWetCount: 0,
+            feedSpecialCount: 0,
+            state: "none",
+            indivState1: "none",
+            indivState2: "none",
+            indivState3: "none"
+        });
+        return JSON.stringify(clubData);
+    }
+});
+
+exports.displayDecor = functions.https.onCall(async (data, context) =>{
+    let ref = db.collection("Room").doc("club");
+    await ref.update({
+        displayDecor: true
+    });
+});
+
+exports.updateBoxPos = functions.https.onCall(async (data, context) =>{
+    let ref = db.collection("Room").doc("club");
+    await ref.update({
+        boxPosX: data.x,
+        boxPosZ: data.z
+    });
+});
+
+exports.changeState = functions.https.onCall(async (data, context) =>{
+    let ref = db.collection("Room").doc("club");
+
+    await ref.update({
+        feedSpecialCount: admin.firestore.FieldValue.increment(1),
+        state : data.state
+    });
+
+    setTimeout(async () => {
+        let ref = db.collection("Room").doc("club");
+        await ref.update({
+            state : "none"
+        });
+    }, 10000);
+    
+});
+
+exports.changeIndivState = functions.https.onCall(async (data, context) =>{
+    let ref = db.collection("Room").doc("club");
+    const interval = 10000;
+
+    if(data.index === 0){
+        await ref.update({
+            feedWetCount: admin.firestore.FieldValue.increment(1),
+            indivState1 : data.state
+        });
+        setTimeout(async () => {
+            await ref.update({
+                indivState1 : "none"
+            });
+        }, interval);
+    }else if(data.index === 1){
+        await ref.update({
+            feedWetCount: admin.firestore.FieldValue.increment(1),
+            indivState2 : data.state
+        });
+        setTimeout(async () => {
+            await ref.update({
+                indivState2 : "none"
+            });
+        }, interval);
+    }else if(data.index === 2){
+        await ref.update({
+            feedWetCount: admin.firestore.FieldValue.increment(1),
+            indivState3 : data.state
+        });
+        setTimeout(async () => {
+            await ref.update({
+                indivState3 : "none"
+            });
+        }, interval);
+    }
+});
+
 exports.eat = functions.https.onCall(async (data, context) =>{
     let ref = db.collection("User").doc(data.email).collection("cat").doc(data.catName);
     switch(data.type) {

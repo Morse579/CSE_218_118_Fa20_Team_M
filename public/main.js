@@ -33,7 +33,7 @@ function initialize(user){
         userInfo = JSON.parse(res.data);
         console.log(userInfo);
         userInfo.email = user.email;
-        document.getElementById("history").hidden = false;
+        // document.getElementById("history").hidden = false;
         if(userInfo.hasCat){
             document.getElementById("start").style.display = "none";
             if(userInfo.cat.status === 0){
@@ -54,7 +54,9 @@ function initialize(user){
 document.getElementById("start").addEventListener('click', onStartButtonClick);
 document.getElementById("continue").addEventListener('click', showARScene);
 document.getElementById("end").addEventListener('click', endStory);
-document.getElementById("history").addEventListener('click', showHistory);
+document.getElementById("vr").addEventListener("click", function(){
+    window.location.href = "VRscene.html";
+});
 document.getElementById("logout").addEventListener('click', e => {firebase.auth().signOut();});
 
 function onStartButtonClick(){
