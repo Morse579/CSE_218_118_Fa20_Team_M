@@ -88,7 +88,7 @@ var createScene = async function () {
         floorMeshes: [env.ground]
     });
 
-    displayBoard();
+    // displayBoard();
 
     const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 1});
     sphere.position.z = -3;
@@ -211,6 +211,7 @@ var createScene = async function () {
             cat1.play = false;
             cat1.hunger = 50;
             cat1.mood = 100;
+            cat1.name = "Java";
             if (animationGroups1.length > 0) {
                 var cat_anim = ['static', 'cat_attack_jump', 'cat_attack_left', 'cat_catch', 'cat_catch_play', 
                                 'cat_clean1', 'cat_death_right', 'cat_eat', 'cat_gallop', 'cat_gallop_right', 
@@ -255,6 +256,7 @@ var createScene = async function () {
                 cat2.play = false;
                 cat2.hunger = 20;
                 cat2.mood = 40;
+                cat2.name = "Python";
                 if (animationGroups2.length > 0) {
                     animationGroups2[5].play(false);
                 }
@@ -292,6 +294,7 @@ var createScene = async function () {
                     cat3.play = false;
                     cat3.hunger = 70;
                     cat3.mood = 140;
+                    cat3.name = "C++";
                     if (animationGroups3.length > 0) {
                         animationGroups3[24].play(false);
                     }
@@ -333,7 +336,7 @@ var createScene = async function () {
 
                         // 3D gui - for mesh interaction
                         var manager = new BABYLON.GUI.GUI3DManager(scene);
-                        var bars = addBars(mats, cats, roots);
+                        var bars = addNamesAndBars(mats, cats, anim, roots);
                         var panelBottom = new BABYLON.GUI.StackPanel3D();
                         manager.addControl(panelBottom);
                         panelBottom.margin = 0.2;
@@ -345,10 +348,9 @@ var createScene = async function () {
                         scene.onPointerObservable.add((pointerInfo) => {
                             switch (pointerInfo.type) { 
                                 case BABYLON.PointerEventTypes.POINTERDOWN:
-                                    if(pointerInfo.pickInfo.hit && pointerInfo.pickInfo.pickedMesh != ground 
-                                            && pointerInfo.pickInfo.pickedMesh != cat1Control
-                                            && pointerInfo.pickInfo.pickedMesh != cat2Control
-                                            && pointerInfo.pickInfo.pickedMesh != cat3Control) {
+                                    if(pointerInfo.pickInfo.hit && (pointerInfo.pickInfo.pickedMesh == box 
+                                                                || pointerInfo.pickInfo.pickedMesh == box2
+                                                                || pointerInfo.pickInfo.pickedMesh == box3)) {
                                         pointerDown(pointerInfo.pickInfo.pickedMesh)
                                     }
                                     break;
@@ -471,13 +473,66 @@ createScene().then(scene => {
     });
 });
 
-function addBars(mats, cats, roots){
+function addNamesAndBars(mats, cats, anim, roots){
     var bars = {};
     bars.hungerBar = [];
     bars.moodBar = [];
+
+    // Add name
+    var plane1 = BABYLON.Mesh.CreatePlane("plane", 2.2);
+    var plane2 = BABYLON.Mesh.CreatePlane("plane", 2.2);
+    var plane3 = BABYLON.Mesh.CreatePlane("plane", 2.2);
+
+    plane1.parent = roots[0];
+    plane2.parent = roots[1];
+    plane3.parent = roots[2];
+    plane1.position.y = 3;
+    plane2.position.y = 3;
+    plane3.position.y = 3;
+
+    var advancedTexture1 = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane1);
+    var advancedTexture2 = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane2);
+    var advancedTexture3 = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane3);
+
+    var button1 = BABYLON.GUI.Button.CreateSimpleButton("but", cats[0].name);
+    var button2 = BABYLON.GUI.Button.CreateSimpleButton("but", cats[1].name);
+    var button3 = BABYLON.GUI.Button.CreateSimpleButton("but", cats[2].name);
+
+    button1.width = 1;
+    button1.height = 0.3;
+    button1.color = "white";
+    button1.fontSize = 180;
+    button1.cornerRadius = 40;
+    button1.background = "green";
+    button1.onPointerUpObservable.add(function() {
+        anim[0][6].play(false);
+    });
+    advancedTexture1.addControl(button1);
+
+    button2.width = 1;
+    button2.height = 0.3;
+    button2.color = "white";
+    button2.fontSize = 200;
+    button2.cornerRadius = 40;
+    button2.background = "green";
+    button2.onPointerUpObservable.add(function() {
+        anim[1][6].play(false);
+    });
+    advancedTexture2.addControl(button2);
+
+    button3.width = 1;
+    button3.height = 0.3;
+    button3.color = "white";
+    button3.fontSize = 200;
+    button3.cornerRadius = 40;
+    button3.background = "green";
+    button3.onPointerUpObservable.add(function() {
+        anim[2][6].play(false);
+    });
+    advancedTexture3.addControl(button3);
     
     for(var j=0;j<3;j++){
-
+        // Add bars
         bars.hungerBar[j] = [];
         for(var i=0;i<100;i++){
             bars.hungerBar[j][i] = BABYLON.MeshBuilder.CreateBox("box", {height: 0.2, width: 0.02, depth: 0.2});
