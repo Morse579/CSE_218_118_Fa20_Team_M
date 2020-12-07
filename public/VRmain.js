@@ -24,12 +24,13 @@ const interval = 10000;
 const loadRoom = functions.httpsCallable('loadClubRoom');
 loadRoom({}).then(res => {
     console.log(JSON.parse(res.data));
-    let catsInfo = JSON.parse(res.data);
-    initVRscene(catsInfo);
+    let roomInfo = JSON.parse(res.data);
+    initVRscene(roomInfo);
 });
 
-function initVRscene(catsInfo){
-
+function initVRscene(roomInfo){
+    
+let catsInfo = roomInfo.cats;
 var canvas = document.getElementById("renderCanvas"); // Get the canvas element
 var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
@@ -188,7 +189,7 @@ var createScene = async function () {
     var canPosX = 2;
     var canPosZ = 3;
     var cans = [];
-    var canCount = 3;
+    var canCount = roomInfo.cans;
 
     BABYLON.SceneLoader.ImportMesh("", "./assets/space/conference_room1/", "scene.gltf", scene, 
                                     function (roomMeshes, roomParticleSystems, roomSkeletons) {
@@ -402,7 +403,8 @@ var createScene = async function () {
                             console.log("update on: "+ updateOn);
                             if(updateOn){
                                 const updateClub = functions.httpsCallable('updateClub');
-                                updateClub({}).then(res => {
+                                console.log("total cans:" + cans.length);
+                                updateClub({cans: cans.length}).then(res => {
                                     console.log(JSON.parse(res.data));
                                     var update = JSON.parse(res.data);
                                     if(update.state === "feedSpecial" && !cat1.play){
@@ -421,6 +423,28 @@ var createScene = async function () {
                                         box.setEnabled(true);
                                         box.position.x = update.boxPosX;
                                         box.position.z = update.boxPosZ;
+                                    }
+                                    if(update.cans !== cans.length){
+                                        var diff = update.cans - cans.length;
+                                        for(var d = 0;d < diff;d++){
+                                            // add more cans
+                                            BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+                                                var can = newMeshes[0];
+                                                cans.push(can);
+                                                can.position.x = canPosX;
+                                                if (!prevCanPosY) {
+                                                    can.position.y = roomPosY + 0.1;
+                                                }
+                                                else {
+                                                    can.position.y = prevCanPosY + 0.2;
+                                                }
+                                                can.position.z = canPosZ;
+                                                can.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+                                                prevCanPosY = can.position.y;
+                                            });
+
+                                        }
+
                                     }
                                 });
                             }

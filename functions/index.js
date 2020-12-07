@@ -97,6 +97,12 @@ exports.updateClub = functions.https.onCall(async (data, context) =>{
     let clubData = snapshot.data();
     let today = new Date().getDate();
     if(today === clubData.date){
+        if(data.cans > clubData.cans){
+            clubData.cans = data.cans;
+            await ref.update({
+                cans: data.cans
+            });
+        }
         return JSON.stringify(clubData);
     }else{
         clubData.date = today;
@@ -518,8 +524,11 @@ exports.loadCat = functions.https.onCall(async (data, context) =>{
 });
 
 exports.loadClubRoom = functions.https.onCall(async(data, context) => {
-    let cats = [];
+    let ref = db.collection("Room").doc("club");
+    let snapshot1 = await ref.get();
+    let roomInfo = snapshot1.data();
 
+    let cats = [];
     let catRef = db.collection("User").doc("david@218.com").collection("cat");
     let snapshot = await catRef.where('status', '==', 0).get();
     if (!snapshot.empty) {
@@ -552,7 +561,9 @@ exports.loadClubRoom = functions.https.onCall(async(data, context) => {
         temp.name = cats[j].name;
         cats[j] = temp;
     }
-    return JSON.stringify(cats);
+    roomInfo.cats = cats;
+
+    return JSON.stringify(roomInfo);
 });
 exports.initCat = functions.https.onCall(async (data, context) =>{
     // set cat attributes randomly
