@@ -34,6 +34,14 @@ const gatherPos = [new BABYLON.Vector3(0, 0.2, 1), new BABYLON.Vector3(-3, 0.2, 
 var numBGM = 4;
 var currBGM = -1;
 
+// can position
+var prevCanPosY = null;
+var roomPosY = null;
+
+// reward music
+var rewardMusicIsPlaying = false;
+var musicTaskRewarded = false;
+
 var updateOn = true;
 // Code for AR scene goes here
 var createScene = async function () {
@@ -46,10 +54,11 @@ var createScene = async function () {
     light.intensity = 0.7;
 
     // BGM and sound effect
-    const music1 = new BABYLON.Sound("bgm", "./assets/sounds/bensound-ukulele.mp3", scene, null, {loop: true, autoplay: false});
-    const music2 = new BABYLON.Sound("bgm", "./assets/sounds/bensound-littleidea.mp3", scene, null, {loop: true, autoplay: false});
-    const music3 = new BABYLON.Sound("bgm", "./assets/sounds/bensound-smile.mp3", scene, null, {loop: true, autoplay: false});
-    const music4 = new BABYLON.Sound("bgm", "./assets/sounds/bensound-cute.mp3", scene, null, {loop: true, autoplay: false});
+    const rewardMusic = new BABYLON.Sound("bgm", "./assets/sounds/bensound-ukulele-clip.mp3", scene, null, {loop: false, autoplay: false});
+    const music1 = new BABYLON.Sound("bgm", "./assets/sounds/bensound-ukulele.mp3", scene, null, {loop: false, autoplay: false});
+    const music2 = new BABYLON.Sound("bgm", "./assets/sounds/bensound-littleidea.mp3", scene, null, {loop: false, autoplay: false});
+    const music3 = new BABYLON.Sound("bgm", "./assets/sounds/bensound-smile.mp3", scene, null, {loop: false, autoplay: false});
+    const music4 = new BABYLON.Sound("bgm", "./assets/sounds/bensound-cute.mp3", scene, null, {loop: false, autoplay: false});
     const meow = new BABYLON.Sound("meow", "./assets/sounds/cat-meow.mp3", scene);
     const music = [music1, music2, music3, music4];
 
@@ -168,13 +177,10 @@ var createScene = async function () {
     var groundMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
     groundMaterial.alpha = 0;
     ground.material = groundMaterial;
-    var prevCanPosY = null;
-    // var canPosX = 7;  // right corner
-    // var canPosZ = 9;  // right corner
     var canPosX = 2;
     var canPosZ = 3;
     var cans = [];
-    var canCount = 5;
+    var canCount = 3;
 
     BABYLON.SceneLoader.ImportMesh("", "./assets/space/conference_room1/", "scene.gltf", scene, 
                                     function (roomMeshes, roomParticleSystems, roomSkeletons) {
@@ -184,6 +190,7 @@ var createScene = async function () {
         room.position = new BABYLON.Vector3(0, 0.1, 0);
         room.scaling = new BABYLON.Vector3(0.03, 0.03, 0.03);
         room.isPickable = false;
+        roomPosY = room.position.y;
 
         for (var i = 0; i < canCount; i++) {
             BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
@@ -191,7 +198,7 @@ var createScene = async function () {
                 cans.push(can);
                 can.position.x = canPosX;
                 if (!prevCanPosY) {
-                    can.position.y = room.position.y + 0.1;
+                    can.position.y = roomPosY + 0.1;
                 }
                 else {
                     can.position.y = prevCanPosY + 0.2;
@@ -339,7 +346,8 @@ var createScene = async function () {
                         panelBottom.margin = 0.2;
                         panelBottom.position.y = sphere.position.y;
                         panelBottom.position.z = sphere.position.z - 2;
-                        var foodButtons = display3DInteractionButtons(panelBottom, bars, mats, cats, roots, anim, specialFood, boxes, music);
+                        var foodButtons = display3DInteractionButtons(panelBottom, bars, mats, cats, roots, anim, specialFood, boxes, music, 
+                                                                      rewardMusic, scene, cans, canPosX, canPosZ);
 
                         // cat meow
                         scene.onPointerObservable.add((pointerInfo) => {
@@ -509,13 +517,14 @@ function addBars(mats, cats, roots){
   return bars;
 }
 
-function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food, boxes, music){
+function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food, boxes, music, rewardMusic, 
+                                     scene, cans, canPosX, canPosZ){
     // console.log("display 3d food buttons");
 
     // change bgm button
     var musicButton = new BABYLON.GUI.Button3D("musicButton");
     musicButton.onPointerUpObservable.add(function(){
-        changeBackgroundMusic(music);
+        changeBackgroundMusic(music); 
     });   
     panel.addControl(musicButton);
     var text1 = new BABYLON.GUI.TextBlock();
@@ -523,6 +532,18 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
     text1.color = "white";
     text1.fontSize = 40;
     musicButton.content = text1; 
+
+    // Music Task button
+    var musicTaskButton = new BABYLON.GUI.Button3D("musicTaskButton");
+    musicTaskButton.onPointerUpObservable.add(function(){
+        musicTask(scene, rewardMusic, cans, canPosX, canPosZ, musicTaskButton);
+    });   
+    panel.addControl(musicTaskButton);
+    var text1 = new BABYLON.GUI.TextBlock();
+    text1.text = "music\nfor reward";
+    text1.color = "white";
+    text1.fontSize = 35;
+    musicTaskButton.content = text1; 
 
     // cat tree button
     var decorButton = new BABYLON.GUI.Button3D("decorButton");
@@ -653,10 +674,66 @@ function changeBackgroundMusic(music){
     }
 }
 
+function musicTask(scene, musicToPlay, cans, canPosX, canPosZ, musicTaskButton) {
+    var text1 = new BABYLON.GUI.TextBlock();
+    text1.color = "white";
+    text1.fontSize = 35;
+
+    if (rewardMusicIsPlaying) {
+        musicToPlay.stop();
+        musicTaskRewarded = true;
+        text1.text = "music\nfor reward";
+        musicTaskButton.content = text1;
+        rewardMusicIsPlaying = false;
+        // console.log("pressed on button while playing");
+
+        return;
+    }
+    else {
+        musicToPlay.play();
+        musicTaskRewarded = false;
+        rewardMusicIsPlaying = true;
+        text1.text = "stop music\nno reward";
+        musicTaskButton.content = text1;
+        // console.log("playing the music")
+
+        musicToPlay.onEndedObservable.addOnce(() => {
+            if (!musicTaskRewarded) {
+                rewardMusicIsPlaying = false;
+                text1.text = "music\nfor reward";
+                musicTaskButton.content = text1;
+                // console.log("finished listening to the reward music!");
+                BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+                    // console.log("musicTask reward loaded");
+                    var can = newMeshes[0];
+                    cans.push(can);
+                    can.position.x = canPosX;
+                    if (!prevCanPosY) {
+                        can.position.y = roomPosY + 0.1;
+                    }
+                    else {
+                        can.position.y = prevCanPosY + 0.2;
+                    }
+                    can.position.z = canPosZ;
+                    can.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+                    prevCanPosY = can.position.y;
+                });
+                musicTaskRewarded = true;
+            }
+        });
+    }
+}
+
 function playCatEatAnimation(scene, animationGroups, afterEatingAnim, cans, cat, index){
     cat.play = true;
     var can_eaten = cans[cans.length - 1];
     cans.pop();
+    if (prevCanPosY - roomPosY <= 0.1) {
+        prevCanPosY = null;
+    }
+    else {
+        prevCanPosY = prevCanPosY - 0.2;
+    }
 
     if(index === 1){
         can_eaten.position.x = cat.position.x;
