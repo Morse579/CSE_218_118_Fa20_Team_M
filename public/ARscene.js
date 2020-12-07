@@ -17,6 +17,8 @@ function initializeScene(user){
         var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
         light.intensity = 0.7;
 
+        var randAnim = [1, 2, 6, 19, 20, 22];
+
         // BGM and sound effect
         const music = new BABYLON.Sound("bgm", "./assets/sounds/bensound-ukulele.mp3", scene, null, { loop: true, autoplay: true });
         const meow = new BABYLON.Sound("meow", "./assets/sounds/cat-meow.mp3", scene);
@@ -127,7 +129,8 @@ function initializeScene(user){
                     else{
                         // alert("You are tapping after cat is set up");
                         meow.play();
-                        scene.animationGroups[1].play(false);                 
+                        var rand = Math.floor(Math.random() * randAnim.length);
+                        scene.animationGroups[randAnim[rand]].play(false);                 
                     }
                     break;      
             }
