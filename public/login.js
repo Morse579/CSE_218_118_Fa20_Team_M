@@ -11,14 +11,17 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-// const testEmail = "alice@218.com";
-// const testPassword = "alicealice";
+const testEmail = "alice@218.com";
+const testPassword = "alicealice";
 
 // const testEmail = "bob@218.com";
 // const testPassword = "bobbob";
 
-const testEmail = "carol@218.com";
-const testPassword = "carolcarol";
+// const testEmail = "carol@218.com";
+// const testPassword = "carolcarol";
+
+// const testEmail = "david@218.com";
+// const testPassword = "daviddavid";
 
 const testLogin = document.getElementById("testLogin");
 testLogin.addEventListener('click', onTestLogin);

@@ -1,5 +1,11 @@
 import{displayBoard} from './VRboard.js'
 
+const FEED_WET_HUNGER = 4;
+const FEED_SP_HUNGER = 10;
+const BOX_MOOD = 10;
+const TOY_MOOD = 15;
+const TREE_MOOD = 20;
+
 const firebaseConfig = {
     apiKey: "AIzaSyCHuFcfj3D2vXpxuJWbJViYa1SJPUkEAZM",
     authDomain: "ar-meowmeow.firebaseapp.com",
@@ -31,8 +37,9 @@ const initPos = [new BABYLON.Vector3(0, 0.2, 8), new BABYLON.Vector3(-8, 0.2, 1)
 const gatherPos = [new BABYLON.Vector3(0, 0.2, 1), new BABYLON.Vector3(-3, 0.2, 0), new BABYLON.Vector3(3, 0.2, 0)];
 
 // TODO 
-var numBGM = 4;
+var numBGM = 2;
 var currBGM = -1;
+var clickNames = 0;
 
 // can position
 var prevCanPosY = null;
@@ -42,7 +49,8 @@ var roomPosY = null;
 var rewardMusicIsPlaying = false;
 var musicTaskRewarded = false;
 
-var updateOn = true;
+var updateOn = false;
+var bars = {};
 // Code for AR scene goes here
 var createScene = async function () {
     // Set up basic scene with camera, light, sounds, etc.
@@ -97,7 +105,7 @@ var createScene = async function () {
         floorMeshes: [env.ground]
     });
 
-    displayBoard();
+    //displayBoard();
 
     const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 1});
     sphere.position.z = -3;
@@ -216,8 +224,8 @@ var createScene = async function () {
             cat1.rotation = new BABYLON.Vector3(0, Math.PI, 0);
             cat1.position = initPos[0];
             cat1.play = false;
-            cat1.hunger = 50;
-            cat1.mood = 100;
+            cat1.hunger = catsInfo[0].hunger;
+            cat1.mood = catsInfo[0].mood;
             if (animationGroups1.length > 0) {
                 var cat_anim = ['static', 'cat_attack_jump', 'cat_attack_left', 'cat_catch', 'cat_catch_play', 
                                 'cat_clean1', 'cat_death_right', 'cat_eat', 'cat_gallop', 'cat_gallop_right', 
@@ -246,9 +254,9 @@ var createScene = async function () {
                     function () {
                         meow.play();
                         if(updateOn){
-                            sendIndividualUpdate(0, "feedWet");
+                            sendIndividualUpdate(0, "feedWet", catsInfo[0].name);
                         }
-                        playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1);
+                        playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1, bars, mats);
                     }
                 )
             );
@@ -260,8 +268,8 @@ var createScene = async function () {
                 cat2.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
                 cat2.position = initPos[1];
                 cat2.play = false;
-                cat2.hunger = 20;
-                cat2.mood = 40;
+                cat2.hunger = catsInfo[1].hunger;
+                cat2.mood = catsInfo[1].mood;
                 if (animationGroups2.length > 0) {
                     animationGroups2[5].play(false);
                 }
@@ -283,9 +291,9 @@ var createScene = async function () {
                         function () {
                             meow.play();
                             if(updateOn){
-                                sendIndividualUpdate(1, "feedWet");
+                                sendIndividualUpdate(1, "feedWet", catsInfo[1].name);
                             }
-                            playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2);
+                            playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2, bars, mats);
                         }
                     )
                 );
@@ -297,8 +305,8 @@ var createScene = async function () {
                     cat3.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
                     cat3.position = initPos[2];
                     cat3.play = false;
-                    cat3.hunger = 70;
-                    cat3.mood = 140;
+                    cat3.hunger = catsInfo[2].hunger;
+                    cat3.mood = catsInfo[2].mood;
                     if (animationGroups3.length > 0) {
                         animationGroups3[24].play(false);
                     }
@@ -320,9 +328,9 @@ var createScene = async function () {
                             function () {
                                 meow.play();
                                 if(updateOn){
-                                    sendIndividualUpdate(2, "feedWet");
+                                    sendIndividualUpdate(2, "feedWet", catsInfo[2].name);
                                 }
-                                playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3);
+                                playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3, bars, mats);
                             }
                         )
                     );
@@ -340,7 +348,7 @@ var createScene = async function () {
 
                         // 3D gui - for mesh interaction
                         var manager = new BABYLON.GUI.GUI3DManager(scene);
-                        var bars = addBars(mats, cats, roots);
+                        bars = addBars(mats, cats, roots);
                         var panelBottom = new BABYLON.GUI.StackPanel3D();
                         manager.addControl(panelBottom);
                         panelBottom.margin = 0.2;
@@ -398,16 +406,16 @@ var createScene = async function () {
                                     console.log(JSON.parse(res.data));
                                     var update = JSON.parse(res.data);
                                     if(update.state === "feedSpecial" && !cat1.play){
-                                        playCatEatTogetherAnimation(cats, roots, anim, specialFood);
+                                        playCatEatTogetherAnimation(cats, roots, anim, specialFood, bars, mats);
                                     }
                                     if(update.indivState1 === "feedWet" && !cat1.play){
-                                        playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1);
+                                        playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1, bars, mats);
                                     }
                                     if(update.indivState2 === "feedWet" && !cat2.play){
-                                        playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2);
+                                        playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2, bars, mats);
                                     }
                                     if(update.indivState3 === "feedWet" && !cat3.play){
-                                        playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3);
+                                        playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3, bars, mats);
                                     }
                                     if(update.displayDecor && !box.move){
                                         box.setEnabled(true);
@@ -587,10 +595,9 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
     // Feed together button
     var gatherButton = new BABYLON.GUI.Button3D("gatherButton");
     gatherButton.onPointerUpObservable.add(function(){
-        playCatEatTogetherAnimation(cats, roots, anim, food);
-        updateHungerLevel(bars, cats, mats);
+        playCatEatTogetherAnimation(cats, roots, anim, food, bars, mats);
         if(updateOn){
-            sendUpdate("feedSpecial");
+            sendUpdate("feedSpecial", catsInfo);
         }
         
     });   
@@ -614,6 +621,21 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
     text1.fontSize = 40;
     button.content = text1;  
 
+    ///// test clicking name tags ///////
+    var count = new BABYLON.GUI.Button3D("count");
+    var text1 = new BABYLON.GUI.TextBlock();
+    text1.text = "0";
+    text1.color = "white";
+    text1.fontSize = 48;
+    count.content = text1; 
+    count.onPointerUpObservable.add(function(){
+        checkBGMRewards();
+        text1.text = `${clickNames}`;
+    });   
+    panel.addControl(count);
+
+    ///// test clicking name tags ///////
+
     var foodButtons = {
         music: musicButton,
         decor: decorButton,
@@ -621,16 +643,62 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
     };
     return foodButtons;
 }
-function sendUpdate(type){
+
+function checkBGMRewards(){
+    clickNames++;
+    if(clickNames === 5){
+        numBGM++;
+
+        var plane = BABYLON.Mesh.CreatePlane("plane", 10);
+        plane.position.y = 2;
+        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane);
+        console.log(advancedTexture.background );
+        advancedTexture.background =  "#6B899E";
+        advancedTexture.widthInPixels = 500;
+        advancedTexture.heightInPixels = 200;
+        var unlockText = new BABYLON.GUI.TextBlock();
+        unlockText.text = "Unlock New BGM!";
+        unlockText.heightInPixels = 200;
+        unlockText.color = "#E5A33F";
+        unlockText.fontSize = 100;
+        advancedTexture.addControl(unlockText); 
+        setTimeout(()=>{
+            advancedTexture.removeControl(unlockText);
+            advancedTexture.background = "transparent";
+        }, 1000);
+        
+    }else if(clickNames === 10){
+        numBGM++;
+
+        var plane = BABYLON.Mesh.CreatePlane("plane", 10);
+        plane.position.y = 2;
+        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane);
+        console.log(advancedTexture.background );
+        advancedTexture.background =  "#6B899E";
+        advancedTexture.widthInPixels = 500;
+        advancedTexture.heightInPixels = 200;
+        var unlockText = new BABYLON.GUI.TextBlock();
+        unlockText.text = "Unlock All BGM!";
+        unlockText.heightInPixels = 200;
+        unlockText.color = "#E5A33F";
+        unlockText.fontSize = 100;
+        advancedTexture.addControl(unlockText); 
+        setTimeout(()=>{
+            advancedTexture.removeControl(unlockText);
+            advancedTexture.background = "transparent";
+        }, 1000);
+    }
+}
+function sendUpdate(type, catsInfo){
     const changeState = functions.httpsCallable('changeState');
-    changeState({state: type})
+    changeState({state: type, cat1: catsInfo[0].name, cat2: catsInfo[1].name, cat3: catsInfo[2].name})
     .then(res => {
     });
 }
 
-function sendIndividualUpdate(num, type){
+function sendIndividualUpdate(num, type, catName){
     const changeIndivState = functions.httpsCallable('changeIndivState');
-    changeIndivState({index: num, state: type})
+    changeIndivState({index: num, state: type, name: catName})
     .then(res => {
     });
 }
@@ -647,21 +715,27 @@ function sendBoxPosUpdate(position){
     });
 }
 
-function updateHungerLevel(bars, cats, mats){
-    cats[0].hunger += 10;
-    for(var i = Math.max(cats[0].hunger-10,0);i<Math.min(cats[0].hunger,100);i++){
+function updateHungerLevel(bars, cats, mats, val){
+    cats[0].hunger += val;
+    for(var i = Math.max(cats[0].hunger-val,0);i<Math.min(cats[0].hunger,100);i++){
         bars.hungerBar[0][i].material = mats.pink;
     }
-    cats[1].hunger += 10;
-    for(var i = Math.max(cats[1].hunger-10,0);i<Math.min(cats[1].hunger,100);i++){
+    cats[1].hunger += val;
+    for(var i = Math.max(cats[1].hunger-val,0);i<Math.min(cats[1].hunger,100);i++){
         bars.hungerBar[1][i].material = mats.pink;
     }
-    cats[2].hunger += 10;
-    for(var i = Math.max(cats[2].hunger-10,0);i<Math.min(cats[2].hunger,100);i++){
+    cats[2].hunger += val;
+    for(var i = Math.max(cats[2].hunger-val,0);i<Math.min(cats[2].hunger,100);i++){
         bars.hungerBar[2][i].material = mats.pink;
     }
 }
 
+function updateIndivHungerLevel(bars, cat, mats, index, val){
+    cat.hunger += val;
+    for(var i = Math.max(cat.hunger-val,0);i<Math.min(cat.hunger,100);i++){
+        bars.hungerBar[index][i].material = mats.pink;
+    }
+}
 function changeBackgroundMusic(music){
     if(currBGM == -1){
         currBGM = 0;
@@ -674,7 +748,7 @@ function changeBackgroundMusic(music){
     }
 }
 
-function musicTask(scene, musicToPlay, cans, canPosX, canPosZ, musicTaskButton) {
+function musicTask(scene, musicToPlay, cans, canPosX, canPosZ, musicTaskButton, bars, mats) {
     var text1 = new BABYLON.GUI.TextBlock();
     text1.color = "white";
     text1.fontSize = 35;
@@ -724,7 +798,7 @@ function musicTask(scene, musicToPlay, cans, canPosX, canPosZ, musicTaskButton) 
     }
 }
 
-function playCatEatAnimation(scene, animationGroups, afterEatingAnim, cans, cat, index){
+function playCatEatAnimation(scene, animationGroups, afterEatingAnim, cans, cat, index, bars, mats){
     cat.play = true;
     var can_eaten = cans[cans.length - 1];
     cans.pop();
@@ -754,13 +828,15 @@ function playCatEatAnimation(scene, animationGroups, afterEatingAnim, cans, cat,
     setTimeout(function(){
         afterEatingAnim.play(false);
         can_eaten.setEnabled(false);
+        updateIndivHungerLevel(bars, cat, mats, index-1, FEED_WET_HUNGER);
     }, 4000);
     setTimeout(()=>{
         cat.play = false;
+        console.log("not play");
     }, interval);
 }
 
-function playCatEatTogetherAnimation(cats, roots, anim, food){
+function playCatEatTogetherAnimation(cats, roots, anim, food, bars, mats){
     cats[0].play = true;
     cats[1].play = true;
     cats[2].play = true;
@@ -802,6 +878,8 @@ function playCatEatTogetherAnimation(cats, roots, anim, food){
         cats[0].play = false;
         cats[1].play = false;
         cats[2].play = false;
+
+        updateHungerLevel(bars, cats, mats, FEED_SP_HUNGER);
     }, 10000);
 
     // cat2 move and eat
