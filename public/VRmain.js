@@ -37,8 +37,9 @@ const initPos = [new BABYLON.Vector3(0, 0.2, 8), new BABYLON.Vector3(-8, 0.2, 1)
 const gatherPos = [new BABYLON.Vector3(0, 0.2, 1), new BABYLON.Vector3(-3, 0.2, 0), new BABYLON.Vector3(3, 0.2, 0)];
 
 // TODO 
-var numBGM = 4;
+var numBGM = 2;
 var currBGM = -1;
+var clickNames = 0;
 
 var updateOn = false;
 var bars = {};
@@ -599,12 +600,73 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
     text1.fontSize = 40;
     button.content = text1;  
 
+    ///// test clicking name tags ///////
+    var count = new BABYLON.GUI.Button3D("count");
+    var text1 = new BABYLON.GUI.TextBlock();
+    text1.text = "0";
+    text1.color = "white";
+    text1.fontSize = 48;
+    count.content = text1; 
+    count.onPointerUpObservable.add(function(){
+        checkBGMRewards();
+        text1.text = `${clickNames}`;
+    });   
+    panel.addControl(count);
+
+    ///// test clicking name tags ///////
+
     var foodButtons = {
         music: musicButton,
         decor: decorButton,
         gather: gatherButton,
     };
     return foodButtons;
+}
+
+function checkBGMRewards(){
+    clickNames++;
+    if(clickNames === 5){
+        numBGM++;
+
+        var plane = BABYLON.Mesh.CreatePlane("plane", 10);
+        plane.position.y = 2;
+        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane);
+        console.log(advancedTexture.background );
+        advancedTexture.background =  "#6B899E";
+        advancedTexture.widthInPixels = 500;
+        advancedTexture.heightInPixels = 200;
+        var unlockText = new BABYLON.GUI.TextBlock();
+        unlockText.text = "Unlock New BGM!";
+        unlockText.heightInPixels = 200;
+        unlockText.color = "#E5A33F";
+        unlockText.fontSize = 100;
+        advancedTexture.addControl(unlockText); 
+        setTimeout(()=>{
+            advancedTexture.removeControl(unlockText);
+            advancedTexture.background = "transparent";
+        }, 1000);
+        
+    }else if(clickNames === 10){
+        numBGM++;
+
+        var plane = BABYLON.Mesh.CreatePlane("plane", 10);
+        plane.position.y = 2;
+        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane);
+        console.log(advancedTexture.background );
+        advancedTexture.background =  "#6B899E";
+        advancedTexture.widthInPixels = 500;
+        advancedTexture.heightInPixels = 200;
+        var unlockText = new BABYLON.GUI.TextBlock();
+        unlockText.text = "Unlock All BGM!";
+        unlockText.heightInPixels = 200;
+        unlockText.color = "#E5A33F";
+        unlockText.fontSize = 100;
+        advancedTexture.addControl(unlockText); 
+        setTimeout(()=>{
+            advancedTexture.removeControl(unlockText);
+            advancedTexture.background = "transparent";
+        }, 1000);
+    }
 }
 function sendUpdate(type, catsInfo){
     const changeState = functions.httpsCallable('changeState');
