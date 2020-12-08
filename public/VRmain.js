@@ -872,6 +872,20 @@ function updateHungerLevel(bars, cats, mats, val){
         bars.hungerBar[2][i].material = mats.pink;
     }
 }
+function updateMoodLevel(bars, cats, mats, val){
+    cats[0].mood += val;
+    for(var i = Math.max(cats[0].mood-val,0);i<Math.min(cats[0].mood,100);i++){
+        bars.moodBar[0][i].material = mats.orange;
+    }
+    cats[1].mood += val;
+    for(var i = Math.max(cats[1].mood-val,0);i<Math.min(cats[1].mood,100);i++){
+        bars.moodBar[1][i].material = mats.orange;
+    }
+    cats[2].mood += val;
+    for(var i = Math.max(cats[2].mood-val,0);i<Math.min(cats[2].mood,100);i++){
+        bars.moodBar[2][i].material = mats.orange;
+    }
+}
 
 function updateIndivHungerLevel(bars, cat, mats, index, val){
     cat.hunger += val;
