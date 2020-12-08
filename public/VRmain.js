@@ -19,18 +19,32 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const functions = firebase.functions();
-const interval = 10000;
+const interval = 2000;
 
-const loadRoom = functions.httpsCallable('loadClubRoom');
-loadRoom({}).then(res => {
-    console.log(JSON.parse(res.data));
-    let roomInfo = JSON.parse(res.data);
-    initVRscene(roomInfo);
-});
+// const loadRoom = functions.httpsCallable('loadClubRoom');
+// loadRoom({}).then(res => {
+//     console.log(JSON.parse(res.data));
+//     let roomInfo = JSON.parse(res.data);
+//     initVRscene(roomInfo);
+// });
 
-function initVRscene(roomInfo){
-    
-let catsInfo = roomInfo.cats;
+// function initVRscene(roomInfo){
+var cat1 = {
+    hunger: 50,
+    mood: 20,
+    name: "Java"
+};
+var cat2 = {
+    hunger: 50,
+    mood: 20,
+    name: "C++"
+};
+var cat3 = {
+    hunger: 60,
+    mood: 0,
+    name: "Python"
+};
+let catsInfo = [cat1, cat2, cat3];
 var canvas = document.getElementById("renderCanvas"); // Get the canvas element
 var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
@@ -50,7 +64,7 @@ var roomPosY = null;
 var rewardMusicIsPlaying = false;
 var musicTaskRewarded = false;
 
-var updateOn = false;
+var updateOn = true;
 var bars = {};
 // Code for AR scene goes here
 var createScene = async function () {
@@ -189,7 +203,7 @@ var createScene = async function () {
     var canPosX = 2;
     var canPosZ = 3;
     var cans = [];
-    var canCount = roomInfo.cans;
+    var canCount = 1;
 
     BABYLON.SceneLoader.ImportMesh("", "./assets/space/conference_room1/", "scene.gltf", scene, 
                                     function (roomMeshes, roomParticleSystems, roomSkeletons) {
@@ -256,7 +270,7 @@ var createScene = async function () {
                     function () {
                         meow.play();
                         if(updateOn){
-                            sendIndividualUpdate(0, "feedWet", catsInfo[0].name);
+                            //sendIndividualUpdate(0, "feedWet", catsInfo[0].name);
                         }
                         playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1, bars, mats);
                     }
@@ -294,7 +308,7 @@ var createScene = async function () {
                         function () {
                             meow.play();
                             if(updateOn){
-                                sendIndividualUpdate(1, "feedWet", catsInfo[1].name);
+                                //sendIndividualUpdate(1, "feedWet", catsInfo[1].name);
                             }
                             playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2, bars, mats);
                         }
@@ -332,7 +346,7 @@ var createScene = async function () {
                             function () {
                                 meow.play();
                                 if(updateOn){
-                                    sendIndividualUpdate(2, "feedWet", catsInfo[2].name);
+                                    //sendIndividualUpdate(2, "feedWet", catsInfo[2].name);
                                 }
                                 playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3, bars, mats);
                             }
@@ -375,7 +389,7 @@ var createScene = async function () {
                                     pointerUp();
                                     if(box.isEnabled()){
                                         if(updateOn){
-                                            sendBoxPosUpdate(box.position);
+                                            //sendBoxPosUpdate(box.position);
                                         }
                                         box.move = true;
                                         setTimeout(()=>{box.move = false}, interval);
@@ -404,11 +418,16 @@ var createScene = async function () {
                         function getUpdate(){
                             console.log("update on: "+ updateOn);
                             if(updateOn){
-                                const updateClub = functions.httpsCallable('updateClub');
-                                console.log("total cans:" + cans.length);
-                                updateClub({cans: cans.length}).then(res => {
-                                    console.log(JSON.parse(res.data));
-                                    var update = JSON.parse(res.data);
+                                // const updateClub = functions.httpsCallable('updateClub');
+                                // console.log("total cans:" + cans.length);
+                                // updateClub({cans: cans.length}).then(res => {
+
+                                var xhttp = new XMLHttpRequest();
+                                xhttp.onreadystatechange = function() {
+                                    if (this.readyState == 4 && this.status == 200) {
+                                    var update = JSON.parse(xhttp.responseText);
+                                    console.log(update);
+
                                     if(update.state === "feedSpecial" && !cat1.play){
                                         playCatEatTogetherAnimation(cats, roots, anim, specialFood, bars, mats);
                                     }
@@ -426,29 +445,33 @@ var createScene = async function () {
                                         box.position.x = update.boxPosX;
                                         box.position.z = update.boxPosZ;
                                     }
-                                    if(update.cans !== cans.length){
-                                        var diff = update.cans - cans.length;
-                                        for(var d = 0;d < diff;d++){
-                                            // add more cans
-                                            BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
-                                                var can = newMeshes[0];
-                                                cans.push(can);
-                                                can.position.x = canPosX;
-                                                if (!prevCanPosY) {
-                                                    can.position.y = roomPosY + 0.1;
-                                                }
-                                                else {
-                                                    can.position.y = prevCanPosY + 0.2;
-                                                }
-                                                can.position.z = canPosZ;
-                                                can.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
-                                                prevCanPosY = can.position.y;
-                                            });
+                                    // if(update.cans !== cans.length){
+                                    //     var diff = update.cans - cans.length;
+                                    //     for(var d = 0;d < diff;d++){
+                                    //         // add more cans
+                                    //         BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+                                    //             var can = newMeshes[0];
+                                    //             cans.push(can);
+                                    //             can.position.x = canPosX;
+                                    //             if (!prevCanPosY) {
+                                    //                 can.position.y = roomPosY + 0.1;
+                                    //             }
+                                    //             else {
+                                    //                 can.position.y = prevCanPosY + 0.2;
+                                    //             }
+                                    //             can.position.z = canPosZ;
+                                    //             can.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+                                    //             prevCanPosY = can.position.y;
+                                    //         });
 
-                                        }
+                                    //     }
 
+                                    // }
                                     }
-                                });
+                                };
+                                xhttp.open("GET", "http://127.0.0.1:2020/update", true);
+                                xhttp.send();
+                                //});
                             }
                             setTimeout(getUpdate, interval); 
                         };
@@ -639,7 +662,7 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
     var decorButton = new BABYLON.GUI.Button3D("decorButton");
     decorButton.onPointerUpObservable.add(function(){
         if(updateOn){
-            sendDisplayBoxUpdate();
+            //sendDisplayBoxUpdate();
         }
         boxes[0].setEnabled(true);
     });   
@@ -679,7 +702,8 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
     gatherButton.onPointerUpObservable.add(function(){
         playCatEatTogetherAnimation(cats, roots, anim, food, bars, mats);
         if(updateOn){
-            sendUpdate("feedSpecial", catsInfo);
+            //sendUpdate("feedSpecial", catsInfo);
+            sendUpdateLocal();
         }
         
     });   
@@ -776,6 +800,12 @@ function sendUpdate(type, catsInfo){
     changeState({state: type, cat1: catsInfo[0].name, cat2: catsInfo[1].name, cat3: catsInfo[2].name})
     .then(res => {
     });
+}
+
+function sendUpdateLocal(){
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://127.0.0.1:2020/feedSpecial", true);
+    xhr.send();
 }
 
 function sendIndividualUpdate(num, type, catName){
@@ -1022,4 +1052,4 @@ function playCatEatTogetherAnimation(cats, roots, anim, food, bars, mats){
     }, 9333);
 }
 
-} // init VR scene end
+//} // init VR scene end
