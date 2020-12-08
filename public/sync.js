@@ -1,5 +1,6 @@
 export{sendUpdateLocal, sendIndivUpdateLocal, sendDisplayTreeUpdate, sendTreePosUpdate,
-    sendDisplayBoardUpdate, sendBoardPosUpdate, sendDisplayElephantUpdate, sendElephantPosUpdate}
+    sendDisplayBoardUpdate, sendBoardPosUpdate, sendDisplayElephantUpdate, sendElephantPosUpdate,
+    sendCansUpdate}
 
 import{functions} from './VRmain.js'
 
@@ -74,5 +75,11 @@ function sendDisplayElephantUpdate(){
 function sendElephantPosUpdate(position){
     let xhr = new XMLHttpRequest();
     xhr.open("GET", `${domain}/updateElephant?x=${position.x}&z=${position.z}`, true);
+    xhr.send();
+}
+
+function sendCansUpdate(cans){
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", `${domain}/updateCans?cans=${cans}`, true);
     xhr.send();
 }

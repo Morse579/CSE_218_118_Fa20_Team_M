@@ -1,6 +1,7 @@
 import{displayBoard} from './VRboard.js'
 import{sendUpdateLocal, sendIndivUpdateLocal, sendDisplayTreeUpdate, sendTreePosUpdate,
-    sendDisplayBoardUpdate, sendBoardPosUpdate, sendDisplayElephantUpdate, sendElephantPosUpdate} 
+    sendDisplayBoardUpdate, sendBoardPosUpdate, sendDisplayElephantUpdate, sendElephantPosUpdate,
+    sendCansUpdate} 
     from './sync.js'
 
 export{functions}
@@ -332,8 +333,7 @@ var createScene = async function () {
                             //sendIndividualUpdate(0, "feedWet", catsInfo[0].name);
                             sendIndivUpdateLocal(1);
                         }
-                        playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1, bars, mats);
-                        feedWetTask(fishPosX, allFish, fishPosZ);
+                        playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1, bars, mats, fishPosX, allFish, fishPosZ);
                     }
                 )
             );
@@ -373,8 +373,7 @@ var createScene = async function () {
                                 //sendIndividualUpdate(1, "feedWet", catsInfo[1].name);
                                 sendIndivUpdateLocal(2);
                             }
-                            playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2, bars, mats);
-                            feedWetTask(fishPosX, allFish, fishPosZ);
+                            playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2, bars, mats, fishPosX, allFish, fishPosZ);
                         }
                     )
                 );
@@ -414,8 +413,7 @@ var createScene = async function () {
                                     //sendIndividualUpdate(2, "feedWet", catsInfo[2].name);
                                     sendIndivUpdateLocal(3);
                                 }
-                                playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3, bars, mats);
-                                feedWetTask(fishPosX, allFish, fishPosZ);
+                                playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3, bars, mats, fishPosX, allFish, fishPosZ);
                             }
                         )
                     );
@@ -502,13 +500,13 @@ var createScene = async function () {
                                         playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats, fishPosX, roomPosY);
                                     }
                                     if(update.indivState1 === "feedWet" && !cat1.play){
-                                        playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1, bars, mats);
+                                        playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1, bars, mats, fishPosX, allFish, fishPosZ);
                                     }
                                     if(update.indivState2 === "feedWet" && !cat2.play){
-                                        playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2, bars, mats);
+                                        playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2, bars, mats, fishPosX, allFish, fishPosZ);
                                     }
                                     if(update.indivState3 === "feedWet" && !cat3.play){
-                                        playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3, bars, mats);
+                                        playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3, bars, mats, fishPosX, allFish, fishPosZ);
                                     }
                                     if(update.displayTree && !box.move){
                                         box.setEnabled(true);
@@ -989,6 +987,7 @@ function musicTask(scene, musicToPlay, cans, canPosX, canPosZ, musicTaskButton, 
                 musicTaskButton.content = text1;
                 // console.log("finished listening to the reward music!");
                 canCount += 1;
+                sendCansUpdate(canCount);
                 BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
                     // console.log("musicTask reward loaded");
                     var can = newMeshes[0];
@@ -1034,11 +1033,12 @@ function feedWetTask(fishPosX, allFish, fishPosZ) {
     }
 }
 
-function playCatEatAnimation(scene, animationGroups, afterEatingAnim, cans, cat, index, bars, mats){
+function playCatEatAnimation(scene, animationGroups, afterEatingAnim, cans, cat, index, bars, mats, fishPosX, allFish, fishPosZ){
     cat.play = true;
     var can_eaten = cans[canCount - 1];
     cans.pop();
     canCount -= 1;
+    feedWetTask(fishPosX, allFish, fishPosZ);
     if (prevCanPosY - roomPosY <= 0.1) {
         prevCanPosY = null;
     }

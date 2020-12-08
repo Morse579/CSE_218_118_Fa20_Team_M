@@ -133,6 +133,16 @@ app.get('/updateElephant', (req, res) => {
     res.json();
 });
 
+app.get('/updateCans', (req, res) => {
+    let rawdata = fs.readFileSync('room.json');
+    let room = JSON.parse(rawdata);
+    room.cans = parseFloat(req.query.cans);
+    let data = JSON.stringify(room);
+    fs.writeFileSync('room.json', data);
+    res.json();
+});
+
+
 app.listen(2020, () => {
     console.log('server is listening on port 2020');
 });
