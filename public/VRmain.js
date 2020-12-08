@@ -65,6 +65,7 @@ var currBGM = -1;
 var clickNames = 0;
 
 // food stack position
+var canCount = 2;
 var prevCanPosY = null;
 var prevFishPosX = null;
 var roomPosY = null;
@@ -95,7 +96,7 @@ var createScene = async function () {
     light.intensity = 0.7;
 
     // BGM and sound effect
-    const rewardMusic = new BABYLON.Sound("bgm", "./assets/sounds/bensound-ukulele-clip.mp3", scene, null, {loop: false, autoplay: false});
+    const rewardMusic = new BABYLON.Sound("bgm", "./assets/sounds/bensound-ukulele-clip-3s.mp3", scene, null, {loop: false, autoplay: false});
     const music1 = new BABYLON.Sound("bgm", "./assets/sounds/bensound-ukulele.mp3", scene, null, {loop: false, autoplay: false});
     const music2 = new BABYLON.Sound("bgm", "./assets/sounds/bensound-littleidea.mp3", scene, null, {loop: false, autoplay: false});
     const music3 = new BABYLON.Sound("bgm", "./assets/sounds/bensound-smile.mp3", scene, null, {loop: false, autoplay: false});
@@ -223,7 +224,6 @@ var createScene = async function () {
     var canPosX = 2;
     var canPosZ = 3;
     var cans = [];
-    var canCount = 2;
 
     // fish
     var fishPosX = 10;
@@ -491,15 +491,15 @@ var createScene = async function () {
 
                     // get updated info
                     function getUpdate(){
-                        console.log("update on: "+ updateOn);
                         if(updateOn){
+                            // console.log("canCount: ", canCount);
                             var xhttp = new XMLHttpRequest();
                             xhttp.onreadystatechange = function() {
                                 if (this.readyState == 4 && this.status == 200) {
                                     var update = JSON.parse(xhttp.responseText);
-                                    console.log(update);
+                                    // console.log(update);
                                     if(update.state === "feedSpecial" && !cat1.play){
-                                        playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats);
+                                        playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats, fishPosX, roomPosY);
                                     }
                                     if(update.indivState1 === "feedWet" && !cat1.play){
                                         playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1, bars, mats);
@@ -534,11 +534,13 @@ var createScene = async function () {
                                     if(update.feedSpecialCount >= 3){
                                         interactButtons.elephant.isVisible = true;
                                     }
-                                    if(update.cans !== cans.length){
-                                        var diff = update.cans - cans.length;
+                                    if(update.cans !== canCount){
+                                        var diff = update.cans - canCount;
                                         for(var d = 0;d < diff;d++){
+                                            canCount += 1;
                                             // add more cans
                                             BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+                                                // console.log("in getUpdate, diff = ", diff);
                                                 var can = newMeshes[0];
                                                 cans.push(can);
                                                 can.position.x = canPosX;
@@ -798,7 +800,7 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     // Feed together button
     var gatherButton = new BABYLON.GUI.Button3D("gatherButton");
     gatherButton.onPointerUpObservable.add(function(){
-        playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats, fishPosX);
+        playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats, fishPosX, roomPosY);
         if(updateOn){
             //sendUpdate("feedSpecial", catsInfo);
             sendUpdateLocal();
@@ -986,6 +988,7 @@ function musicTask(scene, musicToPlay, cans, canPosX, canPosZ, musicTaskButton, 
                 text1.text = "music\nfor reward";
                 musicTaskButton.content = text1;
                 // console.log("finished listening to the reward music!");
+                canCount += 1;
                 BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
                     // console.log("musicTask reward loaded");
                     var can = newMeshes[0];
@@ -1033,8 +1036,9 @@ function feedWetTask(fishPosX, allFish, fishPosZ) {
 
 function playCatEatAnimation(scene, animationGroups, afterEatingAnim, cans, cat, index, bars, mats){
     cat.play = true;
-    var can_eaten = cans[cans.length - 1];
+    var can_eaten = cans[canCount - 1];
     cans.pop();
+    canCount -= 1;
     if (prevCanPosY - roomPosY <= 0.1) {
         prevCanPosY = null;
     }
@@ -1069,7 +1073,7 @@ function playCatEatAnimation(scene, animationGroups, afterEatingAnim, cans, cat,
     }, interval);
 }
 
-function playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats, fishPosX){
+function playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats, fishPosX, roomPosY){
     cats[0].play = true;
     cats[1].play = true;
     cats[2].play = true;
@@ -1086,7 +1090,7 @@ function playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats, fis
     }
 
     fish_eaten.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
-    fish_eaten.position = new BABYLON.Vector3(0, 0.2, 0);
+    fish_eaten.position = new BABYLON.Vector3(0, roomPosY + 0.3, 0);
 
     // food appear and disappear
     setTimeout(function(){
