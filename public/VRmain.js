@@ -32,17 +32,20 @@ const interval = 2000;
 var cat1 = {
     hunger: 50,
     mood: 20,
-    name: "Java"
+    name: "Java",
+    appearance: "black"
 };
 var cat2 = {
     hunger: 50,
     mood: 20,
-    name: "C++"
+    name: "C++",
+    appearance: "siam"
 };
 var cat3 = {
     hunger: 60,
     mood: 0,
-    name: "Python"
+    name: "Python",
+    appearance: "white"
 };
 let catsInfo = [cat1, cat2, cat3];
 var canvas = document.getElementById("renderCanvas"); // Get the canvas element
