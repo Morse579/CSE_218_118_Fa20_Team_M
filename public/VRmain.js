@@ -66,6 +66,9 @@ var musicTaskRewarded = false;
 
 var updateOn = true;
 var bars = {};
+
+var randAnim = [1, 2, 6, 19, 20, 22];
+
 // Code for AR scene goes here
 var createScene = async function () {
     // Set up basic scene with camera, light, sounds, etc.
@@ -232,8 +235,10 @@ var createScene = async function () {
             });
         }
 
+
         var meshStaticCat = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/CatV2glTFSeparated/",
-                                    "ChibiCatV2_unity_orange.gltf", scene, function (newMeshes1, particleSystems1, skeletons1, animationGroups1) {
+                                    getCatColorFile(catsInfo[0].appearance), scene, 
+                                    function (newMeshes1, particleSystems1, skeletons1, animationGroups1) {
             var cat1 = newMeshes1[0];
             cat1.scaling = new BABYLON.Vector3(15, 15, 15);
             cat1.rotation = new BABYLON.Vector3(0, Math.PI, 0);
@@ -278,7 +283,8 @@ var createScene = async function () {
             );
 
             var meshStaticCat2 = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/CatV2glTFSeparated/",
-                                        "ChibiCatV2_unity_white.gltf", scene, function (newMeshes2, particleSystems2, skeletons2, animationGroups2) {
+                                        getCatColorFile(catsInfo[1].appearance), scene, 
+                                        function (newMeshes2, particleSystems2, skeletons2, animationGroups2) {
                 var cat2 = newMeshes2[0];
                 cat2.scaling = new BABYLON.Vector3(15, 15, 15);
                 cat2.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
@@ -316,7 +322,8 @@ var createScene = async function () {
                 );
 
                 var meshStaticCat3 = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/CatV2glTFSeparated/",
-                                        "ChibiCatV2_unity_siam.gltf", scene, function (newMeshes3, particleSystems3, skeletons3, animationGroups3) {
+                                            getCatColorFile(catsInfo[2].appearance), scene, 
+                                            function (newMeshes3, particleSystems3, skeletons3, animationGroups3) {
                     var cat3 = newMeshes3[0];
                     cat3.scaling = new BABYLON.Vector3(15, 15, 15);
                     cat3.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
@@ -568,7 +575,8 @@ function addNamesAndBars(mats, cats, anim, roots){
     button1.cornerRadius = 40;
     button1.background = "green";
     button1.onPointerUpObservable.add(function() {
-        anim[0][6].play(false);
+        var rand = Math.floor(Math.random() * randAnim.length);
+        anim[0][randAnim[rand]].play(false);
         checkBGMRewards();
     });
     advancedTexture1.addControl(button1);
@@ -580,7 +588,8 @@ function addNamesAndBars(mats, cats, anim, roots){
     button2.cornerRadius = 40;
     button2.background = "green";
     button2.onPointerUpObservable.add(function() {
-        anim[1][6].play(false);
+        var rand = Math.floor(Math.random() * randAnim.length);
+        anim[1][randAnim[rand]].play(false);
         checkBGMRewards();
     });
     advancedTexture2.addControl(button2);
@@ -592,7 +601,8 @@ function addNamesAndBars(mats, cats, anim, roots){
     button3.cornerRadius = 40;
     button3.background = "green";
     button3.onPointerUpObservable.add(function() {
-        anim[2][6].play(false);
+        var rand = Math.floor(Math.random() * randAnim.length);
+        anim[2][randAnim[rand]].play(false);
         checkBGMRewards();
     });
     advancedTexture3.addControl(button3);
@@ -859,6 +869,33 @@ function changeBackgroundMusic(music){
         music[currBGM].play();
     }
 }
+
+function getCatColorFile(color){
+    var fileToLoad;
+    switch(color) {
+        case "siam":
+            fileToLoad = "ChibiCatV2_unity_siam.gltf";
+            break;
+        case "grey":
+            fileToLoad = "ChibiCatV2_unity_grey.gltf";
+            break;
+        case "carey":
+            fileToLoad = "ChibiCatV2_unity_carey.gltf";
+            break;
+        case "orange":
+            fileToLoad = "ChibiCatV2_unity_orange.gltf";
+            break;
+        case "black":
+            fileToLoad = "ChibiCatV2_unity_black.gltf";
+            break;
+        case "white":
+            fileToLoad = "ChibiCatV2_unity_white.gltf";
+            break;
+        default:
+            fileToLoad = "ChibiCatV2_unity_white2.gltf"
+    }
+    return fileToLoad;
+  }
 
 function musicTask(scene, musicToPlay, cans, canPosX, canPosZ, musicTaskButton, bars, mats) {
     var text1 = new BABYLON.GUI.TextBlock();
