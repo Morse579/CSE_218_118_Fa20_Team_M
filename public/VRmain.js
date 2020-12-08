@@ -1,4 +1,9 @@
 import{displayBoard} from './VRboard.js'
+import{sendUpdateLocal, sendIndivUpdateLocal, sendDisplayTreeUpdate, sendTreePosUpdate,
+    sendDisplayBoardUpdate, sendBoardPosUpdate, sendDisplayElephantUpdate, sendElephantPosUpdate} 
+    from './sync.js'
+
+export{functions}
 
 const FEED_WET_HUNGER = 4;
 const FEED_SP_HUNGER = 10;
@@ -32,17 +37,20 @@ const interval = 2000;
 var cat1 = {
     hunger: 50,
     mood: 20,
-    name: "Java"
+    name: "Java",
+    appearance: "black"
 };
 var cat2 = {
     hunger: 50,
     mood: 20,
-    name: "C++"
+    name: "C++",
+    appearance: "siam"
 };
 var cat3 = {
     hunger: 60,
     mood: 0,
-    name: "Python"
+    name: "Python",
+    appearance: "white"
 };
 let catsInfo = [cat1, cat2, cat3];
 var canvas = document.getElementById("renderCanvas"); // Get the canvas element
@@ -71,8 +79,10 @@ var feedWetCount = 0;
 var fishMaxCount = 4;
 var lastOwnedFishIndex = -1;
 
-var updateOn = false;
+var updateOn = true;
 var bars = {};
+
+var randAnim = [1, 2, 6, 19, 20, 22];
 
 // Code for AR scene goes here
 var createScene = async function () {
@@ -213,7 +223,7 @@ var createScene = async function () {
     var canPosX = 2;
     var canPosZ = 3;
     var cans = [];
-    var canCount = 1;
+    var canCount = 2;
 
     // fish
     var fishPosX = 10;
@@ -281,7 +291,8 @@ var createScene = async function () {
         }
 
         var meshStaticCat = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/CatV2glTFSeparated/",
-                                    "ChibiCatV2_unity_orange.gltf", scene, function (newMeshes1, particleSystems1, skeletons1, animationGroups1) {
+                                    getCatColorFile(catsInfo[0].appearance), scene, 
+                                    function (newMeshes1, particleSystems1, skeletons1, animationGroups1) {
             var cat1 = newMeshes1[0];
             cat1.scaling = new BABYLON.Vector3(15, 15, 15);
             cat1.rotation = new BABYLON.Vector3(0, Math.PI, 0);
@@ -318,7 +329,8 @@ var createScene = async function () {
                     function () {
                         meow.play();
                         if(updateOn){
-                            // sendIndividualUpdate(0, "feedWet", catsInfo[0].name);
+                            //sendIndividualUpdate(0, "feedWet", catsInfo[0].name);
+                            sendIndivUpdateLocal(1);
                         }
                         playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1, bars, mats);
                         feedWetTask(fishPosX, allFish, fishPosZ);
@@ -327,7 +339,8 @@ var createScene = async function () {
             );
 
             var meshStaticCat2 = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/CatV2glTFSeparated/",
-                                        "ChibiCatV2_unity_white.gltf", scene, function (newMeshes2, particleSystems2, skeletons2, animationGroups2) {
+                                        getCatColorFile(catsInfo[1].appearance), scene, 
+                                        function (newMeshes2, particleSystems2, skeletons2, animationGroups2) {
                 var cat2 = newMeshes2[0];
                 cat2.scaling = new BABYLON.Vector3(15, 15, 15);
                 cat2.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
@@ -357,7 +370,8 @@ var createScene = async function () {
                         function () {
                             meow.play();
                             if(updateOn){
-                                // sendIndividualUpdate(1, "feedWet", catsInfo[1].name);
+                                //sendIndividualUpdate(1, "feedWet", catsInfo[1].name);
+                                sendIndivUpdateLocal(2);
                             }
                             playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2, bars, mats);
                             feedWetTask(fishPosX, allFish, fishPosZ);
@@ -366,7 +380,8 @@ var createScene = async function () {
                 );
 
                 var meshStaticCat3 = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/CatV2glTFSeparated/",
-                                        "ChibiCatV2_unity_siam.gltf", scene, function (newMeshes3, particleSystems3, skeletons3, animationGroups3) {
+                                            getCatColorFile(catsInfo[2].appearance), scene, 
+                                            function (newMeshes3, particleSystems3, skeletons3, animationGroups3) {
                     var cat3 = newMeshes3[0];
                     cat3.scaling = new BABYLON.Vector3(15, 15, 15);
                     cat3.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
@@ -396,7 +411,8 @@ var createScene = async function () {
                             function () {
                                 meow.play();
                                 if(updateOn){
-                                    // sendIndividualUpdate(2, "feedWet", catsInfo[2].name);
+                                    //sendIndividualUpdate(2, "feedWet", catsInfo[2].name);
+                                    sendIndivUpdateLocal(3);
                                 }
                                 playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3, bars, mats);
                                 feedWetTask(fishPosX, allFish, fishPosZ);
@@ -415,7 +431,7 @@ var createScene = async function () {
                     panelBottom.margin = 0.2;
                     panelBottom.position.y = sphere.position.y;
                     panelBottom.position.z = sphere.position.z - 2;
-                    var foodButtons = display3DInteractionButtons(panelBottom, bars, mats, cats, roots, anim, allFish, boxes, music, 
+                    var interactButtons = display3DInteractionButtons(panelBottom, bars, mats, cats, roots, anim, allFish, boxes, music, 
                                                                     rewardMusic, scene, cans, canPosX, canPosZ, fishPosX);
 
                     // cat meow
@@ -430,13 +446,29 @@ var createScene = async function () {
                                 break;
                             case BABYLON.PointerEventTypes.POINTERUP:
                                 pointerUp();
-                                if(box.isEnabled()){
+                                if(box.isEnabled() && pointerInfo.pickInfo.pickedMesh == box){
                                     if(updateOn){
-                                        // sendBoxPosUpdate(box.position);
+                                        //sendBoxPosUpdate(box.position);
+                                        sendTreePosUpdate(box.position);
                                     }
                                     box.move = true;
                                     setTimeout(()=>{box.move = false}, interval);
                                 }
+                                if(box2.isEnabled() && pointerInfo.pickInfo.pickedMesh == box2){
+                                    if(updateOn){
+                                        sendBoardPosUpdate(box2.position);
+                                    }
+                                    box2.move = true;
+                                    setTimeout(()=>{box2.move = false}, interval);
+                                }
+                                if(box3.isEnabled() && pointerInfo.pickInfo.pickedMesh == box3){
+                                    if(updateOn){
+                                        sendElephantPosUpdate(box3.position);
+                                    }
+                                    box3.move = true;
+                                    setTimeout(()=>{box3.move = false}, interval);
+                                }
+                            
                                 break;
                             case BABYLON.PointerEventTypes.POINTERMOVE:          
                                 pointerMove();
@@ -461,50 +493,71 @@ var createScene = async function () {
                     function getUpdate(){
                         console.log("update on: "+ updateOn);
                         if(updateOn){
-                            const updateClub = functions.httpsCallable('updateClub');
-                            console.log("total cans:" + cans.length);
-                            updateClub({cans: cans.length}).then(res => {
-                                console.log(JSON.parse(res.data));
-                                var update = JSON.parse(res.data);
-                                if(update.state === "feedSpecial" && !cat1.play){
-                                    playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats);
-                                }
-                                if(update.indivState1 === "feedWet" && !cat1.play){
-                                    playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1, bars, mats);
-                                }
-                                if(update.indivState2 === "feedWet" && !cat2.play){
-                                    playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2, bars, mats);
-                                }
-                                if(update.indivState3 === "feedWet" && !cat3.play){
-                                    playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3, bars, mats);
-                                }
-                                if(update.displayDecor && !box.move){
-                                    box.setEnabled(true);
-                                    box.position.x = update.boxPosX;
-                                    box.position.z = update.boxPosZ;
-                                }
-                                if(update.cans !== cans.length){
-                                    var diff = update.cans - cans.length;
-                                    for(var d = 0;d < diff;d++){
-                                        // add more cans
-                                        BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
-                                            var can = newMeshes[0];
-                                            cans.push(can);
-                                            can.position.x = canPosX;
-                                            if (!prevCanPosY) {
-                                                can.position.y = roomPosY + 0.15;
-                                            }
-                                            else {
-                                                can.position.y = prevCanPosY + 0.2;
-                                            }
-                                            can.position.z = canPosZ;
-                                            can.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
-                                            prevCanPosY = can.position.y;
-                                        });
+                            var xhttp = new XMLHttpRequest();
+                            xhttp.onreadystatechange = function() {
+                                if (this.readyState == 4 && this.status == 200) {
+                                    var update = JSON.parse(xhttp.responseText);
+                                    console.log(update);
+                                    if(update.state === "feedSpecial" && !cat1.play){
+                                        playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats);
                                     }
-
+                                    if(update.indivState1 === "feedWet" && !cat1.play){
+                                        playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1, bars, mats);
+                                    }
+                                    if(update.indivState2 === "feedWet" && !cat2.play){
+                                        playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2, bars, mats);
+                                    }
+                                    if(update.indivState3 === "feedWet" && !cat3.play){
+                                        playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3, bars, mats);
+                                    }
+                                    if(update.displayTree && !box.move){
+                                        box.setEnabled(true);
+                                        box.position.x = update.treePosX;
+                                        box.position.z = update.treePosZ;
+                                    }
+                                    if(update.displayBoard && !box2.move){
+                                        box2.setEnabled(true);
+                                        box2.position.x = update.boardPosX;
+                                        box2.position.z = update.boardPosZ;
+                                    }
+                                    if(update.displayElephant && !box3.move){
+                                        box3.setEnabled(true);
+                                        box3.position.x = update.elephantPosX;
+                                        box3.position.z = update.elephantPosZ;
+                                    }
+                                    if(update.feedSpecialCount >= 1){
+                                        interactButtons.board.isVisible = true;
+                                    }
+                                    if(update.feedSpecialCount >= 2){
+                                        interactButtons.tree.isVisible = true;
+                                    }
+                                    if(update.feedSpecialCount >= 3){
+                                        interactButtons.elephant.isVisible = true;
+                                    }
+                                    if(update.cans !== cans.length){
+                                        var diff = update.cans - cans.length;
+                                        for(var d = 0;d < diff;d++){
+                                            // add more cans
+                                            BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+                                                var can = newMeshes[0];
+                                                cans.push(can);
+                                                can.position.x = canPosX;
+                                                if (!prevCanPosY) {
+                                                    can.position.y = roomPosY + 0.15;
+                                                }
+                                                else {
+                                                    can.position.y = prevCanPosY + 0.2;
+                                                }
+                                                can.position.z = canPosZ;
+                                                can.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+                                                prevCanPosY = can.position.y;
+                                            });
+                                        }
+                                    }
                                 }
-                            });
+                            }
+                            xhttp.open("GET", "http://127.0.0.1:2020/update", true);
+                            xhttp.send();
                         }
                         setTimeout(getUpdate, interval); 
                     };
@@ -600,7 +653,8 @@ function addNamesAndBars(mats, cats, anim, roots){
     button1.cornerRadius = 40;
     button1.background = "green";
     button1.onPointerUpObservable.add(function() {
-        anim[0][6].play(false);
+        var rand = Math.floor(Math.random() * randAnim.length);
+        anim[0][randAnim[rand]].play(false);
         checkBGMRewards();
     });
     advancedTexture1.addControl(button1);
@@ -612,7 +666,8 @@ function addNamesAndBars(mats, cats, anim, roots){
     button2.cornerRadius = 40;
     button2.background = "green";
     button2.onPointerUpObservable.add(function() {
-        anim[1][6].play(false);
+        var rand = Math.floor(Math.random() * randAnim.length);
+        anim[1][randAnim[rand]].play(false);
         checkBGMRewards();
     });
     advancedTexture2.addControl(button2);
@@ -624,7 +679,8 @@ function addNamesAndBars(mats, cats, anim, roots){
     button3.cornerRadius = 40;
     button3.background = "green";
     button3.onPointerUpObservable.add(function() {
-        anim[2][6].play(false);
+        var rand = Math.floor(Math.random() * randAnim.length);
+        anim[2][randAnim[rand]].play(false);
         checkBGMRewards();
     });
     advancedTexture3.addControl(button3);
@@ -694,11 +750,13 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     var decorButton = new BABYLON.GUI.Button3D("decorButton");
     decorButton.onPointerUpObservable.add(function(){
         if(updateOn){
-            // sendDisplayBoxUpdate();
+            //sendDisplayBoxUpdate();
+            sendDisplayTreeUpdate();
         }
         boxes[0].setEnabled(true);
     });   
     panel.addControl(decorButton);
+    decorButton.isVisible = false;
     var text1 = new BABYLON.GUI.TextBlock();
     text1.text = "Cat tree";
     text1.color = "white";
@@ -708,9 +766,13 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     // cardboard button
     var cardBoardButton = new BABYLON.GUI.Button3D("decorButton");
     cardBoardButton.onPointerUpObservable.add(function(){
+        if(updateOn){
+            sendDisplayBoardUpdate();
+        }
         boxes[1].setEnabled(true);
     });   
     panel.addControl(cardBoardButton);
+    cardBoardButton.isVisible = false;
     var text1 = new BABYLON.GUI.TextBlock();
     text1.text = "cardboard";
     text1.color = "white";
@@ -720,9 +782,13 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     // elephant button
     var elephantButton = new BABYLON.GUI.Button3D("decorButton");
     elephantButton.onPointerUpObservable.add(function(){
+        if(updateOn){
+            sendDisplayElephantUpdate();
+        }
         boxes[2].setEnabled(true);
     });   
     panel.addControl(elephantButton);
+    elephantButton.isVisible = false;
     var text1 = new BABYLON.GUI.TextBlock();
     text1.text = "elephant";
     text1.color = "white";
@@ -734,7 +800,7 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     gatherButton.onPointerUpObservable.add(function(){
         playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats, fishPosX);
         if(updateOn){
-            // sendUpdate("feedSpecial", catsInfo);
+            //sendUpdate("feedSpecial", catsInfo);
             sendUpdateLocal();
         }
         
@@ -759,25 +825,12 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     text1.fontSize = 40;
     button.content = text1;  
 
-    ///// test clicking name tags ///////
-    var count = new BABYLON.GUI.Button3D("count");
-    var text1 = new BABYLON.GUI.TextBlock();
-    text1.text = "0";
-    text1.color = "white";
-    text1.fontSize = 48;
-    count.content = text1; 
-    count.onPointerUpObservable.add(function(){
-        checkBGMRewards();
-        text1.text = `${clickNames}`;
-    });   
-    panel.addControl(count);
-
-    ///// test clicking name tags ///////
-
     var foodButtons = {
         music: musicButton,
-        decor: decorButton,
         gather: gatherButton,
+        tree: decorButton,
+        board: cardBoardButton,
+        elephant: elephantButton
     };
     return foodButtons;
 }
@@ -828,37 +881,6 @@ function checkBGMRewards(){
     }
 }
 
-function sendUpdate(type, catsInfo){
-    const changeState = functions.httpsCallable('changeState');
-    changeState({state: type, cat1: catsInfo[0].name, cat2: catsInfo[1].name, cat3: catsInfo[2].name})
-    .then(res => {
-    });
-}
-
-function sendUpdateLocal(){
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://127.0.0.1:2020/feedSpecial", true);
-    xhr.send();
-}
-
-function sendIndividualUpdate(num, type, catName){
-    const changeIndivState = functions.httpsCallable('changeIndivState');
-    changeIndivState({index: num, state: type, name: catName})
-    .then(res => {
-    });
-}
-
-function sendDisplayBoxUpdate(){
-    const displayDecor = functions.httpsCallable('displayDecor');
-    displayDecor({}).then(res => {});
-}
-
-function sendBoxPosUpdate(position){
-    const updateBoxPos = functions.httpsCallable('updateBoxPos');
-    updateBoxPos({x: position.x, z: position.z})
-    .then(res => {
-    });
-}
 
 function updateHungerLevel(bars, cats, mats, val){
     cats[0].hunger += val;
@@ -872,6 +894,20 @@ function updateHungerLevel(bars, cats, mats, val){
     cats[2].hunger += val;
     for(var i = Math.max(cats[2].hunger-val,0);i<Math.min(cats[2].hunger,100);i++){
         bars.hungerBar[2][i].material = mats.pink;
+    }
+}
+function updateMoodLevel(bars, cats, mats, val){
+    cats[0].mood += val;
+    for(var i = Math.max(cats[0].mood-val,0);i<Math.min(cats[0].mood,100);i++){
+        bars.moodBar[0][i].material = mats.orange;
+    }
+    cats[1].mood += val;
+    for(var i = Math.max(cats[1].mood-val,0);i<Math.min(cats[1].mood,100);i++){
+        bars.moodBar[1][i].material = mats.orange;
+    }
+    cats[2].mood += val;
+    for(var i = Math.max(cats[2].mood-val,0);i<Math.min(cats[2].mood,100);i++){
+        bars.moodBar[2][i].material = mats.orange;
     }
 }
 
@@ -893,6 +929,33 @@ function changeBackgroundMusic(music){
         music[currBGM].play();
     }
 }
+
+function getCatColorFile(color){
+    var fileToLoad;
+    switch(color) {
+        case "siam":
+            fileToLoad = "ChibiCatV2_unity_siam.gltf";
+            break;
+        case "grey":
+            fileToLoad = "ChibiCatV2_unity_grey.gltf";
+            break;
+        case "carey":
+            fileToLoad = "ChibiCatV2_unity_carey.gltf";
+            break;
+        case "orange":
+            fileToLoad = "ChibiCatV2_unity_orange.gltf";
+            break;
+        case "black":
+            fileToLoad = "ChibiCatV2_unity_black.gltf";
+            break;
+        case "white":
+            fileToLoad = "ChibiCatV2_unity_white.gltf";
+            break;
+        default:
+            fileToLoad = "ChibiCatV2_unity_white2.gltf"
+    }
+    return fileToLoad;
+  }
 
 function musicTask(scene, musicToPlay, cans, canPosX, canPosZ, musicTaskButton, bars, mats) {
     var text1 = new BABYLON.GUI.TextBlock();
@@ -1123,4 +1186,4 @@ function playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats, fis
     }, 9333);
 }
 
-// } // init VR scene end
+//} // init VR scene end
