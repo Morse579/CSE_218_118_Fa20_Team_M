@@ -19,18 +19,32 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const functions = firebase.functions();
-const interval = 10000;
+const interval = 2000;
 
-const loadRoom = functions.httpsCallable('loadClubRoom');
-loadRoom({}).then(res => {
-    console.log(JSON.parse(res.data));
-    let roomInfo = JSON.parse(res.data);
-    initVRscene(roomInfo);
-});
+// const loadRoom = functions.httpsCallable('loadClubRoom');
+// loadRoom({}).then(res => {
+//     console.log(JSON.parse(res.data));
+//     let roomInfo = JSON.parse(res.data);
+//     initVRscene(roomInfo);
+// });
 
-function initVRscene(roomInfo){
-    
-let catsInfo = roomInfo.cats;
+// function initVRscene(roomInfo){
+var cat1 = {
+    hunger: 50,
+    mood: 20,
+    name: "Java"
+};
+var cat2 = {
+    hunger: 50,
+    mood: 20,
+    name: "C++"
+};
+var cat3 = {
+    hunger: 60,
+    mood: 0,
+    name: "Python"
+};
+let catsInfo = [cat1, cat2, cat3];
 var canvas = document.getElementById("renderCanvas"); // Get the canvas element
 var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
@@ -42,16 +56,24 @@ var numBGM = 2;
 var currBGM = -1;
 var clickNames = 0;
 
-// can position
+// food stack position
 var prevCanPosY = null;
+var prevFishPosX = null;
 var roomPosY = null;
 
-// reward music
+// music task
 var rewardMusicIsPlaying = false;
 var musicTaskRewarded = false;
 
+// feed wet task
+var wetCountForReward = 2;  // need to feed such amount of wet food for a special food reward
+var feedWetCount = 0;
+var fishMaxCount = 4;
+var lastOwnedFishIndex = -1;
+
 var updateOn = false;
 var bars = {};
+
 // Code for AR scene goes here
 var createScene = async function () {
     // Set up basic scene with camera, light, sounds, etc.
@@ -186,10 +208,18 @@ var createScene = async function () {
     var groundMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
     groundMaterial.alpha = 0;
     ground.material = groundMaterial;
+
+    // can
     var canPosX = 2;
     var canPosZ = 3;
     var cans = [];
-    var canCount = roomInfo.cans;
+    var canCount = 1;
+
+    // fish
+    var fishPosX = 10;
+    var fishPosZ = 13;
+    var allFish = [];
+    var fishCount = 2;
 
     BABYLON.SceneLoader.ImportMesh("", "./assets/space/conference_room1/", "scene.gltf", scene, 
                                     function (roomMeshes, roomParticleSystems, roomSkeletons) {
@@ -201,13 +231,14 @@ var createScene = async function () {
         room.isPickable = false;
         roomPosY = room.position.y;
 
+        // load can
         for (var i = 0; i < canCount; i++) {
             BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
                 var can = newMeshes[0];
                 cans.push(can);
                 can.position.x = canPosX;
                 if (!prevCanPosY) {
-                    can.position.y = roomPosY + 0.1;
+                    can.position.y = roomPosY + 0.15;
                 }
                 else {
                     can.position.y = prevCanPosY + 0.2;
@@ -215,6 +246,37 @@ var createScene = async function () {
                 can.position.z = canPosZ;
                 can.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
                 prevCanPosY = can.position.y;
+            });
+        }
+
+        // load owned fish
+        for (var i = 0; i < fishCount; i++) {
+            BABYLON.SceneLoader.ImportMesh("", "./assets/food/sardine/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+                var fish = newMeshes[0];
+                allFish.push(fish);
+                lastOwnedFishIndex += 1;
+                console.log("loaded owned fish, index = ", lastOwnedFishIndex);
+                fish.position.y = roomPosY + 0.3;
+                fish.position.z = fishPosZ;
+                if (!prevFishPosX) {
+                    fish.position.x = fishPosX;
+                }
+                else {
+                    fish.position.x = prevFishPosX - 1.5;
+                }
+                fish.scaling = new BABYLON.Vector3(40, 40, 40);
+                fish.rotation = new BABYLON.Vector3(0, 0, -Math.PI/2);
+                prevFishPosX = fish.position.x;
+            });
+        }
+
+        // load more fish for possible later use
+        for (var i = 0; i < fishMaxCount - fishCount; i++) {
+            BABYLON.SceneLoader.ImportMesh("", "./assets/food/sardine/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+                var fish = newMeshes[0];
+                allFish.push(fish);
+                fish.setEnabled(false);
+                console.log("loaded nonexistent fish");
             });
         }
 
@@ -256,9 +318,10 @@ var createScene = async function () {
                     function () {
                         meow.play();
                         if(updateOn){
-                            sendIndividualUpdate(0, "feedWet", catsInfo[0].name);
+                            // sendIndividualUpdate(0, "feedWet", catsInfo[0].name);
                         }
                         playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1, bars, mats);
+                        feedWetTask(fishPosX, allFish, fishPosZ);
                     }
                 )
             );
@@ -294,9 +357,10 @@ var createScene = async function () {
                         function () {
                             meow.play();
                             if(updateOn){
-                                sendIndividualUpdate(1, "feedWet", catsInfo[1].name);
+                                // sendIndividualUpdate(1, "feedWet", catsInfo[1].name);
                             }
                             playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2, bars, mats);
+                            feedWetTask(fishPosX, allFish, fishPosZ);
                         }
                     )
                 );
@@ -332,9 +396,10 @@ var createScene = async function () {
                             function () {
                                 meow.play();
                                 if(updateOn){
-                                    sendIndividualUpdate(2, "feedWet", catsInfo[2].name);
+                                    // sendIndividualUpdate(2, "feedWet", catsInfo[2].name);
                                 }
                                 playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3, bars, mats);
+                                feedWetTask(fishPosX, allFish, fishPosZ);
                             }
                         )
                     );
@@ -342,118 +407,108 @@ var createScene = async function () {
                     var cats = [cat1, cat2, cat3];
                     var anim = [animationGroups1, animationGroups2, animationGroups3];
 
-                    var specialFoodMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/food/sardine/", "scene.gltf", scene, function (meshFood) {
-                        var specialFood = meshFood[0];
-                        specialFood.setEnabled(false);
-                        
-                        specialFood.rotation = new BABYLON.Vector3(0, Math.PI/2, -Math.PI/2);
-                        specialFood.scaling = new BABYLON.Vector3(40, 40, 40);
-                        specialFood.position = new BABYLON.Vector3(0, 0.2, 0);
+                    // 3D gui - for mesh interaction
+                    var manager = new BABYLON.GUI.GUI3DManager(scene);
+                    bars = addNamesAndBars(mats, cats, anim, roots);
+                    var panelBottom = new BABYLON.GUI.StackPanel3D();
+                    manager.addControl(panelBottom);
+                    panelBottom.margin = 0.2;
+                    panelBottom.position.y = sphere.position.y;
+                    panelBottom.position.z = sphere.position.z - 2;
+                    var foodButtons = display3DInteractionButtons(panelBottom, bars, mats, cats, roots, anim, allFish, boxes, music, 
+                                                                    rewardMusic, scene, cans, canPosX, canPosZ, fishPosX);
 
-                        // 3D gui - for mesh interaction
-                        var manager = new BABYLON.GUI.GUI3DManager(scene);
-                        bars = addNamesAndBars(mats, cats, anim, roots);
-                        var panelBottom = new BABYLON.GUI.StackPanel3D();
-                        manager.addControl(panelBottom);
-                        panelBottom.margin = 0.2;
-                        panelBottom.position.y = sphere.position.y;
-                        panelBottom.position.z = sphere.position.z - 2;
-                        var foodButtons = display3DInteractionButtons(panelBottom, bars, mats, cats, roots, anim, specialFood, boxes, music, 
-                                                                      rewardMusic, scene, cans, canPosX, canPosZ);
+                    // cat meow
+                    scene.onPointerObservable.add((pointerInfo) => {
+                        switch (pointerInfo.type) { 
+                            case BABYLON.PointerEventTypes.POINTERDOWN:
+                                if(pointerInfo.pickInfo.hit && (pointerInfo.pickInfo.pickedMesh == box 
+                                                            || pointerInfo.pickInfo.pickedMesh == box2
+                                                            || pointerInfo.pickInfo.pickedMesh == box3)) {
+                                    pointerDown(pointerInfo.pickInfo.pickedMesh)
+                                }
+                                break;
+                            case BABYLON.PointerEventTypes.POINTERUP:
+                                pointerUp();
+                                if(box.isEnabled()){
+                                    if(updateOn){
+                                        // sendBoxPosUpdate(box.position);
+                                    }
+                                    box.move = true;
+                                    setTimeout(()=>{box.move = false}, interval);
+                                }
+                                break;
+                            case BABYLON.PointerEventTypes.POINTERMOVE:          
+                                pointerMove();
+                                break;
+                            case BABYLON.PointerEventTypes.POINTERTAP:          
+                                if(pointerInfo.pickInfo.hit) {
+                                    if(pointerInfo.pickInfo.pickedMesh == box){
+                                        box.rotation.y += Math.PI/2;
+                                    }
+                                    else if(pointerInfo.pickInfo.pickedMesh == box2){
+                                        box2.rotation.y += Math.PI/2;
+                                    }
+                                    else if(pointerInfo.pickInfo.pickedMesh == box3){
+                                        box3.rotation.y += Math.PI/2;
+                                    }
+                                }
+                                break;
+                        }
+                    });
 
-                        // cat meow
-                        scene.onPointerObservable.add((pointerInfo) => {
-                            switch (pointerInfo.type) { 
-                                case BABYLON.PointerEventTypes.POINTERDOWN:
-                                    if(pointerInfo.pickInfo.hit && (pointerInfo.pickInfo.pickedMesh == box 
-                                                                || pointerInfo.pickInfo.pickedMesh == box2
-                                                                || pointerInfo.pickInfo.pickedMesh == box3)) {
-                                        pointerDown(pointerInfo.pickInfo.pickedMesh)
+                    // get updated info
+                    function getUpdate(){
+                        console.log("update on: "+ updateOn);
+                        if(updateOn){
+                            const updateClub = functions.httpsCallable('updateClub');
+                            console.log("total cans:" + cans.length);
+                            updateClub({cans: cans.length}).then(res => {
+                                console.log(JSON.parse(res.data));
+                                var update = JSON.parse(res.data);
+                                if(update.state === "feedSpecial" && !cat1.play){
+                                    playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats);
+                                }
+                                if(update.indivState1 === "feedWet" && !cat1.play){
+                                    playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1, bars, mats);
+                                }
+                                if(update.indivState2 === "feedWet" && !cat2.play){
+                                    playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2, bars, mats);
+                                }
+                                if(update.indivState3 === "feedWet" && !cat3.play){
+                                    playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3, bars, mats);
+                                }
+                                if(update.displayDecor && !box.move){
+                                    box.setEnabled(true);
+                                    box.position.x = update.boxPosX;
+                                    box.position.z = update.boxPosZ;
+                                }
+                                if(update.cans !== cans.length){
+                                    var diff = update.cans - cans.length;
+                                    for(var d = 0;d < diff;d++){
+                                        // add more cans
+                                        BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+                                            var can = newMeshes[0];
+                                            cans.push(can);
+                                            can.position.x = canPosX;
+                                            if (!prevCanPosY) {
+                                                can.position.y = roomPosY + 0.15;
+                                            }
+                                            else {
+                                                can.position.y = prevCanPosY + 0.2;
+                                            }
+                                            can.position.z = canPosZ;
+                                            can.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+                                            prevCanPosY = can.position.y;
+                                        });
                                     }
-                                    break;
-                                case BABYLON.PointerEventTypes.POINTERUP:
-                                    pointerUp();
-                                    if(box.isEnabled()){
-                                        if(updateOn){
-                                            sendBoxPosUpdate(box.position);
-                                        }
-                                        box.move = true;
-                                        setTimeout(()=>{box.move = false}, interval);
-                                    }
-                                    break;
-                                case BABYLON.PointerEventTypes.POINTERMOVE:          
-                                    pointerMove();
-                                    break;
-                                case BABYLON.PointerEventTypes.POINTERTAP:          
-                                    if(pointerInfo.pickInfo.hit) {
-                                        if(pointerInfo.pickInfo.pickedMesh == box){
-                                            box.rotation.y += Math.PI/2;
-                                        }
-                                        else if(pointerInfo.pickInfo.pickedMesh == box2){
-                                            box2.rotation.y += Math.PI/2;
-                                        }
-                                        else if(pointerInfo.pickInfo.pickedMesh == box3){
-                                            box3.rotation.y += Math.PI/2;
-                                        }
-                                    }
-                                    break;
-                            }
-                        });
 
-                        // get updated info
-                        function getUpdate(){
-                            console.log("update on: "+ updateOn);
-                            if(updateOn){
-                                const updateClub = functions.httpsCallable('updateClub');
-                                console.log("total cans:" + cans.length);
-                                updateClub({cans: cans.length}).then(res => {
-                                    console.log(JSON.parse(res.data));
-                                    var update = JSON.parse(res.data);
-                                    if(update.state === "feedSpecial" && !cat1.play){
-                                        playCatEatTogetherAnimation(cats, roots, anim, specialFood, bars, mats);
-                                    }
-                                    if(update.indivState1 === "feedWet" && !cat1.play){
-                                        playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1, bars, mats);
-                                    }
-                                    if(update.indivState2 === "feedWet" && !cat2.play){
-                                        playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2, bars, mats);
-                                    }
-                                    if(update.indivState3 === "feedWet" && !cat3.play){
-                                        playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3, bars, mats);
-                                    }
-                                    if(update.displayDecor && !box.move){
-                                        box.setEnabled(true);
-                                        box.position.x = update.boxPosX;
-                                        box.position.z = update.boxPosZ;
-                                    }
-                                    if(update.cans !== cans.length){
-                                        var diff = update.cans - cans.length;
-                                        for(var d = 0;d < diff;d++){
-                                            // add more cans
-                                            BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
-                                                var can = newMeshes[0];
-                                                cans.push(can);
-                                                can.position.x = canPosX;
-                                                if (!prevCanPosY) {
-                                                    can.position.y = roomPosY + 0.1;
-                                                }
-                                                else {
-                                                    can.position.y = prevCanPosY + 0.2;
-                                                }
-                                                can.position.z = canPosZ;
-                                                can.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
-                                                prevCanPosY = can.position.y;
-                                            });
-
-                                        }
-
-                                    }
-                                });
-                            }
-                            setTimeout(getUpdate, interval); 
-                        };
-                        setTimeout(getUpdate, 0);
-                    });         // special food
+                                }
+                            });
+                        }
+                        setTimeout(getUpdate, interval); 
+                    };
+                    setTimeout(getUpdate, 0);
                 });             // cat3
             });                 // cat2
         });                     // cat1
@@ -607,8 +662,8 @@ function addNamesAndBars(mats, cats, anim, roots){
   return bars;
 }
 
-function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food, boxes, music, rewardMusic, 
-                                     scene, cans, canPosX, canPosZ){
+function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFish, boxes, music, rewardMusic, 
+                                     scene, cans, canPosX, canPosZ, fishPosX){
     // console.log("display 3d food buttons");
 
     // change bgm button
@@ -639,7 +694,7 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
     var decorButton = new BABYLON.GUI.Button3D("decorButton");
     decorButton.onPointerUpObservable.add(function(){
         if(updateOn){
-            sendDisplayBoxUpdate();
+            // sendDisplayBoxUpdate();
         }
         boxes[0].setEnabled(true);
     });   
@@ -677,9 +732,10 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
     // Feed together button
     var gatherButton = new BABYLON.GUI.Button3D("gatherButton");
     gatherButton.onPointerUpObservable.add(function(){
-        playCatEatTogetherAnimation(cats, roots, anim, food, bars, mats);
+        playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats, fishPosX);
         if(updateOn){
-            sendUpdate("feedSpecial", catsInfo);
+            // sendUpdate("feedSpecial", catsInfo);
+            sendUpdateLocal();
         }
         
     });   
@@ -771,11 +827,18 @@ function checkBGMRewards(){
         }, 1000);
     }
 }
+
 function sendUpdate(type, catsInfo){
     const changeState = functions.httpsCallable('changeState');
     changeState({state: type, cat1: catsInfo[0].name, cat2: catsInfo[1].name, cat3: catsInfo[2].name})
     .then(res => {
     });
+}
+
+function sendUpdateLocal(){
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://127.0.0.1:2020/feedSpecial", true);
+    xhr.send();
 }
 
 function sendIndividualUpdate(num, type, catName){
@@ -818,6 +881,7 @@ function updateIndivHungerLevel(bars, cat, mats, index, val){
         bars.hungerBar[index][i].material = mats.pink;
     }
 }
+
 function changeBackgroundMusic(music){
     if(currBGM == -1){
         currBGM = 0;
@@ -865,7 +929,7 @@ function musicTask(scene, musicToPlay, cans, canPosX, canPosZ, musicTaskButton, 
                     cans.push(can);
                     can.position.x = canPosX;
                     if (!prevCanPosY) {
-                        can.position.y = roomPosY + 0.1;
+                        can.position.y = roomPosY + 0.15;
                     }
                     else {
                         can.position.y = prevCanPosY + 0.2;
@@ -877,6 +941,30 @@ function musicTask(scene, musicToPlay, cans, canPosX, canPosZ, musicTaskButton, 
                 musicTaskRewarded = true;
             }
         });
+    }
+}
+
+function feedWetTask(fishPosX, allFish, fishPosZ) {
+    feedWetCount += 1;
+    console.log("feedWetCount incremented :: ", feedWetCount);
+
+    if (feedWetCount === wetCountForReward) {
+        feedWetCount = 0;
+        lastOwnedFishIndex += 1;
+        console.log("in feedWetTask, lastOwnedFishIndex = ", lastOwnedFishIndex);
+        var fish = allFish[lastOwnedFishIndex];
+        fish.position.y = roomPosY + 0.3;
+        fish.position.z = fishPosZ;
+        if (!prevFishPosX) {
+            fish.position.x = fishPosX;
+        }
+        else {
+            fish.position.x = prevFishPosX - 1.5;
+        }
+        fish.scaling = new BABYLON.Vector3(40, 40, 40);
+        fish.rotation = new BABYLON.Vector3(0, 0, -Math.PI/2);
+        fish.setEnabled(true);
+        prevFishPosX = fish.position.x;
     }
 }
 
@@ -918,15 +1006,28 @@ function playCatEatAnimation(scene, animationGroups, afterEatingAnim, cans, cat,
     }, interval);
 }
 
-function playCatEatTogetherAnimation(cats, roots, anim, food, bars, mats){
+function playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats, fishPosX){
     cats[0].play = true;
     cats[1].play = true;
     cats[2].play = true;
 
+    var fish_eaten = allFish[lastOwnedFishIndex];
+    // allFish.pop();
+    lastOwnedFishIndex -= 1;
+    console.log("In playCatEatTogetherAnim, lastOwnedFishIndex = ", lastOwnedFishIndex);
+    if (prevFishPosX === fishPosX) {
+        prevFishPosX = null;
+    }
+    else {
+        prevFishPosX = prevFishPosX + 1.5;
+    }
+
+    fish_eaten.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+    fish_eaten.position = new BABYLON.Vector3(0, 0.2, 0);
+
     // food appear and disappear
-    food.setEnabled(true);
     setTimeout(function(){
-        food.setEnabled(false);
+        fish_eaten.setEnabled(false);
     }, 8000);
 
     // cat1 move and eat
@@ -1022,4 +1123,4 @@ function playCatEatTogetherAnimation(cats, roots, anim, food, bars, mats){
     }, 9333);
 }
 
-} // init VR scene end
+// } // init VR scene end
