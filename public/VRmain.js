@@ -1,4 +1,9 @@
 import{displayBoard} from './VRboard.js'
+import{sendUpdateLocal, sendIndivUpdateLocal, sendDisplayTreeUpdate, sendTreePosUpdate,
+    sendDisplayBoardUpdate, sendBoardPosUpdate, sendDisplayElephantUpdate, sendElephantPosUpdate} 
+    from './sync.js'
+
+export{functions}
 
 const FEED_WET_HUNGER = 4;
 const FEED_SP_HUNGER = 10;
@@ -209,7 +214,7 @@ var createScene = async function () {
     var canPosX = 2;
     var canPosZ = 3;
     var cans = [];
-    var canCount = 1;
+    var canCount = 2;
 
     BABYLON.SceneLoader.ImportMesh("", "./assets/space/conference_room1/", "scene.gltf", scene, 
                                     function (roomMeshes, roomParticleSystems, roomSkeletons) {
@@ -279,6 +284,7 @@ var createScene = async function () {
                         meow.play();
                         if(updateOn){
                             //sendIndividualUpdate(0, "feedWet", catsInfo[0].name);
+                            sendIndivUpdateLocal(1);
                         }
                         playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1, bars, mats);
                     }
@@ -318,6 +324,7 @@ var createScene = async function () {
                             meow.play();
                             if(updateOn){
                                 //sendIndividualUpdate(1, "feedWet", catsInfo[1].name);
+                                sendIndivUpdateLocal(2);
                             }
                             playCatEatAnimation(scene, animationGroups2, animationGroups2[5], cans, cat2, 2, bars, mats);
                         }
@@ -357,6 +364,7 @@ var createScene = async function () {
                                 meow.play();
                                 if(updateOn){
                                     //sendIndividualUpdate(2, "feedWet", catsInfo[2].name);
+                                    sendIndivUpdateLocal(3);
                                 }
                                 playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3, bars, mats);
                             }
@@ -397,13 +405,30 @@ var createScene = async function () {
                                     break;
                                 case BABYLON.PointerEventTypes.POINTERUP:
                                     pointerUp();
-                                    if(box.isEnabled()){
+                                    if(box.isEnabled() && pointerInfo.pickInfo.pickedMesh == box){
                                         if(updateOn){
                                             //sendBoxPosUpdate(box.position);
+                                            sendTreePosUpdate(box.position);
                                         }
                                         box.move = true;
                                         setTimeout(()=>{box.move = false}, interval);
                                     }
+                                    if(box2.isEnabled() && pointerInfo.pickInfo.pickedMesh == box2){
+                                        if(updateOn){
+                                            sendBoardPosUpdate(box2.position);
+                                        }
+                                        box2.move = true;
+                                        setTimeout(()=>{box2.move = false}, interval);
+                                    }
+                                    if(box3.isEnabled() && pointerInfo.pickInfo.pickedMesh == box3){
+                                        if(updateOn){
+                                            sendElephantPosUpdate(box3.position);
+                                        }
+                                        box3.move = true;
+                                        setTimeout(()=>{box3.move = false}, interval);
+                                    }
+                                    
+
                                     break;
                                 case BABYLON.PointerEventTypes.POINTERMOVE:          
                                     pointerMove();
@@ -450,11 +475,28 @@ var createScene = async function () {
                                     if(update.indivState3 === "feedWet" && !cat3.play){
                                         playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3, bars, mats);
                                     }
-                                    if(update.displayDecor && !box.move){
+                                    if(update.displayTree && !box.move){
                                         box.setEnabled(true);
-                                        box.position.x = update.boxPosX;
-                                        box.position.z = update.boxPosZ;
+                                        box.position.x = update.treePosX;
+                                        box.position.z = update.treePosZ;
                                     }
+                                    if(update.displayBoard && !box2.move){
+                                        box2.setEnabled(true);
+                                        box2.position.x = update.boardPosX;
+                                        box2.position.z = update.boardPosZ;
+                                    }
+                                    if(update.displayElephant && !box3.move){
+                                        box3.setEnabled(true);
+                                        box3.position.x = update.elephantPosX;
+                                        box3.position.z = update.elephantPosZ;
+                                    }
+
+                                    // if(update.displayTree && !box.move){
+                                    //     box.setEnabled(true);
+                                    //     box.position.x = update.treePosX;
+                                    //     box.position.z = update.treePosZ;
+                                    // }
+
                                     // if(update.cans !== cans.length){
                                     //     var diff = update.cans - cans.length;
                                     //     for(var d = 0;d < diff;d++){
@@ -676,6 +718,7 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
     decorButton.onPointerUpObservable.add(function(){
         if(updateOn){
             //sendDisplayBoxUpdate();
+            sendDisplayTreeUpdate();
         }
         boxes[0].setEnabled(true);
     });   
@@ -689,6 +732,9 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
     // cardboard button
     var cardBoardButton = new BABYLON.GUI.Button3D("decorButton");
     cardBoardButton.onPointerUpObservable.add(function(){
+        if(updateOn){
+            sendDisplayBoardUpdate();
+        }
         boxes[1].setEnabled(true);
     });   
     panel.addControl(cardBoardButton);
@@ -701,6 +747,9 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
     // elephant button
     var elephantButton = new BABYLON.GUI.Button3D("decorButton");
     elephantButton.onPointerUpObservable.add(function(){
+        if(updateOn){
+            sendDisplayElephantUpdate();
+        }
         boxes[2].setEnabled(true);
     });   
     panel.addControl(elephantButton);
@@ -739,21 +788,6 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, food,
     text1.color = "white";
     text1.fontSize = 40;
     button.content = text1;  
-
-    ///// test clicking name tags ///////
-    var count = new BABYLON.GUI.Button3D("count");
-    var text1 = new BABYLON.GUI.TextBlock();
-    text1.text = "0";
-    text1.color = "white";
-    text1.fontSize = 48;
-    count.content = text1; 
-    count.onPointerUpObservable.add(function(){
-        checkBGMRewards();
-        text1.text = `${clickNames}`;
-    });   
-    panel.addControl(count);
-
-    ///// test clicking name tags ///////
 
     var foodButtons = {
         music: musicButton,
@@ -808,37 +842,7 @@ function checkBGMRewards(){
         }, 1000);
     }
 }
-function sendUpdate(type, catsInfo){
-    const changeState = functions.httpsCallable('changeState');
-    changeState({state: type, cat1: catsInfo[0].name, cat2: catsInfo[1].name, cat3: catsInfo[2].name})
-    .then(res => {
-    });
-}
 
-function sendUpdateLocal(){
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://127.0.0.1:2020/feedSpecial", true);
-    xhr.send();
-}
-
-function sendIndividualUpdate(num, type, catName){
-    const changeIndivState = functions.httpsCallable('changeIndivState');
-    changeIndivState({index: num, state: type, name: catName})
-    .then(res => {
-    });
-}
-
-function sendDisplayBoxUpdate(){
-    const displayDecor = functions.httpsCallable('displayDecor');
-    displayDecor({}).then(res => {});
-}
-
-function sendBoxPosUpdate(position){
-    const updateBoxPos = functions.httpsCallable('updateBoxPos');
-    updateBoxPos({x: position.x, z: position.z})
-    .then(res => {
-    });
-}
 
 function updateHungerLevel(bars, cats, mats, val){
     cats[0].hunger += val;
