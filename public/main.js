@@ -103,9 +103,9 @@ const backgrounds = {
 }
 
 const outcome = {
-    "1": "I finally found myself a cozy and loving home. My new family is so kind and everyone absolutely adores me!! Thank you so much for prepping me for a new life."
-    "2": "I guess I'll keep waiting for my future at the cARe centre. People who came here for adoption probably didn't truly see me. I hope to see you if you come by again!"
-    "3": "I hope my secretary successfully delivered this message. Do feel honored to hear from me though, as I am usually very busy with my daily routines as the President of the United States of Stray Animals. You were a big part of my success."
+    "1": "i finally found myself a cozy and loving home. my new family is so kind and everyone absolutely adores me!! thank you so much for prepping me for a new life.",
+    "2": "i guess i'll keep waiting for my future at the cARe centre. people who came here for adoption probably didn't truly see me. i hope to see you if you come by again!",
+    "3": "i hope my secretary successfully delivered this message. do feel honored to hear from me though, as i am usually very busy with my daily routines as the president of the United Streets of stray Animals. you were a big part of my success.",
     "4": "please excuse my handwriting as i write this message with a very weak body and some messy, lingering thoughts i appreciate your effort for trying to take care of me in my final days. see you in the after life"
 }
 
