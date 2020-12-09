@@ -331,7 +331,7 @@
                  start_game_modal.style.display = "none";
             }
         }
-        if (${userInfo.hasCat}==0) {
+        if (userInfo.hasCat==0) {
 	    document.getElementById("start").style.display = "block";
             document.getElementById("continue").style.display = "none";
             document.getElementById("end").style.display = "none";
@@ -339,7 +339,7 @@
             document.getElementById("history").style.display = "none";
             document.getElementById("vr").style.display = "none";
 	} else {
-	    if (${userInfo.cat.status} === 0) {	    
+	    if (userInfo.cat.status === 0) {	    
 	        document.getElementById("start").style.display = "none";
                 document.getElementById("continue").style.display = "block";
                 document.getElementById("vr").style.display = "block";
