@@ -170,13 +170,14 @@
             <div><button class="btn end" id="end">end game</button> </div>
             <div><button class="btn info" id="info btn">info</button></div>
             <div><button class="btn history" id="history">view history</button></div>  
+	    <div><button class="btn default" id="vr">enter VR</button></div>
             <div><button class="btn logout" id="logout">log out</button></div>
 	    <div><button class="btn load" id="loadCat">load cat</button></div>
         </div>
         <p class="aligncenter">
         <img src="https://media.giphy.com/media/3kRa3yvntxlFm/giphy.gif" style= "display: block; max-height: 70%; max-width: screen.width; width: 100%; height: auto;">
         </p>
-        <button id="vr" >enter VR</button>
+	<!--<button id="vr" >enter VR</button>-->
 
         <!-- Info Modal -->
         <div id="InfoModal" class="modal">
@@ -330,9 +331,26 @@
                  start_game_modal.style.display = "none";
             }
         }
-        document.getElementById("end").style.display = "none";
-        document.getElementById("loadCat").style.display = "none";
-        document.getElementById("continue").style.display = "none";
+        if (${userInfo.hasCat}==0}) {
+	    document.getElementById("start").style.display = "block";
+            document.getElementById("continue").style.display = "none";
+            document.getElementById("end").style.display = "none";
+            document.getElementById("loadCat").style.display = "none";
+            document.getElementById("history").style.display = "none";
+            document.getElementById("vr").style.display = "none";
+	} else {
+	    if (${userInfo.cat.status} === 0) {	    
+	        document.getElementById("start").style.display = "none";
+                document.getElementById("continue").style.display = "block";
+                document.getElementById("vr").style.display = "block";
+                document.getElementById("end").style.display = "none";
+	    } else {
+	        document.getElementById("start").style.display = "none";
+                document.getElementById("continue").style.display = "none";
+                document.getElementById("vr").style.display = "none";
+                document.getElementById("end").style.display = "block";
+	    }
+	}
         </script>      
         <script src="main.js"> </script>
     </body>
