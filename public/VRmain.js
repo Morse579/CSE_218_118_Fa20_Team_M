@@ -117,6 +117,7 @@ var createScene = async function () {
         floorMeshes: [env.ground]
     });
 
+    //var board = {};
     var board = displayTaskBoard(1,10,2);
 
     const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 1});
@@ -757,7 +758,9 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     var boardButton = new BABYLON.GUI.Button3D("TaskBoard");
     panel.addControl(boardButton);
     boardButton.onPointerUpObservable.add(function(){
-        taskBoard.isVisible = !taskBoard.isVisible;
+        //taskBoard.isVisible = !taskBoard.isVisible;
+        taskBoard.displayed = !taskBoard.displayed;
+        taskBoard.setEnabled(taskBoard.displayed);
     });   
     var text1 = new BABYLON.GUI.TextBlock();
     text1.text = "Task\nBoard";
@@ -833,21 +836,21 @@ function checkBGMRewards(){
         grid.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;   
         grid.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
         
-        grid.widthInPixels = 400;
-        grid.heightInPixels = 200;
+        grid.widthInPixels = 800;
+        grid.heightInPixels = 400;
 
         var rect= new BABYLON.GUI.Rectangle();
-        rect.cornerRadius = 50;
+        rect.cornerRadius = 100;
         rect.background =  "#6B899E";
         rect.alpha = 0.8;
-        rect.thickness = 10;
+        rect.thickness = 20;
         grid.addControl(rect, 0, 0);
     
         var unlockText = new BABYLON.GUI.TextBlock();
         unlockText.text = "Unlock New BGM!";
-        unlockText.heightInPixels = 100;
+        unlockText.heightInPixels = 200;
         unlockText.color = "#E5A33F";
-        unlockText.fontSize = 40;
+        unlockText.fontSize = 80;
         grid.addControl(unlockText, 0, 0);
         setTimeout(()=>{
             advancedTexture.removeControl(grid);
