@@ -99,18 +99,18 @@ const spTasks = {
 }
 
 const backgrounds = {
-    "1": "i was born and raised on and by the streets. please excuse my terrible health conditions.",
-    "2": "the cARe centre has been my home for a lifetime. i really hope to have my own home.", 
-    "3": "here is the secret: i actually ran away from my previous owner. what could be better than freedom and fresh air?",
-    "4": "one day i woke up and found myself in a box in front of the cARe centre. here went all memories of my ex-owner. will you promise never to leave me?",
-    "5": "first thing first, i am a natural traveller. the goal is to meet every cat and human alive, virtual or real."
+    "1": "i was born and raised on and by the streets.\n please excuse my terrible health conditions.",
+    "2": "the cARe centre has been my home for a lifetime.\n i really hope to have my own home.", 
+    "3": "here is the secret: i actually ran away from my previous owner.\n what could be better than freedom and fresh air?",
+    "4": "one day i woke up and found myself in a box in front of the cARe centre.\n here went all memories of my ex-owner. will you promise never to leave me?",
+    "5": "first thing first, i am a natural traveller.\n the goal is to meet every cat and human alive, virtual or real."
 }
 
 const outcome = {
-    "1": "i finally found myself a cozy and loving home. my new family is so kind and everyone absolutely adores me!! thank you so much for prepping me for a new life.",
-    "2": "i guess i'll keep waiting for my future at the cARe centre. people who came here for adoption probably didn't truly see me. i hope to see you if you come by again!",
-    "3": "i hope my secretary successfully delivered this message. do feel honored to hear from me though, as i am usually very busy with my daily routines as the president of the United Streets of stray Animals. you were a big part of my success.",
-    "4": "please excuse my handwriting as i write this message with a very weak body and some messy, lingering thoughts i appreciate your effort for trying to take care of me in my final days. see you in the after life"
+    "1": "i finally found myself a cozy and loving home.\nmy new family is so kind and everyone absolutely adores me!!\nthank you so much for prepping me for a new life.",
+    "2": "i guess i'll keep waiting for my future at the cARe centre.\n people who came here for adoption probably didn't truly see me.\n i hope to see you if you come by again!",
+    "3": "i hope my secretary successfully delivered this message.\n do feel honored to hear from me though, as i am usually very busy with my daily routines as \nthe president of the United Streets of stray Animals.\nyou were a big part of my success.",
+    "4": "please excuse my handwriting as i write this message with\na very weak body and some messy, lingering thoughts.i appreciate\n your effort for trying to take care of me in my final days.\nsee you in the after life"
 }
 
 function displayCatProfile(cat){
