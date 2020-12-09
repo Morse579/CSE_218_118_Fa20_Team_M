@@ -142,7 +142,7 @@ function endStory(){
     });
     const endDialog = document.getElementById("endDialog");
     endDialog.showModal();
-    var msg = outcome[${userInfo.cat.status}];
+    var msg = outcome[userInfo.cat.status];
     document.getElementById("cat message").innerHTML = `hello ${userInfo.username}! this is ${userInfo.cat.name}! it's been awhile!`;
     document.getElementById("cat outcome").innerHTML = `${msg}`; 
     //if(userInfo.cat.specialTaskCompleted){
