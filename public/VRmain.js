@@ -8,9 +8,8 @@ export{functions}
 
 const FEED_WET_HUNGER = 4;
 const FEED_SP_HUNGER = 10;
-const BOX_MOOD = 10;
-const TOY_MOOD = 15;
-const TREE_MOOD = 20;
+const FEED_WET_MOOD = 4;
+const FEED_SP_MOOD = -5;
 
 const firebaseConfig = {
     apiKey: "AIzaSyCHuFcfj3D2vXpxuJWbJViYa1SJPUkEAZM",
@@ -917,6 +916,12 @@ function updateIndivHungerLevel(bars, cat, mats, index, val){
         bars.hungerBar[index][i].material = mats.pink;
     }
 }
+function updateIndivMoodLevel(bars, cat, mats, index, val){
+    cat.mood += val;
+    for(var i = Math.max(cat.mood-val,0);i<Math.min(cat.mood,100);i++){
+        bars.moodBar[index][i].material = mats.orange;
+    }
+}
 
 function changeBackgroundMusic(music){
     if(currBGM == -1){
@@ -1066,6 +1071,7 @@ function playCatEatAnimation(scene, animationGroups, afterEatingAnim, cans, cat,
         afterEatingAnim.play(false);
         can_eaten.setEnabled(false);
         updateIndivHungerLevel(bars, cat, mats, index-1, FEED_WET_HUNGER);
+        updateIndivMoodLevel(bars, cat, mats, index-1, FEED_WET_MOOD);
     }, 4000);
     setTimeout(()=>{
         cat.play = false;
@@ -1130,6 +1136,7 @@ function playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats, fis
         cats[2].play = false;
 
         updateHungerLevel(bars, cats, mats, FEED_SP_HUNGER);
+        updateMoodLevel(bars, cats, mats, FEED_SP_MOOD);
     }, 10000);
 
     // cat2 move and eat
