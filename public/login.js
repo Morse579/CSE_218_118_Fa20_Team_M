@@ -21,7 +21,7 @@ const testEmail = "carol@218.com";
 const testPassword = "carolcarol";
 
 const testLogin = document.getElementById("submit");
-submit.addEventListener('click', onTestLogin);
+testLogin.addEventListener('click', onTestLogin);
 
 firebase.auth().onAuthStateChanged( user => {
     if(user){
@@ -36,8 +36,8 @@ function onTestLogin(e){
     const auth = firebase.auth();
     email = document.getElemenyById("uname").value;
     password = document.getElementById("psw").value;
-    //const promise = auth.signInWithEmailAndPassword(testEmail, testPassword);
-    const promise = auth.signInWithEmailAndPassword(email, password);
+    const promise = auth.signInWithEmailAndPassword(testEmail, testPassword);
+    //const promise = auth.signInWithEmailAndPassword(email, password);
     promise.catch(e => loginErrorMsg.innerText = e.message);
     window.location.href = "index.html";
 }
