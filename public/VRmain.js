@@ -1,37 +1,15 @@
-import{displayBoard} from './VRboard.js'
+import{displayTaskBoard} from './VRboard.js'
 import{sendUpdateLocal, sendIndivUpdateLocal, sendDisplayTreeUpdate, sendTreePosUpdate,
     sendDisplayBoardUpdate, sendBoardPosUpdate, sendDisplayElephantUpdate, sendElephantPosUpdate,
     sendCansUpdate} 
     from './sync.js'
-
-export{functions}
 
 const FEED_WET_HUNGER = 4;
 const FEED_SP_HUNGER = 10;
 const FEED_WET_MOOD = 4;
 const FEED_SP_MOOD = -5;
 
-const firebaseConfig = {
-    apiKey: "AIzaSyCHuFcfj3D2vXpxuJWbJViYa1SJPUkEAZM",
-    authDomain: "ar-meowmeow.firebaseapp.com",
-    databaseURL: "https://ar-meowmeow.firebaseio.com",
-    projectId: "ar-meowmeow",
-    storageBucket: "ar-meowmeow.appspot.com",
-    messagingSenderId: "426725357319",
-    appId: "1:426725357319:web:5c5851563c99b1c282b7a2",
-    measurementId: "G-WZ7ZJL7E5V"
-  };
-
-firebase.initializeApp(firebaseConfig);
-const functions = firebase.functions();
 const interval = 2000;
-
-// const loadRoom = functions.httpsCallable('loadClubRoom');
-// loadRoom({}).then(res => {
-//     console.log(JSON.parse(res.data));
-//     let roomInfo = JSON.parse(res.data);
-//     initVRscene(roomInfo);
-// });
 
 // function initVRscene(roomInfo){
 var cat1 = {
@@ -48,7 +26,7 @@ var cat2 = {
 };
 var cat3 = {
     hunger: 60,
-    mood: 0,
+    mood: 10,
     name: "Python",
     appearance: "white"
 };
@@ -139,7 +117,7 @@ var createScene = async function () {
         floorMeshes: [env.ground]
     });
 
-    displayBoard(1,10,2);
+    var board = displayTaskBoard(1,10,2);
 
     const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 1});
     sphere.position.z = -3;
@@ -429,7 +407,7 @@ var createScene = async function () {
                     panelBottom.position.y = sphere.position.y;
                     panelBottom.position.z = sphere.position.z - 2;
                     var interactButtons = display3DInteractionButtons(panelBottom, bars, mats, cats, roots, anim, allFish, boxes, music, 
-                                                                    rewardMusic, scene, cans, canPosX, canPosZ, fishPosX);
+                                                                    rewardMusic, scene, cans, canPosX, canPosZ, fishPosX, board);
 
                     // cat meow
                     scene.onPointerObservable.add((pointerInfo) => {
@@ -718,8 +696,7 @@ function addNamesAndBars(mats, cats, anim, roots){
 }
 
 function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFish, boxes, music, rewardMusic, 
-                                     scene, cans, canPosX, canPosZ, fishPosX){
-    // console.log("display 3d food buttons");
+                                     scene, cans, canPosX, canPosZ, fishPosX, taskBoard){
 
     // change bgm button
     var musicButton = new BABYLON.GUI.Button3D("musicButton");
@@ -740,59 +717,10 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     });   
     panel.addControl(musicTaskButton);
     var text1 = new BABYLON.GUI.TextBlock();
-    text1.text = "music\nfor reward";
+    text1.text = "Ads\nfor reward";
     text1.color = "white";
     text1.fontSize = 35;
     musicTaskButton.content = text1; 
-
-    // cat tree button
-    var decorButton = new BABYLON.GUI.Button3D("decorButton");
-    decorButton.onPointerUpObservable.add(function(){
-        if(updateOn){
-            //sendDisplayBoxUpdate();
-            sendDisplayTreeUpdate();
-        }
-        boxes[0].setEnabled(true);
-    });   
-    panel.addControl(decorButton);
-    decorButton.isVisible = false;
-    var text1 = new BABYLON.GUI.TextBlock();
-    text1.text = "Cat tree";
-    text1.color = "white";
-    text1.fontSize = 40;
-    decorButton.content = text1; 
-
-    // cardboard button
-    var cardBoardButton = new BABYLON.GUI.Button3D("decorButton");
-    cardBoardButton.onPointerUpObservable.add(function(){
-        if(updateOn){
-            sendDisplayBoardUpdate();
-        }
-        boxes[1].setEnabled(true);
-    });   
-    panel.addControl(cardBoardButton);
-    cardBoardButton.isVisible = false;
-    var text1 = new BABYLON.GUI.TextBlock();
-    text1.text = "cardboard";
-    text1.color = "white";
-    text1.fontSize = 40;
-    cardBoardButton.content = text1; 
-
-    // elephant button
-    var elephantButton = new BABYLON.GUI.Button3D("decorButton");
-    elephantButton.onPointerUpObservable.add(function(){
-        if(updateOn){
-            sendDisplayElephantUpdate();
-        }
-        boxes[2].setEnabled(true);
-    });   
-    panel.addControl(elephantButton);
-    elephantButton.isVisible = false;
-    var text1 = new BABYLON.GUI.TextBlock();
-    text1.text = "elephant";
-    text1.color = "white";
-    text1.fontSize = 40;
-    elephantButton.content = text1; 
 
     // Feed together button
     var gatherButton = new BABYLON.GUI.Button3D("gatherButton");
@@ -812,17 +740,77 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     gatherButton.content = text1; 
 
     // Sync button
-    var button = new BABYLON.GUI.Button3D("sync");
-    panel.addControl(button);
-    button.onPointerUpObservable.add(function(){
-        updateOn = !updateOn;
-    });   
+    // var button = new BABYLON.GUI.Button3D("sync");
+    // panel.addControl(button);
+    // button.onPointerUpObservable.add(function(){
+    //     updateOn = !updateOn;
+    // });   
     
+    // var text1 = new BABYLON.GUI.TextBlock();
+    // text1.text = "SYNC";
+    // text1.color = "white";
+    // text1.fontSize = 40;
+    // button.content = text1;  
+
+    // cardboard button
+
+    var boardButton = new BABYLON.GUI.Button3D("TaskBoard");
+    panel.addControl(boardButton);
+    boardButton.onPointerUpObservable.add(function(){
+        taskBoard.isVisible = !taskBoard.isVisible;
+    });   
     var text1 = new BABYLON.GUI.TextBlock();
-    text1.text = "SYNC";
+    text1.text = "Task\nBoard";
     text1.color = "white";
     text1.fontSize = 40;
-    button.content = text1;  
+    boardButton.content = text1;  
+
+    var cardBoardButton = new BABYLON.GUI.Button3D("decorButton");
+    cardBoardButton.onPointerUpObservable.add(function(){
+        if(updateOn){
+            sendDisplayBoardUpdate();
+        }
+        boxes[1].setEnabled(true);
+    });   
+    panel.addControl(cardBoardButton);
+    cardBoardButton.isVisible = false;
+    var text1 = new BABYLON.GUI.TextBlock();
+    text1.text = "cardboard";
+    text1.color = "white";
+    text1.fontSize = 40;
+    cardBoardButton.content = text1; 
+
+    // cat tree button
+    var decorButton = new BABYLON.GUI.Button3D("decorButton");
+    decorButton.onPointerUpObservable.add(function(){
+        if(updateOn){
+            sendDisplayTreeUpdate();
+        }
+        boxes[0].setEnabled(true);
+    });   
+    panel.addControl(decorButton);
+    decorButton.isVisible = false;
+    var text1 = new BABYLON.GUI.TextBlock();
+    text1.text = "Cat tree";
+    text1.color = "white";
+    text1.fontSize = 40;
+    decorButton.content = text1; 
+
+    // elephant button
+    var elephantButton = new BABYLON.GUI.Button3D("decorButton");
+    elephantButton.onPointerUpObservable.add(function(){
+        if(updateOn){
+            sendDisplayElephantUpdate();
+        }
+        boxes[2].setEnabled(true);
+    });   
+    panel.addControl(elephantButton);
+    elephantButton.isVisible = false;
+    var text1 = new BABYLON.GUI.TextBlock();
+    text1.text = "elephant";
+    text1.color = "white";
+    text1.fontSize = 40;
+    elephantButton.content = text1; 
 
     var foodButtons = {
         music: musicButton,
@@ -836,47 +824,40 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
 
 function checkBGMRewards(){
     clickNames++;
-    if(clickNames === 5){
+    if(clickNames === 3){
         numBGM++;
 
-        var plane = BABYLON.Mesh.CreatePlane("plane", 10);
-        plane.position.y = 2;
-        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane);
-        console.log(advancedTexture.background );
-        advancedTexture.background =  "#6B899E";
-        advancedTexture.widthInPixels = 500;
-        advancedTexture.heightInPixels = 200;
+        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        var grid = new BABYLON.GUI.Grid(); 
+        advancedTexture.addControl(grid); 
+        grid.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;   
+        grid.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        
+        grid.widthInPixels = 400;
+        grid.heightInPixels = 200;
+
+        var rect= new BABYLON.GUI.Rectangle();
+        rect.cornerRadius = 50;
+        rect.background =  "#6B899E";
+        rect.alpha = 0.8;
+        rect.thickness = 10;
+        grid.addControl(rect, 0, 0);
+    
         var unlockText = new BABYLON.GUI.TextBlock();
         unlockText.text = "Unlock New BGM!";
-        unlockText.heightInPixels = 200;
+        unlockText.heightInPixels = 100;
         unlockText.color = "#E5A33F";
-        unlockText.fontSize = 100;
-        advancedTexture.addControl(unlockText); 
+        unlockText.fontSize = 40;
+        grid.addControl(unlockText, 0, 0);
         setTimeout(()=>{
-            advancedTexture.removeControl(unlockText);
-            advancedTexture.background = "transparent";
-        }, 1000);
+            advancedTexture.removeControl(grid);
+            advancedTexture.removeControl(rect);
+            //grid.background = "transparent";
+        }, 800);
         
     }else if(clickNames === 10){
         numBGM++;
-
-        var plane = BABYLON.Mesh.CreatePlane("plane", 10);
-        plane.position.y = 2;
-        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane);
-        console.log(advancedTexture.background );
-        advancedTexture.background =  "#6B899E";
-        advancedTexture.widthInPixels = 500;
-        advancedTexture.heightInPixels = 200;
-        var unlockText = new BABYLON.GUI.TextBlock();
-        unlockText.text = "Unlock All BGM!";
-        unlockText.heightInPixels = 200;
-        unlockText.color = "#E5A33F";
-        unlockText.fontSize = 100;
-        advancedTexture.addControl(unlockText); 
-        setTimeout(()=>{
-            advancedTexture.removeControl(unlockText);
-            advancedTexture.background = "transparent";
-        }, 1000);
+        //TODO
     }
 }
 
@@ -897,16 +878,16 @@ function updateHungerLevel(bars, cats, mats, val){
 }
 function updateMoodLevel(bars, cats, mats, val){
     cats[0].mood += val;
-    for(var i = Math.max(cats[0].mood-val,0);i<Math.min(cats[0].mood,100);i++){
-        bars.moodBar[0][i].material = mats.orange;
+    for(var i = Math.max(cats[0].mood,0);i<Math.min(cats[0].mood-val,100);i++){
+        bars.moodBar[0][i].material = null;
     }
     cats[1].mood += val;
-    for(var i = Math.max(cats[1].mood-val,0);i<Math.min(cats[1].mood,100);i++){
-        bars.moodBar[1][i].material = mats.orange;
+    for(var i = Math.max(cats[1].mood,0);i<Math.min(cats[1].mood-val,100);i++){
+        bars.moodBar[1][i].material = null;
     }
     cats[2].mood += val;
-    for(var i = Math.max(cats[2].mood-val,0);i<Math.min(cats[2].mood,100);i++){
-        bars.moodBar[2][i].material = mats.orange;
+    for(var i = Math.max(cats[2].mood,0);i<Math.min(cats[2].mood-val,100);i++){
+        bars.moodBar[2][i].material = null;
     }
 }
 
@@ -918,6 +899,7 @@ function updateIndivHungerLevel(bars, cat, mats, index, val){
 }
 function updateIndivMoodLevel(bars, cat, mats, index, val){
     cat.mood += val;
+    console.log(index, cat.mood);
     for(var i = Math.max(cat.mood-val,0);i<Math.min(cat.mood,100);i++){
         bars.moodBar[index][i].material = mats.orange;
     }
@@ -981,7 +963,7 @@ function musicTask(scene, musicToPlay, cans, canPosX, canPosZ, musicTaskButton, 
         musicToPlay.play();
         musicTaskRewarded = false;
         rewardMusicIsPlaying = true;
-        text1.text = "stop music\nno reward";
+        text1.text = "stop Ads\nno reward";
         musicTaskButton.content = text1;
         // console.log("playing the music")
 

@@ -1,8 +1,8 @@
-export {displayBoard}
+export {displayTaskBoard}
 
 const size = 1;
 
-function displayBoard(t1_count,t2_count,t3_count){
+function displayTaskBoard(t1_count,t2_count,t3_count){
     // GUI
     // GUI
     //Game tasks plane
@@ -18,6 +18,7 @@ function displayBoard(t1_count,t2_count,t3_count){
     //board for all
     var board = new BABYLON.GUI.Grid(); 
     advancedTexture.addControl(board);
+    board.isVisible = false;
     board.widthInPixels = 900;
     board.heightInPixels = 640;
     board.background = background_c;
@@ -84,6 +85,7 @@ function displayBoard(t1_count,t2_count,t3_count){
     }
     format_tasks(stasks,0,"feed fish for decorations","",false,image_st,r_d,t3_count);
     
+    return board;
 }
 
 function format_tasks(grid_d,p,text_d,count_d,count,reward_icon,reward_d,pg){
