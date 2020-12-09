@@ -95,11 +95,11 @@ const spTasks = {
 }
 
 const backgrounds = {
-    "1": "stray cat",
-    "2": "spent their entire life at the pound", 
-    "3": "ran away from their home",
-    "4": "recently abandoned by owner",
-    "5": "traveller cat"
+    "1": "i was born and raised on and by the streets. please excuse my terrible health conditions.",
+    "2": "the cARe centre has been my home for a lifetime. i really hope to have my own home.", 
+    "3": "here is the secret: i actually ran away from my previous owner. what could be better than freedom and fresh air?",
+    "4": "one day i woke up and found myself in a box in front of the cARe centre. here went all memories of my ex-owner. will you promise never to leave me?",
+    "5": "first thing first, i am a natural traveller. the goal is to meet every cat and human alive, virtual or real."
 }
 
 const outcome = {
@@ -112,9 +112,11 @@ const outcome = {
 function displayCatProfile(cat){
     var msg = spTasks[cat.specialTask];
     var background = backgrounds[cat.background];
-    document.querySelector("#catDialog div").innerHTML = `<p>${cat.name}'s age: ${cat.age}</p>
-    <p>${cat.name}'s appearance: ${cat.appearance}</p> <p>${cat.name}'s background: ${background}</p>
-    <p>${cat.name}'s wish: ${msg}</p>`;
+    document.querySelector("#catDialog div").innerHTML = `<p>${userInfo.username}, thank you for being there for me!</p>
+    <p>my name is ${userInfo.cat.name} and i am ${userInfo.cat.age} year old ${userInfo.cat.appearance} cat</p>
+    <p>${background}</p>
+    <p>i do have a special wish though.</p>
+    <p>${msg}</p>`;
     document.getElementById("catDialog").showModal();
     document.getElementById("enterBtn").addEventListener("click", showARScene);
 }
