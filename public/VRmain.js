@@ -55,12 +55,12 @@ var cat3 = {
 };
 let catsInfo = [cat1, cat2, cat3];
 var canvas = document.getElementById("renderCanvas"); // Get the canvas element
+//var canvas = $("#renderCanvas").get(0);
 var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
 const initPos = [new BABYLON.Vector3(0, 0.2, 8), new BABYLON.Vector3(-8, 0.2, 1), new BABYLON.Vector3(8, 0.2, 1)];
 const gatherPos = [new BABYLON.Vector3(0, 0.2, 1), new BABYLON.Vector3(-3, 0.2, 0), new BABYLON.Vector3(3, 0.2, 0)];
 
-// TODO 
 var numBGM = 2;
 var currBGM = -1;
 var clickNames = 0;
@@ -140,7 +140,7 @@ var createScene = async function () {
         floorMeshes: [env.ground]
     });
 
-    displayBoard(1, 10, 3);
+    displayBoard(1,10,2);
 
     const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 1});
     sphere.position.z = -3;

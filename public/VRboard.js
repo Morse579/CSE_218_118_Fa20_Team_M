@@ -10,12 +10,17 @@ function displayBoard(t1_count,t2_count,t3_count){
     plane.position.y = 2;
     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane);
 
+    //BACKGROUND COLOR
+    var background_c = "#ACC7DB";
+    var text_c = "#B8860B";
+    let itemTextFont = "Comic Sans MS";
+
     //board for all
     var board = new BABYLON.GUI.Grid(); 
     advancedTexture.addControl(board);
     board.widthInPixels = 900;
-    board.heightInPixels = 520;
-    board.background = "#6B899E";
+    board.heightInPixels = 640;
+    board.background = background_c;
     board.addRowDefinition(1/5);
     board.addRowDefinition(2/5);
     board.addRowDefinition(1/5);
@@ -23,15 +28,16 @@ function displayBoard(t1_count,t2_count,t3_count){
 
     //title
     var title = new BABYLON.GUI.TextBlock();
-    title.text = "TASKS";
+    title.text = "Task Board";
+    title.fontFamily = itemTextFont;
     title.heightInPixels = 120;
-    title.color = "#E5A33F";
-    title.fontSize = 80;
+    title.color = text_c;
+    title.fontSize = 65;
     board.addControl(title, 0, 0);
     
     //normal tasks
     var ntasks = new BABYLON.GUI.Grid(); 
-    ntasks.background = "#6B899E";
+    ntasks.background = background_c;
     ntasks.addColumnDefinition(2/3);
     ntasks.addColumnDefinition(1/3);
     ntasks.addRowDefinition(1/2);
@@ -39,9 +45,11 @@ function displayBoard(t1_count,t2_count,t3_count){
     board.addControl(ntasks, 1, 0);
 
     //Music Task
-    format_tasks(ntasks,0,"Music Task",true,"./assets/icon/wet_food.png","x1",t1_count);
+    format_tasks(ntasks,0,"a song for a can","cans available for today: ",
+    true,"./assets/icon/wet_food.png","x1",t1_count);
     //Feed Wet Task
-    format_tasks(ntasks,1,"Feed Wet Task",true,"./assets/icon/feed.png","x1",t2_count);
+    format_tasks(ntasks,1,"feed a can for a fish","fish available for today: ",
+    true,"./assets/icon/feed.png","x1",t2_count);
 
     //divider
     var divider = new BABYLON.GUI.Image("divider","./assets/icon/divider.png");
@@ -52,7 +60,7 @@ function displayBoard(t1_count,t2_count,t3_count){
 
     //special tasks
     var stasks = new BABYLON.GUI.Grid(); 
-    stasks.background = "#6B899E";
+    stasks.background = background_c;
     stasks.addColumnDefinition(2/3);
     stasks.addColumnDefinition(1/3);
     stasks.addRowDefinition(1/2);
@@ -74,11 +82,11 @@ function displayBoard(t1_count,t2_count,t3_count){
         image_st = "./assets/icon/gift.png"
         r_d = "x0"
     }
-    format_tasks(stasks,0,"Feed Special Task",false,image_st,r_d,t3_count);
+    format_tasks(stasks,0,"feed fish for decorations","",false,image_st,r_d,t3_count);
     
 }
 
-function format_tasks(grid_d,p,text_d,count,reward_icon,reward_d,pg){
+function format_tasks(grid_d,p,text_d,count_d,count,reward_icon,reward_d,pg){
     //Task
     var task1 = new BABYLON.GUI.Grid();
     task1.addRowDefinition(1);
@@ -87,14 +95,15 @@ function format_tasks(grid_d,p,text_d,count,reward_icon,reward_d,pg){
     //Task text
     var task1Text = new BABYLON.GUI.TextBlock();
     task1Text.text = text_d;
-    task1Text.heightInPixels = 120;
-    task1Text.paddingTopInPixels = 15;
-    task1Text.color = "#E5A33F";
-    task1Text.fontSize = 35;
+    //task1Text.heightInPixels = 120;
+    task1Text.paddingTopInPixels = 5;
+    task1Text.color = "#B8860B";
+    task1Text.fontSize = 40;
+    task1Text.fontFamily = "Copperplate";
     task1.addControl(task1Text, 0, 0); 
     //Task process categories
     if(count){
-        count_display(task1,pg);
+        count_display(task1,pg,count_d);
     }
     else{
         bar_display(task1,pg);
@@ -120,55 +129,56 @@ function format_tasks(grid_d,p,text_d,count,reward_icon,reward_d,pg){
 }
 
 
-function count_display(grid_d,pg){ 
+function count_display(grid_d,pg,count_d){ 
     //Task count
     var task1Progress = new BABYLON.GUI.TextBlock();
-    task1Progress.text = "Count: "+pg.toString();
+    task1Progress.text = count_d+pg.toString();
     task1Progress.heightInPixels = 120;
-    task1Progress.color = "black";
+    task1Progress.color = "#483D8B";
     task1Progress.fontSize = 30;
+    task1Progress.fontFamily = "Copperplate";
     grid_d.addControl(task1Progress, 1, 0);
 }
 
 function bar_display(grid_d,pg){
     //Task bar
     var task1Bar= new BABYLON.GUI.Rectangle();
-    task1Bar.width = 0.8;
-    task1Bar.height = 0.5;
+    task1Bar.width = 0.6;
+    task1Bar.height = 0.7;
     task1Bar.cornerRadius = 100;
-    task1Bar.color = "Orange";
+    task1Bar.color = "#F5DEB3";
     task1Bar.thickness = 4;
-    task1Bar.background = "green";
+    task1Bar.background = "#3CB371";
     task1Bar.horizontalAlignment = "left";
-    task1Bar.left = 50;
+    task1Bar.left = 120;
     grid_d.addControl(task1Bar, 1, 0);
     //text initialize
     var p_text; 
     if(pg>=3){
         //process bar
         var task2Bar= new BABYLON.GUI.Rectangle();
-        task2Bar.width = 0.8;
-        task2Bar.height = 0.5;
+        task2Bar.width = 0.6;
+        task2Bar.height = 0.7;
         task2Bar.cornerRadius = 100;
-        task2Bar.color = "Orange";
+        task2Bar.color = "#F5DEB3";
         task2Bar.thickness = 4;
-        task2Bar.background = "red";
+        task2Bar.background = "#CD5C5C";
         grid_d.addControl(task2Bar, 1, 0);
         task2Bar.horizontalAlignment = "left";
-        task2Bar.left = 50;
+        task2Bar.left = 120;
         //process text
         p_text = "DONE!"
     }
     else{
         //process bar     
         var task2Bar= new BABYLON.GUI.Rectangle();
-        task2Bar.width = 0.8*(pg/3);
-        task2Bar.height = 0.35;
+        task2Bar.width = 0.6*(pg/3);
+        task2Bar.height = 0.55;
         task2Bar.cornerRadius = 100;
-        task2Bar.color = "Orange";
+        task2Bar.color = "#F5DEB3";
         task2Bar.thickness = 0;
-        task2Bar.background = "red";
-        task2Bar.left = 52;
+        task2Bar.background = "#CD5C5C";
+        task2Bar.left = 122;
         task2Bar.horizontalAlignment = "left";
         grid_d.addControl(task2Bar, 1, 0);
         //text 
@@ -178,7 +188,8 @@ function bar_display(grid_d,pg){
     var task1Progress = new BABYLON.GUI.TextBlock();
     task1Progress.text = p_text;
     task1Progress.heightInPixels = 120;
-    task1Progress.color = "black";
+    task1Progress.color = "#483D8B";
     task1Progress.fontSize = 30;
+    task1Progress.fontFamily = "Copperplate";
     grid_d.addControl(task1Progress, 1, 0);
 }
