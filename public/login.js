@@ -21,7 +21,7 @@ const testEmail = "carol@218.com";
 const testPassword = "carolcarol";
 
 const testLogin = document.getElementById("submit");
-testLogin.addEventListener('click', onTestLogin);
+submit.addEventListener('click', onTestLogin);
 
 firebase.auth().onAuthStateChanged( user => {
     if(user){
