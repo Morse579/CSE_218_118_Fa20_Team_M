@@ -331,7 +331,10 @@
                  start_game_modal.style.display = "none";
             }
         }
-        if (userInfo.hasCat==0) {
+
+        document.getElementById("loadCat").style.display = "none";
+        document.getElementById("history").style.display = "none";
+        /*if (userInfo.hasCat==0) {
 	    document.getElementById("start").style.display = "block";
             document.getElementById("continue").style.display = "none";
             document.getElementById("end").style.display = "none";
@@ -350,7 +353,7 @@
                 document.getElementById("vr").style.display = "none";
                 document.getElementById("end").style.display = "block";
 	    }
-	}
+	} */
         </script>      
         <script src="main.js"> </script>
     </body>

@@ -38,14 +38,18 @@ function initialize(user){
             document.getElementById("start").style.display = "none";
             if(userInfo.cat.status === 0){
                 document.getElementById("continue").style.display = "block";
+		document.getElementById("vr").style.display = "block";
                 document.getElementById("end").style.display = "none";
+
             }else{
                 document.getElementById("continue").style.display = "none";
+		document.getElementById("vr").style.display = "none";
                 document.getElementById("end").style.display = "block";
             }
         }else{
             document.getElementById("start").style.display = "block";
             document.getElementById("continue").style.display = "none";
+            document.getElementById("vr").style.display = "none";
             document.getElementById("end").style.display = "none";
         }
     });
