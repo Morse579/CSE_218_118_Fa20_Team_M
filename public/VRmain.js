@@ -4,12 +4,17 @@ import{sendUpdateLocal, sendIndivUpdateLocal, sendDisplayTreeUpdate, sendTreePos
     sendCansUpdate} 
     from './sync.js'
 
+export{domain}
+
 const FEED_WET_HUNGER = 4;
 const FEED_SP_HUNGER = 10;
 const FEED_WET_MOOD = 4;
 const FEED_SP_MOOD = -5;
 
 const interval = 2000;
+
+const domain = "https://obscure-hamlet-30472.herokuapp.com";
+//const domain = "http://127.0.0.1:2020";
 
 // function initVRscene(roomInfo){
 var cat1 = {
@@ -534,7 +539,7 @@ var createScene = async function () {
                                     }
                                 }
                             }
-                            xhttp.open("GET", "http://127.0.0.1:2020/update", true);
+                            xhttp.open("GET", `${domain}/update`, true);
                             xhttp.send();
                         }
                         setTimeout(getUpdate, interval); 

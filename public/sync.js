@@ -2,7 +2,7 @@ export{sendUpdateLocal, sendIndivUpdateLocal, sendDisplayTreeUpdate, sendTreePos
     sendDisplayBoardUpdate, sendBoardPosUpdate, sendDisplayElephantUpdate, sendElephantPosUpdate,
     sendCansUpdate}
 
-const domain = "http://127.0.0.1:2020";
+import {domain} from './VRmain.js'
 
 function sendUpdateLocal(){
     let xhr = new XMLHttpRequest();
