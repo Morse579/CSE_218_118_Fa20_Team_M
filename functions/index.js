@@ -97,6 +97,12 @@ exports.updateClub = functions.https.onCall(async (data, context) =>{
     let clubData = snapshot.data();
     let today = new Date().getDate();
     if(today === clubData.date){
+        if(data.cans > clubData.cans){
+            clubData.cans = data.cans;
+            await ref.update({
+                cans: data.cans
+            });
+        }
         return JSON.stringify(clubData);
     }else{
         clubData.date = today;
@@ -150,8 +156,22 @@ exports.changeState = functions.https.onCall(async (data, context) =>{
         await ref.update({
             state : "none"
         });
+
+        let cat1Ref = db.collection("User").doc("david@218.com").collection("cat").doc(data.cat1);
+        await cat1Ref.update({
+            hunger: admin.firestore.FieldValue.increment(FOOD_HUNGER.special*2)
+        })
+
+        let cat2Ref = db.collection("User").doc("bob@218.com").collection("cat").doc(data.cat2);
+        await cat2Ref.update({
+            hunger: admin.firestore.FieldValue.increment(FOOD_HUNGER.special*2)
+        })
+
+        let cat3Ref = db.collection("User").doc("carol@218.com").collection("cat").doc(data.cat3);
+        await cat3Ref.update({
+            hunger: admin.firestore.FieldValue.increment(FOOD_HUNGER.special*2)
+        })
     }, 10000);
-    
 });
 
 exports.changeIndivState = functions.https.onCall(async (data, context) =>{
@@ -167,6 +187,10 @@ exports.changeIndivState = functions.https.onCall(async (data, context) =>{
             await ref.update({
                 indivState1 : "none"
             });
+            let catRef = db.collection("User").doc("david@218.com").collection("cat").doc(data.name);
+            await catRef.update({
+                hunger: admin.firestore.FieldValue.increment(FOOD_HUNGER.wet*2)
+            });
         }, interval);
     }else if(data.index === 1){
         await ref.update({
@@ -177,6 +201,10 @@ exports.changeIndivState = functions.https.onCall(async (data, context) =>{
             await ref.update({
                 indivState2 : "none"
             });
+            let catRef = db.collection("User").doc("bob@218.com").collection("cat").doc(data.name);
+            await catRef.update({
+                hunger: admin.firestore.FieldValue.increment(FOOD_HUNGER.wet*2)
+            });
         }, interval);
     }else if(data.index === 2){
         await ref.update({
@@ -186,6 +214,10 @@ exports.changeIndivState = functions.https.onCall(async (data, context) =>{
         setTimeout(async () => {
             await ref.update({
                 indivState3 : "none"
+            });
+            let catRef = db.collection("User").doc("carol@218.com").collection("cat").doc(data.name);
+            await catRef.update({
+                hunger: admin.firestore.FieldValue.increment(FOOD_HUNGER.wet*2)
             });
         }, interval);
     }
@@ -491,6 +523,48 @@ exports.loadCat = functions.https.onCall(async (data, context) =>{
     return JSON.stringify(cat);
 });
 
+exports.loadClubRoom = functions.https.onCall(async(data, context) => {
+    let ref = db.collection("Room").doc("club");
+    let snapshot1 = await ref.get();
+    let roomInfo = snapshot1.data();
+
+    let cats = [];
+    let catRef = db.collection("User").doc("david@218.com").collection("cat");
+    let snapshot = await catRef.where('status', '==', 0).get();
+    if (!snapshot.empty) {
+        snapshot.forEach(doc => {
+            cats.push(doc.data());
+        });
+    }
+
+    catRef = db.collection("User").doc("bob@218.com").collection("cat");
+    snapshot = await catRef.where('status', '==', 0).get();
+    if (!snapshot.empty) {
+        snapshot.forEach(doc => {
+            cats.push(doc.data());
+        });
+    }
+
+    catRef = db.collection("User").doc("carol@218.com").collection("cat");
+    snapshot = await catRef.where('status', '==', 0).get();
+    if (!snapshot.empty) {
+        snapshot.forEach(doc => {
+            cats.push(doc.data());
+        });
+    }
+    
+    for(var j=0;j<cats.length;j++){
+        let temp = {};
+        temp.hunger = cats[j].hunger;
+        temp.mood = cats[j].mood;
+        temp.appearance = cats[j].appearance;
+        temp.name = cats[j].name;
+        cats[j] = temp;
+    }
+    roomInfo.cats = cats;
+
+    return JSON.stringify(roomInfo);
+});
 exports.initCat = functions.https.onCall(async (data, context) =>{
     // set cat attributes randomly
     let randomAge = getRandomItem(AGES);

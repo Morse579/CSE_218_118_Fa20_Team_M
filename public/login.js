@@ -11,17 +11,22 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-// const testEmail = "alice@218.com";
-// const testPassword = "alicealice";
+const testEmail = "alice@218.com";
+const testPassword = "alicealice";
 
 // const testEmail = "bob@218.com";
 // const testPassword = "bobbob";
 
-const testEmail = "carol@218.com";
-const testPassword = "carolcarol";
+// const testEmail = "carol@218.com";
+// const testPassword = "carolcarol";
 
-const testLogin = document.getElementById("testLogin");
-testLogin.addEventListener('click', onTestLogin);
+// const testEmail = "david@218.com";
+// const testPassword = "daviddavid";
+
+document.getElementById("testLogin").addEventListener('click', onTestLogin);
+
+document.getElementById("login").addEventListener('click', onLogin);
+
 
 firebase.auth().onAuthStateChanged( user => {
     if(user){
@@ -34,5 +39,13 @@ firebase.auth().onAuthStateChanged( user => {
 function onTestLogin(e){
     const auth = firebase.auth();
     const promise = auth.signInWithEmailAndPassword(testEmail, testPassword);
+    promise.catch(e => loginErrorMsg.innerText = e.message);
+}
+
+function onLogin(e){
+    const auth = firebase.auth();
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("pwd").value;
+    const promise = auth.signInWithEmailAndPassword(email, password);
     promise.catch(e => loginErrorMsg.innerText = e.message);
 }

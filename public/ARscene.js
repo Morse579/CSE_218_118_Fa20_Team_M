@@ -17,6 +17,8 @@ function initializeScene(user){
         var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
         light.intensity = 0.7;
 
+        var randAnim = [1, 2, 6, 19, 20, 22];
+
         // BGM and sound effect
         const music = new BABYLON.Sound("bgm", "./assets/sounds/bensound-ukulele.mp3", scene, null, { loop: true, autoplay: true });
         const meow = new BABYLON.Sound("meow", "./assets/sounds/cat-meow.mp3", scene);
@@ -127,7 +129,8 @@ function initializeScene(user){
                     else{
                         // alert("You are tapping after cat is set up");
                         meow.play();
-                        scene.animationGroups[1].play(false);                 
+                        var rand = Math.floor(Math.random() * randAnim.length);
+                        scene.animationGroups[randAnim[rand]].play(false);                 
                     }
                     break;      
             }
@@ -812,24 +815,24 @@ function onFeedClicked(user, foodType, textUI, bars, mats){
         user.cat.dryFood -= 1;
         user.cat.hunger += FOOD_HUNGER.dry;
         textUI.dry.text = `${user.cat.dryFood}`;
-        for(var i=0;i<FOOD_HUNGER.dry;i++){
-        bars.hungerBar[user.cat.hunger-FOOD_HUNGER.dry+i].material = mats.red;
+        for(var i=Math.max(0,user.cat.hunger-FOOD_HUNGER.dry);i<Math.min(100,user.cat.hunger);i++){
+            bars.hungerBar[i].material = mats.red;
         }
         break;
     case "wet":
         user.cat.wetFood -= 1;
         user.cat.hunger += FOOD_HUNGER.wet;
         textUI.wet.text = `${user.cat.wetFood}`;
-        for(var i=0;i<FOOD_HUNGER.wet;i++){
-        bars.hungerBar[user.cat.hunger-FOOD_HUNGER.wet+i].material = mats.red;
+        for(var i=Math.max(0,user.cat.hunger-FOOD_HUNGER.wet);i<Math.min(100,user.cat.hunger);i++){
+            bars.hungerBar[i].material = mats.red;
         }
         break;
     case "special":
         user.cat.specialFood -= 1;
         user.cat.hunger += FOOD_HUNGER.special;
         textUI.special.text = `${user.cat.specialFood}`;
-        for(var i=0;i<FOOD_HUNGER.special;i++){
-        bars.hungerBar[user.cat.hunger-FOOD_HUNGER.special+i].material = mats.red;
+        for(var i=Math.max(0,user.cat.hunger-FOOD_HUNGER.special);i<Math.min(100,user.cat.hunger);i++){
+            bars.hungerBar[i].material = mats.red;
         }
         break;
     }
@@ -845,26 +848,26 @@ function onPlayClicked(user, playType, textUI, bars, mats){
     switch(playType){
     case "yarn":
         user.cat.mood += TOY_MOOD.yarn;
-        for(var i=0;i<TOY_MOOD.yarn;i++){
-            bars.moodBar[user.cat.mood-TOY_MOOD.yarn+i].material = mats.orange;
+        for(var i=Math.max(0,user.cat.mood-TOY_MOOD.yarn);i<Math.min(100,user.cat.mood);i++){
+            bars.moodBar[i].material = mats.orange;
         }
         break;
     case "mouse":
         user.cat.mood += TOY_MOOD.mouse;
-        for(var i=0;i<TOY_MOOD.mouse;i++){
-            bars.moodBar[user.cat.mood-TOY_MOOD.mouse+i].material = mats.orange;
+        for(var i=Math.max(0,user.cat.mood-TOY_MOOD.mouse);i<Math.min(100,user.cat.mood);i++){
+            bars.moodBar[i].material = mats.orange;
         }
         break;
     case "stuffed_dog":
         user.cat.mood += TOY_MOOD.stuffed_dog;
-        for(var i=0;i<TOY_MOOD.stuffed_dog;i++){
-            bars.moodBar[user.cat.mood-TOY_MOOD.stuffed_dog+i].material = mats.orange;
+        for(var i=Math.max(0,user.cat.mood-TOY_MOOD.stuffed_dog);i<Math.min(100,user.cat.mood);i++){
+            bars.moodBar[i].material = mats.orange;
         }
         break;
     case "stuffed_elephant":
         user.cat.mood += TOY_MOOD.stuffed_elephant;
-        for(var i=0;i<TOY_MOOD.stuffed_elephant;i++){
-            bars.moodBar[user.cat.mood-TOY_MOOD.stuffed_elephant+i].material = mats.orange;
+        for(var i=Math.max(0,user.cat.mood-TOY_MOOD.stuffed_elephant);i<Math.min(100,user.cat.mood);i++){
+            bars.moodBar[i].material = mats.orange;
         }
         break;
     }
@@ -879,14 +882,14 @@ function onDecorClicked(user, decorType, textUI, bars, mats){
     switch(decorType){
     case "bell_rope":
         user.cat.mood += DECOR_MOOD.bell_rope;
-        for(var i=0;i<DECOR_MOOD.bell_rope;i++){
-            bars.moodBar[user.cat.mood-DECOR_MOOD.bell_rope+i].material = mats.orange;
+        for(var i=Math.max(0,user.cat.mood-DECOR_MOOD.bell_rope);i<Math.min(100,user.cat.mood);i++){
+            bars.moodBar[i].material = mats.orange;
         }
         break;
     case "cat_tree":
         user.cat.mood += DECOR_MOOD.cat_tree;
-        for(var i=0;i<DECOR_MOOD.cat_tree;i++){
-            bars.moodBar[user.cat.mood-DECOR_MOOD.cat_tree+i].material = mats.orange;
+        for(var i=Math.max(0,user.cat.mood-DECOR_MOOD.cat_tree);i<Math.min(100,user.cat.mood);i++){
+            bars.moodBar[i].material = mats.orange;
         }
         break;
     }
