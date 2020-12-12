@@ -94,8 +94,8 @@ function initCat(){
 }
 
 const spTasks = {
-    "specTask1": "I’m really craving some sardine. Could I have five of that?",
-    "specTask2": "I’m feeling so lonely. Can you play with me using some toy for 10 times?"
+    "specTask1": "i’m really craving some sardine. could i have five of that?",
+    "specTask2": "i’m feeling so lonely. can you play with me using some toy for 10 times?"
 }
 
 const backgrounds = {
@@ -137,7 +137,8 @@ function showHistory(){
 
 function endStory(){
     const end = functions.httpsCallable('endStory');
-    end({email: userInfo.email, name: userInfo.cat.name, status: userInfo.cat.status}).then(res => {
+    let catName = userInfo.cat.name
+    end({email: userInfo.email, name: catName, status: userInfo.cat.status}).then(res => {
         console.log(res.data);
     });
     const endDialog = document.getElementById("endDialog");
