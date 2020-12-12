@@ -16,12 +16,13 @@ const functions = firebase.functions();
 const interval = 10000;
 
 var canvas = document.getElementById("renderCanvas"); // Get the canvas element
+//var canvas = $("#renderCanvas").get(0);
 var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
 const initPos = [new BABYLON.Vector3(0, 0.2, 8), new BABYLON.Vector3(-8, 0.2, 1), new BABYLON.Vector3(8, 0.2, 1)];
 const gatherPos = [new BABYLON.Vector3(0, 0.2, 1), new BABYLON.Vector3(-3, 0.2, 0), new BABYLON.Vector3(3, 0.2, 0)];
 
-var updateOn = true;
+var updateOn = false;
 // Code for AR scene goes here
 var createScene = async function () {
     // Set up basic scene with camera, light, sounds, etc.
@@ -70,7 +71,7 @@ var createScene = async function () {
         floorMeshes: [env.ground]
     });
 
-    displayBoard();
+    displayBoard(1,10,2);
 
     const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 1});
     sphere.position.y = 1;
