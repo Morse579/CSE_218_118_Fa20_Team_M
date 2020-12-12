@@ -215,6 +215,50 @@ var createScene = async function () {
     var allFish = [];
     var fishCount = 2;
 
+    var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+    var rect= new BABYLON.GUI.Rectangle();
+    advancedTexture.addControl(rect);
+    rect.cornerRadius = 100;
+    rect.background =  "#6B899E";
+    rect.thickness = 5;
+    rect.paddingTopInPixels = 100;
+    rect.paddingBottomInPixels = 100;
+    rect.paddingLeftInPixels = 100;
+    rect.paddingRightInPixels = 100;
+
+    var vrIntro = new BABYLON.GUI.TextBlock();
+    advancedTexture.addControl(vrIntro);
+    vrIntro.text = "it’s PURRthon again!\n"+
+    "welcome to the clubroom of virtuCat reality!"+
+    "some friends and i live here because we don’t have a cARegiver.\n"+
+    "luckily, people come and look after us from time to time.\n"+
+    "do me a favor, check if there are any food or decorations on the floor;\n"+
+    "kind people like you leave things for every cat to share.\n"+
+    "if there isn’t any, will you get us some?\n"+
+    "all you need to do is checking a few items on the task board!\n"+
+    "we would love to see:\n"+
+    "a new can -- if you listen to a whole song without interruptions;\n"+
+    "a fish -- if you feed two cans;\n"+
+    "a cardboard box! --  if you let us share a fish;\n"+
+    "a cat tree!! -- if you let us indulge in two fish;\n"+
+    "finally, an elephant toy!!! -- if you are aMEOWzing enough to feed us three fish.\n\n"+
+    "the food expire everyday, but the decorations last.\n"+
+    "just gently pet one of us to feed a can, and use the buttons for other things\n"+
+    "oh, did i mention you can drag the furniture around and make our home prettier?\n\n"+
+    "now, you wanna greet all my friends here? put on your headset and come with me!\n";
+    vrIntro.color = "#E5A33F";
+    vrIntro.fontSize = 15;   
+    vrIntro.paddingTopInPixels = 100;
+    vrIntro.paddingBottomInPixels = 100;
+    vrIntro.paddingLeftInPixels = 100;
+    vrIntro.paddingRightInPixels = 100;
+    
+    setTimeout(()=>{
+        advancedTexture.removeControl(vrIntro);
+        advancedTexture.removeControl(rect);
+    }, 30000);
+
     BABYLON.SceneLoader.ImportMesh("", "./assets/space/conference_room1/", "scene.gltf", scene, 
                                     function (roomMeshes, roomParticleSystems, roomSkeletons) {
         // alert("VR room loaded.");
@@ -841,27 +885,26 @@ function checkBGMRewards(){
         grid.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;   
         grid.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
         
-        grid.widthInPixels = 800;
-        grid.heightInPixels = 400;
+        grid.widthInPixels = 400;
+        grid.heightInPixels = 200;
 
         var rect= new BABYLON.GUI.Rectangle();
         rect.cornerRadius = 100;
         rect.background =  "#6B899E";
         rect.alpha = 0.8;
-        rect.thickness = 20;
+        rect.thickness = 10;
         grid.addControl(rect, 0, 0);
     
         var unlockText = new BABYLON.GUI.TextBlock();
         unlockText.text = "Unlock New BGM!";
-        unlockText.heightInPixels = 200;
+        unlockText.heightInPixels = 100;
         unlockText.color = "#E5A33F";
-        unlockText.fontSize = 80;
+        unlockText.fontSize = 40;
         grid.addControl(unlockText, 0, 0);
         setTimeout(()=>{
             advancedTexture.removeControl(grid);
             advancedTexture.removeControl(rect);
-            //grid.background = "transparent";
-        }, 800);
+        }, 1500);
         
     }else if(clickNames === 10){
         numBGM++;
