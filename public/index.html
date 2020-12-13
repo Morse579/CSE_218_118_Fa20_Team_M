@@ -1,182 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-	<link href='https://fonts.googleapis.com/css?family=Didact Gothic' rel='stylesheet'>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<!--        <meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
+
         <title>Home Page</title>
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+        <link href="./index.css" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Didact Gothic' rel='stylesheet'>
         <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-auth.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-database.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-functions.js"></script>
-	<style>
-        body {
-                font-family: 'Didact Gothic';font-size: 1.5em;
-                height: 100%;
-                width: 100%;
-                margin: auto;
-                overflow: hidden;
-        }
-
-        .flex-container {
-                display: flex;
-                flex-direction: column;
-                align-content: center;
-                justify-content: center;
-                align-items: center;
-        }
-
-        .btn {
-                border: none;
-                background-color: inherit;
-                padding: 14px 28px;
-                font-size: 1.5em;
-		text-align:center;
-                cursor: pointer;
-                display: inline-block;
-                margin-bottom: 10px;
-                max-height: 10vh;
-		max-width: 80vh;
-                height: 400px;
-                width: 600px;
-                color: white
-        }
-
-        .btn:hover {background: #90DAF7;}
-
-        .start {background-color: #EB4D4B;}
-        .end   {background-color: #EB4D4B;}
-        .continue {background-color: #EB4D4B;}
-        .info {background-color: #EB4D4B;}
-        .history {background-color: #EB4D4B;}
-	    .load {background-color: #EB4D4B;}
-        .logout {background-color: #EB4D4B;}
-        .default {background-color: #EB4D4B;}
-
-        .center {
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-                width: 50%;
-        }
-
-        .aligncenter {
-                text-align: center;
-                max-width: screen.width;
-                margin-left: auto;
-                margin-right: auto;
-                width: 50%;
-        }
-
-	.form {
-                max-width: screen.width;
-                width: auto;
-	}
-        .modal {
-                display: none; /* Hidden by default */
-                position: fixed; /* Stay in place */
-                z-index: 1; /* Sit on top */
-                padding-top: 100px; /* Location of the box */
-                left: 0;
-                top: 0;
-                width: 100%; /* Full width */
-                height: 100%; /* Full height */
-                max-width: screen.width;
-                overflow: hidden; /* Enable scroll if needed */
-                background-color: rgb(0,0,0); /* Fallback color */
-                background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-		margin: auto;
-        }
-
-        .modal-content {
-                position: relative;
-                background-color: #fefefe;
-                margin: auto;
-                padding: 0;
-                border: 1px solid #888;
-                width: 80%;
-                max-width: screen.width * 0.8;
-                box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-                -webkit-animation-name: animatetop;
-                -webkit-animation-duration: 0.4s;
-                animation-name: animatetop;
-                animation-duration: 0.4s
-         }
-
-         /* Add Animation */
-         @-webkit-keyframes animatetop {
-                from {top:-300px; opacity:0} 
-                to {top:0; opacity:1}
-         }
-
-         @keyframes animatetop {
-                from {top:-300px; opacity:0}
-                to {top:0; opacity:1}
-         }
-
-         /* The Close Button */
-         .close {
-                color: white;
-                float: right;
-                font-size: 28px;
-                font-weight: bold;
-         }
-
-         .close:hover,
-         .close:focus {
-                color: #000;
-                text-decoration: none;
-                cursor: pointer;
-         }
-
-         .close_startgame {
-                color: white;
-                float: right;
-                font-size: 28px;
-                font-weight: bold;
-         }
-
-         .close_startgame:hover,
-         .close_startgame_window:focus {
-                color: #000;
-                text-decoration: none;
-                cursor: pointer;
-         }
-
-         .modal-header {
-                padding: 2px 16px;
-                background-color: #5cb85c;
-                color: white;
-         }
-
-         .modal-body {padding: 2px 16px;}
-
-         .modal-footer {
-                padding: 2px 16px;
-                background-color: #5cb85c;
-                color: white;
-         }
-         </style>
     </head>
+
     <body id="id_body">
+    <div class="container-fluid">
         <header>
-            <h1 style="text-align:center">ar meow meow:</h1>
-	    <h1 style="text-align:center">a cat cARe centre</h1>
-	    <h3 style="text-align:center">adopt a virtual cat in your actual home</h5>
+            <h1 style="text-align:center">ar meow meow</h1>
+            <h3 style="text-align:center">a cat cARe centre</h3>
         </header>
+
+        <p class="aligncenter">
+            <img id="cat_paw_gif" src="https://media.giphy.com/media/3kRa3yvntxlFm/giphy.gif" alt="cat paws">
+        </p>
+
+        <div id="text_background">
+            <p>meow meow meow meow meow meow meow meow meow meow meow meow</p>
+        </div>
+
         <div class="flex-container">
             <div><button class="btn continue" id="continue">continue game</button> </div>
             <div><button class="btn start" id="start">new game</button> </div>
             <div><button class="btn end" id="end">end game</button> </div>
             <div><button class="btn info" id="info btn">info</button></div>
             <div><button class="btn history" id="history">view history</button></div>  
-	    <div><button class="btn default" id="vr">enter VR</button></div>
+	        <div><button class="btn default" id="vr">enter VR</button></div>
             <div><button class="btn logout" id="logout">log out</button></div>
-	    <div><button class="btn load" id="loadCat">load cat</button></div>
+	        <div><button class="btn load" id="loadCat">load cat</button></div>
         </div>
-        <p class="aligncenter">
-        <img src="https://media.giphy.com/media/3kRa3yvntxlFm/giphy.gif" style= "display: block; max-height: 70%; max-width: screen.width; width: 100%; height: auto;">
-        </p>
 	<!--<button id="vr" >enter VR</button>-->
 
         <!-- Info Modal -->
@@ -282,7 +147,10 @@
             <button id="enterBtn">enter AR scene</button>
         </dialog>
 
-        </div>
+<!--        <div id="footer">-->
+<!--            <h5 style="font-size: 40px">a virtual cat, in your actual home</h5>-->
+<!--        </div>-->
+    </div>
 
         <script>
         // Get the modal
@@ -357,6 +225,10 @@
 	} */
         </script>      
         <script src="main.js"> </script>
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
     </body>
 </html>
 
