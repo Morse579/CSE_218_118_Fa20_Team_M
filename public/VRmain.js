@@ -1,7 +1,7 @@
-import{displayTaskBoard} from './VRboard.js'
+import{displayTaskBoard, updateTaskBoard} from './VRboard.js'
 import{sendUpdateLocal, sendIndivUpdateLocal, sendDisplayTreeUpdate, sendTreePosUpdate,
     sendDisplayBoardUpdate, sendBoardPosUpdate, sendDisplayElephantUpdate, sendElephantPosUpdate,
-    sendCansUpdate} 
+    sendCansUpdate, sendCansAvailUpdate, sendFishAvailUpdate} 
     from './sync.js'
 
 export{domain}
@@ -16,7 +16,17 @@ const interval = 2000;
 const domain = "https://obscure-hamlet-30472.herokuapp.com";
 //const domain = "http://127.0.0.1:2020";
 
-// function initVRscene(roomInfo){
+var xhr = new XMLHttpRequest();
+xhr.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var roomInfo = JSON.parse(xhr.responseText);
+        console.log(roomInfo);
+        initVRscene(roomInfo);
+    }
+};
+xhr.open("GET", `${domain}/update`, true);
+xhr.send();
+
 var cat1 = {
     hunger: 50,
     mood: 20,
@@ -48,7 +58,7 @@ var currBGM = -1;
 var clickNames = 0;
 
 // food stack position
-var canCount = 2;
+// var canCount = 2;
 var prevCanPosY = null;
 var prevFishPosX = null;
 var roomPosY = null;
@@ -63,10 +73,20 @@ var feedWetCount = 0;
 var fishMaxCount = 4;
 var lastOwnedFishIndex = -1;
 
+
 var updateOn = true;
 var bars = {};
 
 var randAnim = [1, 2, 6, 19, 20, 22];
+
+var board = {};
+
+function initVRscene(roomInfo){
+
+var canCount = roomInfo.cans;
+var cansAvailable = roomInfo.cansAvailable;
+var fishAvailable = roomInfo.fishAvailable;
+var feedSpecialCount = roomInfo.feedSpecialCount;
 
 // Code for AR scene goes here
 var createScene = async function () {
@@ -123,7 +143,7 @@ var createScene = async function () {
     });
 
     //var board = {};
-    var board = displayTaskBoard(1,10,2);
+    board = displayTaskBoard(cansAvailable,fishAvailable,feedSpecialCount);
 
     const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 1});
     sphere.position.z = -3;
@@ -257,7 +277,7 @@ var createScene = async function () {
     setTimeout(()=>{
         advancedTexture.removeControl(vrIntro);
         advancedTexture.removeControl(rect);
-    }, 30000);
+    }, 10000);
 
     BABYLON.SceneLoader.ImportMesh("", "./assets/space/conference_room1/", "scene.gltf", scene, 
                                     function (roomMeshes, roomParticleSystems, roomSkeletons) {
@@ -523,6 +543,8 @@ var createScene = async function () {
                                 if (this.readyState == 4 && this.status == 200) {
                                     var update = JSON.parse(xhttp.responseText);
                                     // console.log(update);
+                                    cansAvailable = update.cansAvailable;
+                                    feedSpecialCount = update.feedSpecialCount;
                                     if(update.state === "feedSpecial" && !cat1.play){
                                         playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats, fishPosX, roomPosY);
                                     }
@@ -789,27 +811,12 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     text1.fontSize = 40;
     gatherButton.content = text1; 
 
-    // Sync button
-    // var button = new BABYLON.GUI.Button3D("sync");
-    // panel.addControl(button);
-    // button.onPointerUpObservable.add(function(){
-    //     updateOn = !updateOn;
-    // });   
-    
-    // var text1 = new BABYLON.GUI.TextBlock();
-    // text1.text = "SYNC";
-    // text1.color = "white";
-    // text1.fontSize = 40;
-    // button.content = text1;  
-
-    // cardboard button
-
     var boardButton = new BABYLON.GUI.Button3D("TaskBoard");
     panel.addControl(boardButton);
     boardButton.onPointerUpObservable.add(function(){
-        //taskBoard.isVisible = !taskBoard.isVisible;
-        taskBoard.displayed = !taskBoard.displayed;
-        taskBoard.setEnabled(taskBoard.displayed);
+        updateTaskBoard(taskBoard, cansAvailable, fishAvailable, feedSpecialCount);
+        taskBoard[0].displayed = !taskBoard[0].displayed;
+        taskBoard[0].setEnabled(taskBoard[0].displayed);
     });   
     var text1 = new BABYLON.GUI.TextBlock();
     text1.text = "Task\nBoard";
@@ -817,6 +824,7 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     text1.fontSize = 40;
     boardButton.content = text1;  
 
+    //card board button
     var cardBoardButton = new BABYLON.GUI.Button3D("decorButton");
     cardBoardButton.onPointerUpObservable.add(function(){
         if(updateOn){
@@ -1042,6 +1050,8 @@ function musicTask(scene, musicToPlay, cans, canPosX, canPosZ, musicTaskButton, 
                     prevCanPosY = can.position.y;
                 });
                 musicTaskRewarded = true;
+                cansAvailable -= 1;
+                //sendCansAvailUpdate(cansAvailable);
             }
         });
     }
@@ -1068,6 +1078,8 @@ function feedWetTask(fishPosX, allFish, fishPosZ) {
         fish.rotation = new BABYLON.Vector3(0, 0, -Math.PI/2);
         fish.setEnabled(true);
         prevFishPosX = fish.position.x;
+        fishAvailable -=1;
+        //sendFishAvailUpdate(fishAvailable);
     }
 }
 
@@ -1230,4 +1242,4 @@ function playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats, fis
     }, 9333);
 }
 
-//} // init VR scene end
+} // init VR scene end
