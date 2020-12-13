@@ -1,10 +1,20 @@
+body {
+    /*font-family: 'Didact Gothic',serif;*/
+    font-family: 'Avenir',serif;
+    font-size: 1.5em;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    /*background-color: #ACC7DB;*/
+}
+
 h1 {
     display: block;
     font-size: 110px;
     margin: 0;
     padding-top: 500px;
     padding-bottom: 0;
-    color: #eb4d4b
+    color: #eb4d4b;
 }
 
 h3 {
@@ -15,14 +25,38 @@ h3 {
     color: #584646;
 }
 
-body {
-    /*font-family: 'Didact Gothic',serif;*/
-    font-family: 'Avenir',serif;
-    font-size: 1.5em;
+.dialog-container {
     width: 100%;
     height: 100%;
-    overflow: hidden;
-    /*background-color: #ACC7DB;*/
+    background-color: #e7d7d7;
+    /*overflow: scroll;*/
+}
+
+dialog {
+    height: 100%;
+    width: 100%;
+    padding: 60px 120px 120px;
+    margin: auto;
+    border-width: 0;
+    overflow: scroll;
+    background-color: #ACC7DB;
+}
+
+.dialog-title {
+    display: block;
+    font-size: 100px;
+    /* margin: 0; */
+    padding-top: 90px;
+    padding-bottom: 30px;
+    color: #eb4d4b;
+}
+
+.dialog-content {
+    display: block;
+    font-size: 65px;
+    margin: 0;
+    padding-top: 30px;
+    color: #584646;
 }
 
 header {
@@ -44,7 +78,7 @@ header {
     margin-right: auto;
 }
 
-#text_background {
+.text-background {
     display: block;
     text-align: center;
     height: 0;
@@ -53,9 +87,69 @@ header {
     color: #e7d7d7;
 }
 
-.flex-container {
+.name-cat-container {
     display: flex;
-    height: 1100px;
+    height: 1000px;
+    padding-top: 60px;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    text-align: center;
+}
+
+.form-container {
+    display: flex;
+    height: 500px;
+    padding-top: 60px;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+}
+
+.login-form {
+    font-size: 1.5em;
+    text-align: center;
+    /* margin-bottom: 30px; */
+    max-height: 10vh;
+    max-width: 80vh;
+    height: 140px;
+    width: 800px;
+    border-radius: 20px;
+    color: #584646;
+}
+
+.login-btn-container {
+    display: flex;
+    height: 800px;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+}
+
+.login-btn {
+    font-size: 1.5em;
+    text-align: center;
+    cursor: pointer;
+    max-height: 300px;
+    max-width: 1000px;
+    height: 220px;
+    width: 800px;
+    color: white;
+    border-radius: 100px;
+    background-color: #EB4D4B;
+}
+
+.login-btn:hover {background: #ACC7DB;}
+
+.mainpage-btn-container {
+    display: flex;
+    height: 900px;
     flex-direction: column;
     align-content: center;
     /*justify-content: center;*/
@@ -63,32 +157,47 @@ header {
     font-size: 40px;
 }
 
+.dialog-btn {
+    font-size: 60px;
+    text-align: center;
+    cursor: pointer;
+    max-height: 300px;
+    max-width: 1000px;
+    margin-top: 60px;
+    height: 220px;
+    width: 800px;
+    color: white;
+    border-radius: 100px;
+    background-color: #EB4D4B;
+}
+
+.dialog-btn:hover {background: #6B899E;}
+
 .btn {
-    /* background-color: inherit; */
     padding: 14px 28px;
     font-size: 1.5em;
     text-align: center;
     cursor: pointer;
-    /* display: inline-block; */
-    margin-bottom: 70px;
-    max-height: 10vh;
-    max-width: 80vh;
-    height: 400px;
+    margin-bottom: 60px;
+    max-height: 300px;
+    max-width: 1000px;
+    height: 220px;
     width: 800px;
     color: white;
     border-radius: 100px;
+    background-color: #EB4D4B;
 }
 
-.btn:hover {background: #90DAF7;}
+.btn:hover {background: #ACC7DB;}
 
-.start {background-color: #EB4D4B;}
-.end   {background-color: #EB4D4B;}
-.continue {background-color: #EB4D4B;}
-.info {background-color: #EB4D4B;}
-.history {background-color: #EB4D4B;}
-.load {background-color: #EB4D4B;}
-.logout {background-color: #EB4D4B;}
-.default {background-color: #EB4D4B;}
+/*.start {background-color: #EB4D4B;}*/
+/*.end   {background-color: #EB4D4B;}*/
+/*.continue {background-color: #EB4D4B;}*/
+/*.info {background-color: #EB4D4B;}*/
+/*.history {background-color: #EB4D4B;}*/
+/*.load {background-color: #EB4D4B;}*/
+/*.logout {background-color: #EB4D4B;}*/
+/*.default {background-color: #EB4D4B;}*/
 
 #footer {
     display: block;
@@ -102,11 +211,6 @@ header {
     margin-left: auto;
     margin-right: auto;
     width: 50%;
-}
-
-.form {
-    max-width: screen.width;
-    width: auto;
 }
 
 .modal {

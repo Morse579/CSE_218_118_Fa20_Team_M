@@ -4,22 +4,34 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>AR Meow Meow Login</title>
-    </head>
-    <body id="id_body">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+        <link href="./css/index.css" rel="stylesheet">
         <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-auth.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-database.js"></script>
-        <header>
-            <h1>Welcome to AR Meow Meow</h1>
-        </header>
+    </head>
+    <body id="id_body">
+        <div class="container-fluid">
+            <header>
+                <h1 style="text-align:center">ar meow meow</h1>
+                <h3 style="text-align:center">a cat cARe centre</h3>
+            </header>
 
-        <div class="form">
-            <input type="text" name="" id="email" placeholder="Email"><br>
-            <input type="password" name="" id="pwd" placeholder="Password">
-        </div><br>
+            <div class="text-background">
+                <p>meow meow meow meow meow meow meow meow meow meow meow meow</p>
+            </div>
 
-        <button id="login">Login</button><br>
-        <button id="testLogin">Test Login</button>
+            <div class="form-container">
+                <input type="text" name="" id="email" placeholder="email" class="login-form"><br>
+                <input type="password" name="" id="pwd" placeholder="password" class="login-form">
+            </div>
+
+            <div class="login-btn-container">
+                <button class="login-btn" id="login">login</button><br>
+                <button class="login-btn" id="testLogin">guest login</button>
+            </div>
+
+        </div>
         <script src="login.js"> </script>
 
     </body>
