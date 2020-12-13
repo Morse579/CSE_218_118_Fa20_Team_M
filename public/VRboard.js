@@ -1,9 +1,9 @@
-export {displayTaskBoard}
+export {displayTaskBoard, updateTaskBoard}
 
 const size = 1;
 
 function displayTaskBoard(t1_count,t2_count,t3_count){
-    // GUI
+    
     // GUI
     //Game tasks plane
     var plane = BABYLON.MeshBuilder.CreatePlane("plane", {size:10,sideOrientation: BABYLON.Mesh.DOUBLESIDE});
@@ -46,10 +46,10 @@ function displayTaskBoard(t1_count,t2_count,t3_count){
     board.addControl(ntasks, 1, 0);
 
     //Music Task
-    format_tasks(ntasks,0,"a song for a can","cans available for today: ",
+    var task1Text = format_tasks(ntasks,0,"a song for a can","cans available for today: ",
     true,"./assets/icon/wet_food.png","x1",t1_count);
     //Feed Wet Task
-    format_tasks(ntasks,1,"feed a can for a fish","fish available for today: ",
+    var task2Text = format_tasks(ntasks,1,"feed a can for a fish","fish available for today: ",
     true,"./assets/icon/feed.png","x1",t2_count);
 
     //divider
@@ -83,11 +83,13 @@ function displayTaskBoard(t1_count,t2_count,t3_count){
         image_st = "./assets/icon/gift.png"
         r_d = "x0"
     }
-    format_tasks(stasks,0,"feed fish for decorations","",false,image_st,r_d,t3_count);
+    var task3Text = format_tasks(stasks,0,"feed fish for decorations","",false,image_st,r_d,t3_count);
     
     plane.setEnabled(false);
     plane.displayed = false;
-    return plane;
+
+    var boardItems = [plane, task1Text, task2Text, task3Text];
+    return boardItems;
 }
 
 function format_tasks(grid_d,p,text_d,count_d,count,reward_icon,reward_d,pg){
@@ -105,12 +107,14 @@ function format_tasks(grid_d,p,text_d,count_d,count,reward_icon,reward_d,pg){
     task1Text.fontSize = 40;
     task1Text.fontFamily = "Copperplate";
     task1.addControl(task1Text, 0, 0); 
+
+    var text = {};
     //Task process categories
     if(count){
-        count_display(task1,pg,count_d);
+        text = count_display(task1,pg,count_d);
     }
     else{
-        bar_display(task1,pg);
+        text = bar_display(task1,pg);
     }
     //reward
     var reward1 = new BABYLON.GUI.Grid();
@@ -130,6 +134,8 @@ function format_tasks(grid_d,p,text_d,count_d,count,reward_icon,reward_d,pg){
     reward1Num.color = "black";
     reward1Num.fontSize = 40;
     reward1.addControl(reward1Num, 0, 1);
+
+    return text;
 }
 
 
@@ -142,6 +148,8 @@ function count_display(grid_d,pg,count_d){
     task1Progress.fontSize = 30;
     task1Progress.fontFamily = "Copperplate";
     grid_d.addControl(task1Progress, 1, 0);
+
+    return task1Progress;
 }
 
 function bar_display(grid_d,pg){
@@ -196,4 +204,20 @@ function bar_display(grid_d,pg){
     task1Progress.fontSize = 30;
     task1Progress.fontFamily = "Copperplate";
     grid_d.addControl(task1Progress, 1, 0);
+
+    return task1Progress;
+}
+
+function updateTaskBoard(taskBoard, cansAvailable, fishAvailable, feedSpecialCount){
+    console.log("update", cansAvailable, fishAvailable, feedSpecialCount);
+    var task1Text = taskBoard[1];
+    var task2Text = taskBoard[2];
+    var task3Text = taskBoard[3];
+    task1Text.text = `cans available for today: ${cansAvailable}`;
+    task2Text.text = `fish available for today: ${fishAvailable}`;
+    if(feedSpecialCount >= 3){
+        task3Text.text = "DONE!";
+    }else{
+        task3Text.text = `${feedSpecialCount/3}`;
+    }
 }
