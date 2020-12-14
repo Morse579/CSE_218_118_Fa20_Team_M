@@ -792,7 +792,7 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     var text1 = new BABYLON.GUI.TextBlock();
     text1.text = "Ads\nfor reward";
     text1.color = "orange";
-    text1.fontSize = 55;
+    text1.fontSize = 50;
     musicTaskButton.content = text1; 
 
     // Feed together button
