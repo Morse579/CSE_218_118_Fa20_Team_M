@@ -1,68 +1,128 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Home Page</title>
+<!--        <meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
+
+        <title>AR Meow Meow Home Page</title>
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+        <link href="./css/index.css" rel="stylesheet">
+<!--        <link href='https://fonts.googleapis.com/css?family=Didact Gothic' rel='stylesheet'>-->
         <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-auth.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-database.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-functions.js"></script>
     </head>
+
     <body id="id_body">
+    <div class="container-fluid">
+        <div class="dialog-container">
+            <dialog id="initCatDialog">
+                <div class="name-cat-container">
+                    <p style="display: block;
+                                margin-bottom: 0;
+                                text-align: center;
+                                font-size: 80px;
+                                padding-top: 500px;
+                                margin-left: auto;
+                                margin-right: auto;
+                                color: #584646;">name your cat</p><br>
+                    <div class="form-container">
+                        <input class="login-form" id="catName" type="text" minlength="1" maxlength="20"><br>
+                    </div>
+                </div>
+                <button class="dialog-btn" id="createBtn">create</button>
+                <button class="dialog-btn" id="cancelBtn">cancel</button>
+            </dialog>
+            <dialog id="catBackgroundDialog">
+                <div class="dialog-content">
+                    <p id="intro"></p>
+                    <p id="catbackground"></p>
+                    <p id="cattask"></p>
+                </div>
+            </dialog>
+            <dialog id="gameplayDialog">
+                <div style="margin-bottom: 40px">
+                    <p class="dialog-title">our story</p>
+                    <p class="dialog-content">
+                        meow, looks like you discovered our little world of nonexistence.<br><br>
+                        my name is PURRcilla. i wandered the streets for 12 years before coming back here.<br><br>
+                        here are my fellow "ar meow meow" cARe center residents.<br><br>
+                        we have been waiting for someone to welcome us into the real world for
+                        MEOWnths.<br><br>
+                        will you look after us until we find our permanent homes?</p>
+                    <p class="dialog-title">your story</p>
+                    <p class="dialog-content">
+                        this is how cARe centre works:<br><br>
+                        one of us comes home with you for 7 days.<br><br>
+                        we get to see and experience the real world and you get to hear our stories.<br><br>
+                        please be mindful of our hunger and mood and try to be patien with the special needs that some of us may have.<br><br>
+                        don't disappoint us, as we may leave you if we can no longer feel your presence;<br><br>
+                        but if you stay with us until the end, you will see where your love has led us.<br><br>
+                        meow, are you ready to meet your next cat?</p>
+                </div>
+                <button class="dialog-btn" id="nextBtn">next</button>
+                <button class="dialog-btn" id="cancelGameplay">cancel</button>
+            </dialog>
+            <dialog id="endDialog">
+                <div>
+                    <h3 class="dialog-title">end of the story</h3>
+                    <p class="dialog-content" id="cat message"></p>
+                    <p class="dialog-content" id="cat outcome"></p>
+                    <p class="dialog-content" id="spTask"></p>
+                    <div id="status"></div>
+                    <p class="dialog-content" id="stats"></p>
+                </div>
+                <button class="dialog-btn" id="cancelEnd">OK</button>
+            </dialog>
+            <dialog id="catDialog">
+                <div class="dialog-content">
+                </div>
+                <button id="enterBtn" class="dialog-btn">enter AR scene</button>
+            </dialog>
+        </div>
+
         <header>
-            <h1>Home Page (aka. Dashboard)</h1>
+            <h1 style="text-align:center">ar meow meow</h1>
+            <h3 style="text-align:center">a cat cARe centre</h3>
         </header>
 
-        <button id="start" hidden>Start Game</button>
-        <button id="continue" hidden>Continue Game</button>
-        <button id="end" hidden>End Game</button>
-        <button id="vr" >Enter VR</button>
+        <p class="aligncenter">
+            <img id="cat_paw_gif" src="https://media.giphy.com/media/3kRa3yvntxlFm/giphy.gif" alt="cat paws">
+        </p>
 
-        <button id="loadCat" hidden>Load Cat</button>
+        <div class="text-background">
+            <p>meow meow meow meow meow meow meow meow meow meow meow meow</p>
+        </div>
 
-        <button id="logout">Logout</button>
+        <div class="mainpage-btn-container">
+            <div><button class="btn continue" id="continue">continue game</button> </div>
+            <div><button class="btn start" id="start">new game</button> </div>
+            <div><button class="btn end" id="end">end game</button> </div>
+	        <div><button class="btn default" id="vr">enter VR</button></div>
+            <div><button class="btn logout" id="logout">log out</button></div>
+        </div>
 
-        <dialog id="initCatDialog">
-            <div class="form"> 
-                <label>Name your cat</label><br>
-                <input id="catName" type="text" minlength="1" maxlength="20"><br>
-            </div> 
-            <button id="createBtn">Create</button>
-            <button id="cancelBtn">Cancel</button>
-        </dialog>
-        <dialog id="gameplayDialog">
-            <div>
-                <h3>Background</h3>
-                <p>Players are a caretaker in the Triton Cat Shelter. Players will 
-                    be assigned to a cat for a short amount of time before they get 
-                    adopted by their permanent owner.</p>
-                <h3>Gameplay</h3>
-                <p>Players should take care of the cat for 7 days. During the time, players
-                    should feed, pet, and decorate the living space for the cat to keep the cat
-                    happy and satisfied. After 7 days, the story will have an end based on how
-                    well players take care of the cat.</p>
-            </div>
-            <button id="nextBtn">Next</button>
-            <button id="cancelGameplay">Cancel</button>
-        </dialog>
-        <dialog id="endDialog">
-            <div>
-                <h3>End of the story</h3>
-                <p id="spTask"></p>
-                <div id="status"></div>
-                <p id="stats"></p>
-            </div>
-            <button id="cancelEnd">OK</button>
-        </dialog>
 
-        <dialog id="catDialog">
-            <div>
 
-            </div>
-            <button id="enterBtn">Enter AR Scene</button>
-        </dialog>
+<!--        <div id="footer">-->
+<!--            <h5 style="font-size: 40px">a virtual cat, in your actual home</h5>-->
+<!--        </div>-->
+    </div>
 
+        <script>
+        // Get the button that opens the modal
+        var start_game_btn = document.getElementById("start");
+
+        </script>      
         <script src="main.js"> </script>
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
     </body>
 </html>
+
