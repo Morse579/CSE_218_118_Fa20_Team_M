@@ -71,24 +71,26 @@ function displayTaskBoard(t1_count,t2_count,t3_count){
     var r_d = "x1"
     //Feed Special Task images
     if(t3_count==0){
-        image_st = "./assets/icon/package.png"
+        image_st = "./assets/icon/gift.png"
     }
     else if(t3_count==1){
-        image_st = "./assets/icon/elephant.png"
+        image_st = "./assets/icon/gift.png"
     }
     else if(t3_count==2){
-        image_st = "./assets/icon/decorate.png"
+        image_st = "./assets/icon/gift.png"
     }
     else{
         image_st = "./assets/icon/gift.png"
         r_d = "x0"
     }
-    var task3Text = format_tasks(stasks,0,"feed fish for decorations","",false,image_st,r_d,t3_count);
+    var items = format_tasks(stasks,0,"feed fish for decorations","",false,image_st,r_d,t3_count);
+    var task3Text = items[0];
+    var barGrid = items[1];
     
     plane.setEnabled(false);
     plane.displayed = false;
 
-    var boardItems = [plane, task1Text, task2Text, task3Text];
+    var boardItems = [plane, task1Text, task2Text, task3Text, barGrid];
     return boardItems;
 }
 
@@ -205,7 +207,9 @@ function bar_display(grid_d,pg){
     task1Progress.fontFamily = "Copperplate";
     grid_d.addControl(task1Progress, 1, 0);
 
-    return task1Progress;
+    var items = [task1Progress, grid_d];
+
+    return items;
 }
 
 function updateTaskBoard(taskBoard, cansAvailable, fishAvailable, feedSpecialCount){
@@ -213,11 +217,13 @@ function updateTaskBoard(taskBoard, cansAvailable, fishAvailable, feedSpecialCou
     var task1Text = taskBoard[1];
     var task2Text = taskBoard[2];
     var task3Text = taskBoard[3];
+    var grid = taskBoard[4];
     task1Text.text = `cans available for today: ${cansAvailable}`;
     task2Text.text = `fish available for today: ${fishAvailable}`;
-    if(feedSpecialCount >= 3){
-        task3Text.text = "DONE!";
-    }else{
-        task3Text.text = `${feedSpecialCount/3}`;
-    }
+    // if(feedSpecialCount >= 3){
+    //     task3Text.text = "DONE!";
+    // }else{
+    //     task3Text.text = `${feedSpecialCount}/3`;
+    // }
+    bar_display(grid, feedSpecialCount);
 }

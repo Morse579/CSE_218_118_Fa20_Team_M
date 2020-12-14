@@ -791,9 +791,9 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     });   
     panel.addControl(musicTaskButton);
     var text1 = new BABYLON.GUI.TextBlock();
-    text1.text = "Ads\nfor reward";
+    text1.text = "Ads\nFor Reward";
     text1.color = "orange";
-    text1.fontSize = 55;
+    text1.fontSize = 50;
     musicTaskButton.content = text1; 
 
     // Feed together button
@@ -1023,13 +1023,13 @@ function getCatColorFile(color){
 
 function musicTask(scene, musicToPlay, cans, canPosX, canPosZ, musicTaskButton, bars, mats) {
     var text1 = new BABYLON.GUI.TextBlock();
-    text1.color = "white";
-    text1.fontSize = 35;
+    text1.color = "orange";
+    text1.fontSize = 50;
 
     if (rewardMusicIsPlaying) {
         musicToPlay.stop();
         musicTaskRewarded = true;
-        text1.text = "music\nfor reward";
+        text1.text = "Ads\nFor Reward";
         musicTaskButton.content = text1;
         rewardMusicIsPlaying = false;
         // console.log("pressed on button while playing");
@@ -1040,14 +1040,14 @@ function musicTask(scene, musicToPlay, cans, canPosX, canPosZ, musicTaskButton, 
         musicToPlay.play();
         musicTaskRewarded = false;
         rewardMusicIsPlaying = true;
-        text1.text = "stop Ads\nno reward";
+        text1.text = "Stop Ads\nNo Reward";
         musicTaskButton.content = text1;
         // console.log("playing the music")
 
         musicToPlay.onEndedObservable.addOnce(() => {
             if (!musicTaskRewarded) {
                 rewardMusicIsPlaying = false;
-                text1.text = "music\nfor reward";
+                text1.text = "Ads\nFor Reward";
                 musicTaskButton.content = text1;
                 // console.log("finished listening to the reward music!");
                 canCount += 1;
