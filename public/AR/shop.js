@@ -30,7 +30,7 @@ function displayShop(advancedTexture, user, textUI, coinText){
     }
 
     // exit button
-    var exitShopButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "assets/icon/exit.png");
+    var exitShopButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "../assets/icon/exit.png");
     exitShopButton.widthInPixels = 180;
     exitShopButton.heightInPixels = 180;
     exitShopButton.cornerRadius = 30;
@@ -44,7 +44,7 @@ function displayShop(advancedTexture, user, textUI, coinText){
     });
 
     // coin icon and text
-    var coinShopIcon = new BABYLON.GUI.Image("coin", "assets/icon/coin.png");
+    var coinShopIcon = new BABYLON.GUI.Image("coin", "../assets/icon/coin.png");
     coinShopIcon.widthInPixels = 120;
     coinShopIcon.heightInPixels = 120;
     coinShopIcon.paddingRightInPixels = 10;
@@ -99,7 +99,7 @@ function displayShop(advancedTexture, user, textUI, coinText){
     grid_foodInfo.addRowDefinition(shopItemHeight, true);
     
     //food images
-    var Image_food = ["assets/icon/dry_food.png", "assets/icon/wet_food.png", "assets/icon/salmon.png"];
+    var Image_food = ["../assets/icon/dry_food.png", "../assets/icon/wet_food.png", "../assets/icon/salmon.png"];
     for(var i=0; i<Image_food.length; i++){
         var each_Image_food = new BABYLON.GUI.Image("image", Image_food[i]);
         grid_foodInfo.addControl(each_Image_food, i, 0);  
@@ -120,9 +120,9 @@ function displayShop(advancedTexture, user, textUI, coinText){
     grid_foodBuy.addRowDefinition(shopItemHeight, true);
     grid_foodBuy.addRowDefinition(shopItemHeight, true);
     //food buttons
-    var button_buyDryFood = BABYLON.GUI.Button.CreateImageButton("but", "1","assets/icon/coin.png");
-    var button_buyWetFood = BABYLON.GUI.Button.CreateImageButton("but", "2","assets/icon/coin.png");
-    var button_buySpecFood = BABYLON.GUI.Button.CreateImageButton("but", "5","assets/icon/coin.png");
+    var button_buyDryFood = BABYLON.GUI.Button.CreateImageButton("but", "1","../assets/icon/coin.png");
+    var button_buyWetFood = BABYLON.GUI.Button.CreateImageButton("but", "2","../assets/icon/coin.png");
+    var button_buySpecFood = BABYLON.GUI.Button.CreateImageButton("but", "5","../assets/icon/coin.png");
     grid_foodBuy.addControl(button_buyDryFood, 0, 0);
     grid_foodBuy.addControl(button_buyWetFood, 1, 0);
     grid_foodBuy.addControl(button_buySpecFood, 2, 0);
@@ -205,7 +205,7 @@ function displayShop(advancedTexture, user, textUI, coinText){
 
 
     //toy images import
-    var Image_toy = ["assets/icon/yarn.png", "assets/icon/play.png", "assets/icon/dog.png", "assets/icon/elephant.png"];
+    var Image_toy = ["../assets/icon/yarn.png", "../assets/icon/play.png", "../assets/icon/dog.png", "../assets/icon/elephant.png"];
     for(var i=0; i<Image_toy.length; i++){
         var each_Image_toy = new BABYLON.GUI.Image("image", Image_toy[i]);
         each_Image_toy.paddingBottomInPixels = 20;
@@ -229,10 +229,10 @@ function displayShop(advancedTexture, user, textUI, coinText){
     grid_toyBuy.addRowDefinition(shopItemHeight, true);
     grid_toyBuy.addRowDefinition(shopItemHeight, true);
     //toy buttons
-    var button_buyYarn = BABYLON.GUI.Button.CreateImageButton("but", "3","assets/icon/coin.png");
-    var button_buyMouse = BABYLON.GUI.Button.CreateImageButton("but", "5","assets/icon/coin.png");
-    var button_buyDog = BABYLON.GUI.Button.CreateImageButton("but", "7","assets/icon/coin.png");
-    var button_buyElephant = BABYLON.GUI.Button.CreateImageButton("but", "11","assets/icon/coin.png");
+    var button_buyYarn = BABYLON.GUI.Button.CreateImageButton("but", "3","../assets/icon/coin.png");
+    var button_buyMouse = BABYLON.GUI.Button.CreateImageButton("but", "5","../assets/icon/coin.png");
+    var button_buyDog = BABYLON.GUI.Button.CreateImageButton("but", "7","../assets/icon/coin.png");
+    var button_buyElephant = BABYLON.GUI.Button.CreateImageButton("but", "11","../assets/icon/coin.png");
     grid_toyBuy.addControl(button_buyYarn, 0, 0);
     grid_toyBuy.addControl(button_buyMouse, 1, 0);
     grid_toyBuy.addControl(button_buyDog, 2, 0);
@@ -362,7 +362,7 @@ function displayShop(advancedTexture, user, textUI, coinText){
     grid_decorInfo.addRowDefinition(shopItemHeight, true);
 
     //decor images 
-    var Image_decor = ["assets/icon/rope.png", "assets/icon/decorate.png"];
+    var Image_decor = ["../assets/icon/rope.png", "../assets/icon/decorate.png"];
     for(var i=0; i<Image_decor.length; i++){
         var each_Image_decor = new BABYLON.GUI.Image("image", Image_decor[i]);
         each_Image_decor.paddingTopInPixels = 20;
@@ -385,8 +385,8 @@ function displayShop(advancedTexture, user, textUI, coinText){
     grid_decorBuy.addRowDefinition(shopItemHeight, true);
 
     //decor buttons 
-    var button_buyRope = BABYLON.GUI.Button.CreateImageButton("but", "17","assets/icon/coin.png");
-    var button_buyTree = BABYLON.GUI.Button.CreateImageButton("but", "19","assets/icon/coin.png");
+    var button_buyRope = BABYLON.GUI.Button.CreateImageButton("but", "17","../assets/icon/coin.png");
+    var button_buyTree = BABYLON.GUI.Button.CreateImageButton("but", "19","../assets/icon/coin.png");
     grid_decorBuy.addControl(button_buyRope, 0, 0);
     grid_decorBuy.addControl(button_buyTree, 1, 0);
 

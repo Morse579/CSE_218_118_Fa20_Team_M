@@ -47,13 +47,13 @@ function displayTaskBoard(t1_count,t2_count,t3_count){
 
     //Music Task
     var task1Text = format_tasks(ntasks,0,"a song for a can","cans available for today: ",
-    true,"./assets/icon/wet_food.png","x1",t1_count);
+    true,"../assets/icon/wet_food.png","x1",t1_count);
     //Feed Wet Task
     var task2Text = format_tasks(ntasks,1,"feed a can for a fish","fish available for today: ",
-    true,"./assets/icon/feed.png","x1",t2_count);
+    true,"../assets/icon/feed.png","x1",t2_count);
 
     //divider
-    var divider = new BABYLON.GUI.Image("divider","./assets/icon/divider.png");
+    var divider = new BABYLON.GUI.Image("divider","../assets/icon/divider.png");
     divider.widthInPixels = 900;
     divider.heightInPixels = 85;
     divider.paddingRightInPixels = 10;
@@ -71,16 +71,16 @@ function displayTaskBoard(t1_count,t2_count,t3_count){
     var r_d = "x1"
     //Feed Special Task images
     if(t3_count==0){
-        image_st = "./assets/icon/gift.png"
+        image_st = "../assets/icon/gift.png"
     }
     else if(t3_count==1){
-        image_st = "./assets/icon/gift.png"
+        image_st = "../assets/icon/gift.png"
     }
     else if(t3_count==2){
-        image_st = "./assets/icon/gift.png"
+        image_st = "../assets/icon/gift.png"
     }
     else{
-        image_st = "./assets/icon/gift.png"
+        image_st = "../assets/icon/gift.png"
         r_d = "x0"
     }
     var items = format_tasks(stasks,0,"feed fish for decorations","",false,image_st,r_d,t3_count);

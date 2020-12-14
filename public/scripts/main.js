@@ -56,7 +56,7 @@ document.getElementById("start").addEventListener('click', onStartButtonClick);
 document.getElementById("continue").addEventListener('click', showARScene);
 document.getElementById("end").addEventListener('click', endStory);
 document.getElementById("vr").addEventListener("click", function(){
-    window.location.href = "VRscene.html";
+    window.location.href = "VR/VRscene.html";
 });
 document.getElementById("logout").addEventListener('click', e => {firebase.auth().signOut();});
 
@@ -124,7 +124,7 @@ function displayCatProfile(cat){
 function showARScene(){
     console.log("showing AR scene");
     console.log(userInfo);
-    window.location.href = "ARscene.html";
+    window.location.href = "AR/ARscene.html";
 }
 
 //TODO

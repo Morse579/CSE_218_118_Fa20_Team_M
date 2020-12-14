@@ -20,8 +20,8 @@ function initializeScene(user){
         var randAnim = [1, 2, 6, 19, 20, 22];
 
         // BGM and sound effect
-        const music = new BABYLON.Sound("bgm", "./assets/sounds/bensound-ukulele.mp3", scene, null, { loop: true, autoplay: true });
-        const meow = new BABYLON.Sound("meow", "./assets/sounds/cat-meow.mp3", scene);
+        const music = new BABYLON.Sound("bgm", "../assets/sounds/bensound-ukulele.mp3", scene, null, { loop: true, autoplay: true });
+        const meow = new BABYLON.Sound("meow", "../assets/sounds/cat-meow.mp3", scene);
 
         const xr = await scene.createDefaultXRExperienceAsync({
             uiOptions: {
@@ -87,7 +87,7 @@ function initializeScene(user){
                         if(marker.isVisible){
                             markerOn = false;
                             marker.isVisible = false;
-                            var meshStaticCat = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/CatV2glTFSeparated/", catFile, scene, function (newMeshes, particleSystems, skeletons) {
+                            var meshStaticCat = BABYLON.SceneLoader.ImportMesh("", "../assets/cat/CatV2glTFSeparated/", catFile, scene, function (newMeshes, particleSystems, skeletons) {
                                 cat = newMeshes[0];
                                 // cat.scaling = new BABYLON.Vector3(0.009, 0.009, 0.009);
                                 // cat.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
@@ -180,16 +180,10 @@ function initializeScene(user){
   function createMats(){
     var mats = {};
     mats.red = new BABYLON.StandardMaterial("mat");
-    mats.red.diffuseTexture = new BABYLON.Texture("assets/color/red.jpg");
+    mats.red.diffuseTexture = new BABYLON.Texture("../assets/color/red.jpg");
 
     mats.orange = new BABYLON.StandardMaterial("mat2");
-    mats.orange.diffuseTexture = new BABYLON.Texture("assets/color/orange.jpg");
-
-    mats.grey = new BABYLON.StandardMaterial("mat3");
-    mats.grey.diffuseTexture = new BABYLON.Texture("assets/color/grey.jpg");
-
-    mats.pink = new BABYLON.StandardMaterial("mat4");
-    mats.pink.diffuseTexture = new BABYLON.Texture("assets/color/pink.jpg");
+    mats.orange.diffuseTexture = new BABYLON.Texture("../assets/color/orange.jpg");
 
     return mats;
   }
@@ -250,7 +244,7 @@ function initializeScene(user){
         dryFoodButton.isVisible = false;
         wetFoodButton.isVisible = false;
         specialFoodButton.isVisible = false;
-        var wetFoodMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (mesh, particleSystems, skeletons) {
+        var wetFoodMesh = BABYLON.SceneLoader.ImportMesh("", "../assets/food/capurrrcino/", "scene.gltf", scene, function (mesh, particleSystems, skeletons) {
             var wetFood = mesh[0];
             wetFood.rotation = new BABYLON.Vector3(0, Math.PI, 0);
             wetFood.scaling = new BABYLON.Vector3(0.035, 0.035, 0.035);
@@ -281,7 +275,7 @@ function initializeScene(user){
         dryFoodButton.isVisible = false;
         wetFoodButton.isVisible = false;
         specialFoodButton.isVisible = false;
-        var specialFoodMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/food/sardine/", "scene.gltf", scene, function (mesh, particleSystems, skeletons) {
+        var specialFoodMesh = BABYLON.SceneLoader.ImportMesh("", "../assets/food/sardine/", "scene.gltf", scene, function (mesh, particleSystems, skeletons) {
             var specialFood = mesh[0];
             specialFood.rotation = new BABYLON.Vector3(0, Math.PI/2, Math.PI/2);
             //specialFood.scaling = new BABYLON.Vector3(0.035, 0.035, 0.035);
@@ -326,7 +320,7 @@ function display3DToyButtons(panel, user, textUI, scene, cat, bars, mats){
     var mouseButton = new BABYLON.GUI.Button3D("mouseButton");
     mouseButton.onPointerUpObservable.add(function(){
         hideToyButtons();
-        var mouseMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/toy/mouse/", "scene.gltf", scene, function (mesh) {
+        var mouseMesh = BABYLON.SceneLoader.ImportMesh("", "../assets/toy/mouse/", "scene.gltf", scene, function (mesh) {
             var mouse = mesh[0];
             mouse.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
             mouse.scaling = new BABYLON.Vector3(0.007, 0.007, 0.007);
@@ -364,7 +358,7 @@ function display3DToyButtons(panel, user, textUI, scene, cat, bars, mats){
     var yarnButton = new BABYLON.GUI.Button3D("yarnButton");
     yarnButton.onPointerUpObservable.add(function(){
         hideToyButtons();
-        var yarnMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/toy/yarn/", "yarn.obj", scene, function (mesh) {
+        var yarnMesh = BABYLON.SceneLoader.ImportMesh("", "../assets/toy/yarn/", "yarn.obj", scene, function (mesh) {
             var yarn = mesh[0];
             yarn.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
             yarn.scaling = new BABYLON.Vector3(0.018, 0.018, 0.018);
@@ -402,7 +396,7 @@ function display3DToyButtons(panel, user, textUI, scene, cat, bars, mats){
     var dogButton = new BABYLON.GUI.Button3D("dogButton");
     dogButton.onPointerUpObservable.add(function(){
         hideToyButtons();
-        var dogMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/toy/stuffed2/", "scene.gltf", scene, function (mesh) {
+        var dogMesh = BABYLON.SceneLoader.ImportMesh("", "../assets/toy/stuffed2/", "scene.gltf", scene, function (mesh) {
             var dog = mesh[0];
             dog.rotation = new BABYLON.Vector3(0, Math.PI, 0);
             dog.scaling = new BABYLON.Vector3(0.002, 0.002, 0.002);
@@ -440,7 +434,7 @@ function display3DToyButtons(panel, user, textUI, scene, cat, bars, mats){
     var elephantButton = new BABYLON.GUI.Button3D("elephantButton");
     elephantButton.onPointerUpObservable.add(function(){
         hideToyButtons();
-        var elephantMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/toy/stuffed1/", "scene.gltf", scene, function (mesh) {
+        var elephantMesh = BABYLON.SceneLoader.ImportMesh("", "../assets/toy/stuffed1/", "scene.gltf", scene, function (mesh) {
             var elephant = mesh[0];
             elephant.rotation = new BABYLON.Vector3(0, Math.PI, 0);
             elephant.scaling = new BABYLON.Vector3(0.0005, 0.0005, 0.0005);
@@ -502,7 +496,7 @@ function display3DDecorButtons(panel, user, textUI, scene, cat, bars, mats){
     var catTreeButton = new BABYLON.GUI.Button3D("catTreeButton");
     catTreeButton.onPointerUpObservable.add(function(){
         hideDecorButtons();
-        var catTreeMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/decor/arbre_a_chat_cat_tree/", "scene.gltf", scene, function (mesh) {
+        var catTreeMesh = BABYLON.SceneLoader.ImportMesh("", "../assets/decor/arbre_a_chat_cat_tree/", "scene.gltf", scene, function (mesh) {
             var catTree = mesh[0];
             catTree.rotation = new BABYLON.Vector3(0, Math.PI/5, 0);
             catTree.scaling = new BABYLON.Vector3(0.35, 0.35, 0.35);
@@ -527,7 +521,7 @@ function display3DDecorButtons(panel, user, textUI, scene, cat, bars, mats){
     var bellRopeButton = new BABYLON.GUI.Button3D("bellRopeButton");
     bellRopeButton.onPointerUpObservable.add(function(){
         hideDecorButtons();
-        var bellRopeMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/decor/bell_rope/", "scene.gltf", scene, function (mesh) {
+        var bellRopeMesh = BABYLON.SceneLoader.ImportMesh("", "../assets/decor/bell_rope/", "scene.gltf", scene, function (mesh) {
             var bellRope = mesh[0];
             bellRope.rotation = new BABYLON.Vector3(0, 0, 0);
             bellRope.scaling = new BABYLON.Vector3(0.0012, 0.0012, 0.0012);
@@ -618,17 +612,17 @@ function display3DDecorButtons(panel, user, textUI, scene, cat, bars, mats){
     grid.addRowDefinition(1/3);
     grid.addRowDefinition(1/3);
 
-    var dryFoodIcon = new BABYLON.GUI.Image("dry", "assets/icon/dry_food.png");
+    var dryFoodIcon = new BABYLON.GUI.Image("dry", "../assets/icon/dry_food.png");
     dryFoodIcon.widthInPixels = size;
     dryFoodIcon.heightInPixels = size;
     grid.addControl(dryFoodIcon, 0, 0);
 
-    var wetFoodIcon = new BABYLON.GUI.Image("wet", "assets/icon/wet_food.png");
+    var wetFoodIcon = new BABYLON.GUI.Image("wet", "../assets/icon/wet_food.png");
     wetFoodIcon.widthInPixels = size;
     wetFoodIcon.heightInPixels = size;
     grid.addControl(wetFoodIcon, 1, 0);
 
-    var spFoodIcon = new BABYLON.GUI.Image("special", "assets/icon/salmon.png");
+    var spFoodIcon = new BABYLON.GUI.Image("special", "../assets/icon/salmon.png");
     spFoodIcon.widthInPixels = 0.9*size;
     spFoodIcon.heightInPixels = 0.9*size;
     grid.addControl(spFoodIcon, 2, 0);
@@ -677,7 +671,7 @@ function display3DDecorButtons(panel, user, textUI, scene, cat, bars, mats){
     grid.addColumnDefinition(180, true);
     grid.addColumnDefinition(150, true);
 
-    var coinIcon = new BABYLON.GUI.Image("coin", "assets/icon/coin.png");
+    var coinIcon = new BABYLON.GUI.Image("coin", "../assets/icon/coin.png");
     coinIcon.widthInPixels = 120;
     coinIcon.heightInPixels = 120;
     grid.addControl(coinIcon, 0, 0);
@@ -690,7 +684,7 @@ function display3DDecorButtons(panel, user, textUI, scene, cat, bars, mats){
     coinText.fontFamily = "Comic Sans MS";
     grid.addControl(coinText, 0, 1);
 
-    var shopButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "assets/icon/shop.png");
+    var shopButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "../assets/icon/shop.png");
     shopButton.widthInPixels = 150;
     shopButton.heightInPixels = 150;
     shopButton.cornerRadius = 30;
@@ -705,7 +699,7 @@ function display3DDecorButtons(panel, user, textUI, scene, cat, bars, mats){
     });
     grid.addControl(shopButton, 0, 2);
 
-    var exitButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "assets/icon/exit.png");
+    var exitButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "../assets/icon/exit.png");
     exitButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;   
     exitButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
     exitButton.widthInPixels = 180;
@@ -739,19 +733,19 @@ function displayActions(foodButtons,toyButtons, decorButtons, scene, mats, user)
     grid.addRowDefinition(2/3);
     grid.addRowDefinition(1/3);
 
-    const click = new BABYLON.Sound("click", "./assets/sounds/click.wav", scene);
+    const click = new BABYLON.Sound("click", "../assets/sounds/click.wav", scene);
 
-    var feedButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "assets/icon/feed.png");
+    var feedButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "../assets/icon/feed.png");
     feedButton.onPointerClickObservable.add(function () {
         click.play();
         showFoodButtons(foodButtons, user.cat, mats);
     });
-    var playButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "assets/icon/play.png");
+    var playButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "../assets/icon/play.png");
     playButton.onPointerClickObservable.add(function () {
         click.play();
         showToyButtons(toyButtons, user.cat, mats);
     });
-    var decorateButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "assets/icon/decorate.png");
+    var decorateButton = BABYLON.GUI.Button.CreateImageOnlyButton("but", "../assets/icon/decorate.png");
     decorateButton.onPointerClickObservable.add(function () {
         click.play();
         showDecorButtons(decorButtons, user.cat, mats);

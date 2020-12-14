@@ -100,12 +100,12 @@ var createScene = async function () {
     light.intensity = 0.7;
 
     // BGM and sound effect
-    const rewardMusic = new BABYLON.Sound("bgm", "./assets/sounds/bensound-ukulele-clip-3s.mp3", scene, null, {loop: false, autoplay: false});
-    const music1 = new BABYLON.Sound("bgm", "./assets/sounds/bensound-ukulele.mp3", scene, null, {loop: false, autoplay: false});
-    const music2 = new BABYLON.Sound("bgm", "./assets/sounds/bensound-littleidea.mp3", scene, null, {loop: false, autoplay: false});
-    const music3 = new BABYLON.Sound("bgm", "./assets/sounds/bensound-smile.mp3", scene, null, {loop: false, autoplay: false});
-    const music4 = new BABYLON.Sound("bgm", "./assets/sounds/bensound-cute.mp3", scene, null, {loop: false, autoplay: false});
-    const meow = new BABYLON.Sound("meow", "./assets/sounds/cat-meow.mp3", scene);
+    const rewardMusic = new BABYLON.Sound("bgm", "../assets/sounds/bensound-ukulele-clip-3s.mp3", scene, null, {loop: false, autoplay: false});
+    const music1 = new BABYLON.Sound("bgm", "../assets/sounds/bensound-ukulele.mp3", scene, null, {loop: false, autoplay: false});
+    const music2 = new BABYLON.Sound("bgm", "../assets/sounds/bensound-littleidea.mp3", scene, null, {loop: false, autoplay: false});
+    const music3 = new BABYLON.Sound("bgm", "../assets/sounds/bensound-smile.mp3", scene, null, {loop: false, autoplay: false});
+    const music4 = new BABYLON.Sound("bgm", "../assets/sounds/bensound-cute.mp3", scene, null, {loop: false, autoplay: false});
+    const meow = new BABYLON.Sound("meow", "../assets/sounds/cat-meow.mp3", scene);
     const music = [music1, music2, music3, music4];
 
     // Food/mood bar parent node
@@ -124,14 +124,12 @@ var createScene = async function () {
     var roots = [root1, root2, root3];
 
     var mats = {};
-    mats.grey = new BABYLON.StandardMaterial("mat3");
-    mats.grey.diffuseTexture = new BABYLON.Texture("assets/color/grey.jpg");
 
     mats.pink = new BABYLON.StandardMaterial("mat4");
-    mats.pink.diffuseTexture = new BABYLON.Texture("assets/color/pink.jpg");
+    mats.pink.diffuseTexture = new BABYLON.Texture("../assets/color/pink.jpg");
     
     mats.orange = new BABYLON.StandardMaterial("mat4");
-    mats.orange.diffuseTexture = new BABYLON.Texture("assets/color/orange.jpg");
+    mats.orange.diffuseTexture = new BABYLON.Texture("../assets/color/orange.jpg");
 
     var env =  scene.createDefaultEnvironment({ 
         createSkybox: true,
@@ -160,7 +158,7 @@ var createScene = async function () {
     box.setEnabled(false);
     box.move = false;
 
-    var catTreeMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/decor/arbre_a_chat_cat_tree/", "scene.gltf", scene, function (meshCatTree) {
+    var catTreeMesh = BABYLON.SceneLoader.ImportMesh("", "../assets/decor/arbre_a_chat_cat_tree/", "scene.gltf", scene, function (meshCatTree) {
         var catTree = meshCatTree[0];
 
         for(var i = 1; i < meshCatTree.length; i++){
@@ -181,7 +179,7 @@ var createScene = async function () {
     box2.setEnabled(false);
     box2.move = false;
 
-    var cardBoardMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/decor/cardboard_box/", "scene.gltf", scene, function (meshCardBoard) {
+    var cardBoardMesh = BABYLON.SceneLoader.ImportMesh("", "../assets/decor/cardboard_box/", "scene.gltf", scene, function (meshCardBoard) {
         var cardBoard = meshCardBoard[0];
         cardBoard.isPickable = false;
 
@@ -203,7 +201,7 @@ var createScene = async function () {
     box3.setEnabled(false);
     box3.move = false;
 
-    var toyMesh = BABYLON.SceneLoader.ImportMesh("", "./assets/toy/stuffed1/", "scene.gltf", scene, function (meshToy) {
+    var toyMesh = BABYLON.SceneLoader.ImportMesh("", "../assets/toy/stuffed1/", "scene.gltf", scene, function (meshToy) {
         var toy = meshToy[0];
         toy.isPickable = false;
 
@@ -279,7 +277,7 @@ var createScene = async function () {
         advancedTexture.removeControl(rect);
     }, 30000);
 
-    BABYLON.SceneLoader.ImportMesh("", "./assets/space/conference_room1/", "scene.gltf", scene, 
+    BABYLON.SceneLoader.ImportMesh("", "../assets/space/conference_room1/", "scene.gltf", scene, 
                                     function (roomMeshes, roomParticleSystems, roomSkeletons) {
         // alert("VR room loaded.");
         var room = roomMeshes[0];
@@ -291,7 +289,7 @@ var createScene = async function () {
 
         // load can
         for (var i = 0; i < canCount; i++) {
-            BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+            BABYLON.SceneLoader.ImportMesh("", "../assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
                 var can = newMeshes[0];
                 cans.push(can);
                 can.position.x = canPosX;
@@ -309,7 +307,7 @@ var createScene = async function () {
 
         // load owned fish
         for (var i = 0; i < fishCount; i++) {
-            BABYLON.SceneLoader.ImportMesh("", "./assets/food/sardine/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+            BABYLON.SceneLoader.ImportMesh("", "../assets/food/sardine/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
                 var fish = newMeshes[0];
                 allFish.push(fish);
                 lastOwnedFishIndex += 1;
@@ -330,7 +328,7 @@ var createScene = async function () {
 
         // load more fish for possible later use
         for (var i = 0; i < fishMaxCount - fishCount; i++) {
-            BABYLON.SceneLoader.ImportMesh("", "./assets/food/sardine/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+            BABYLON.SceneLoader.ImportMesh("", "../assets/food/sardine/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
                 var fish = newMeshes[0];
                 allFish.push(fish);
                 fish.setEnabled(false);
@@ -338,7 +336,7 @@ var createScene = async function () {
             });
         }
 
-        var meshStaticCat = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/CatV2glTFSeparated/",
+        var meshStaticCat = BABYLON.SceneLoader.ImportMesh("", "../assets/cat/CatV2glTFSeparated/",
                                     getCatColorFile(catsInfo[0].appearance), scene, 
                                     function (newMeshes1, particleSystems1, skeletons1, animationGroups1) {
             var cat1 = newMeshes1[0];
@@ -385,7 +383,7 @@ var createScene = async function () {
                 )
             );
 
-            var meshStaticCat2 = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/CatV2glTFSeparated/",
+            var meshStaticCat2 = BABYLON.SceneLoader.ImportMesh("", "../assets/cat/CatV2glTFSeparated/",
                                         getCatColorFile(catsInfo[1].appearance), scene, 
                                         function (newMeshes2, particleSystems2, skeletons2, animationGroups2) {
                 var cat2 = newMeshes2[0];
@@ -425,7 +423,7 @@ var createScene = async function () {
                     )
                 );
 
-                var meshStaticCat3 = BABYLON.SceneLoader.ImportMesh("", "./assets/cat/CatV2glTFSeparated/",
+                var meshStaticCat3 = BABYLON.SceneLoader.ImportMesh("", "../assets/cat/CatV2glTFSeparated/",
                                             getCatColorFile(catsInfo[2].appearance), scene, 
                                             function (newMeshes3, particleSystems3, skeletons3, animationGroups3) {
                     var cat3 = newMeshes3[0];
@@ -588,7 +586,7 @@ var createScene = async function () {
                                         for(var d = 0;d < diff;d++){
                                             canCount += 1;
                                             // add more cans
-                                            BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+                                            BABYLON.SceneLoader.ImportMesh("", "../assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
                                                 // console.log("in getUpdate, diff = ", diff);
                                                 var can = newMeshes[0];
                                                 cans.push(can);
@@ -1053,7 +1051,7 @@ function musicTask(scene, musicToPlay, cans, canPosX, canPosZ, musicTaskButton, 
                 canCount += 1;
                 cansAvailable -= 1;
                 sendCansUpdate(canCount);
-                BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+                BABYLON.SceneLoader.ImportMesh("", "../assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
                     // console.log("musicTask reward loaded");
                     var can = newMeshes[0];
                     cans.push(can);
