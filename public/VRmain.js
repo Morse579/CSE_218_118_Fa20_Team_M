@@ -559,20 +559,21 @@ var createScene = async function () {
                                         playCatEatAnimation(scene, animationGroups3, animationGroups3[24], cans, cat3, 3, bars, mats, fishPosX, allFish, fishPosZ);
                                     }
                                     if(update.displayTree && !box.move){
-                                        box.setEnabled(true);
                                         box.position.x = update.treePosX;
                                         box.position.z = update.treePosZ;
                                     }
                                     if(update.displayBoard && !box2.move){
-                                        box2.setEnabled(true);
                                         box2.position.x = update.boardPosX;
                                         box2.position.z = update.boardPosZ;
                                     }
                                     if(update.displayElephant && !box3.move){
-                                        box3.setEnabled(true);
                                         box3.position.x = update.elephantPosX;
                                         box3.position.z = update.elephantPosZ;
                                     }
+                                    box.setEnabled(update.displayTree);
+                                    box2.setEnabled(update.displayBoard);
+                                    box3.setEnabled(update.displayElephant);
+
                                     if(update.feedSpecialCount >= 1){
                                         interactButtons.board.isVisible = true;
                                     }
