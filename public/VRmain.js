@@ -277,7 +277,7 @@ var createScene = async function () {
     setTimeout(()=>{
         advancedTexture.removeControl(vrIntro);
         advancedTexture.removeControl(rect);
-    }, 10000);
+    }, 30000);
 
     BABYLON.SceneLoader.ImportMesh("", "./assets/space/conference_room1/", "scene.gltf", scene, 
                                     function (roomMeshes, roomParticleSystems, roomSkeletons) {
@@ -473,9 +473,10 @@ var createScene = async function () {
                     bars = addNamesAndBars(mats, cats, anim, roots);
                     var panelBottom = new BABYLON.GUI.StackPanel3D();
                     manager.addControl(panelBottom);
-                    panelBottom.margin = 0.2;
+                    panelBottom.margin = 0.3;
                     panelBottom.position.y = sphere.position.y;
-                    panelBottom.position.z = sphere.position.z - 2;
+                    panelBottom.position.z = sphere.position.z - 4;
+                    panelBottom.node.rotation = new BABYLON.Vector3(Math.PI/6, 0, 0);
                     var interactButtons = display3DInteractionButtons(panelBottom, bars, mats, cats, roots, anim, allFish, boxes, music, 
                                                                     rewardMusic, scene, cans, canPosX, canPosZ, fishPosX, board);
 
@@ -777,9 +778,9 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     });   
     panel.addControl(musicButton);
     var text1 = new BABYLON.GUI.TextBlock();
-    text1.text = "change bgm";
-    text1.color = "white";
-    text1.fontSize = 40;
+    text1.text = "Change\nBGM";
+    text1.color = "red";
+    text1.fontSize = 50;
     musicButton.content = text1; 
 
     // Music Task button
@@ -790,8 +791,8 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     panel.addControl(musicTaskButton);
     var text1 = new BABYLON.GUI.TextBlock();
     text1.text = "Ads\nfor reward";
-    text1.color = "white";
-    text1.fontSize = 35;
+    text1.color = "orange";
+    text1.fontSize = 55;
     musicTaskButton.content = text1; 
 
     // Feed together button
@@ -806,9 +807,9 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     });   
     panel.addControl(gatherButton);
     var text1 = new BABYLON.GUI.TextBlock();
-    text1.text = "Feed Together";
-    text1.color = "white";
-    text1.fontSize = 40;
+    text1.text = "Feed\nTogether";
+    text1.color = "green";
+    text1.fontSize = 50;
     gatherButton.content = text1; 
 
     var boardButton = new BABYLON.GUI.Button3D("TaskBoard");
@@ -820,8 +821,8 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     });   
     var text1 = new BABYLON.GUI.TextBlock();
     text1.text = "Task\nBoard";
-    text1.color = "white";
-    text1.fontSize = 40;
+    text1.color = "cyan";
+    text1.fontSize = 50;
     boardButton.content = text1;  
 
     //card board button
@@ -830,14 +831,20 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
         if(updateOn){
             sendDisplayBoardUpdate();
         }
-        boxes[1].setEnabled(true);
+        if(boxes[1].isEnabled){
+            boxes[1].setEnabled(false);
+        }
+        else{
+            boxes[1].setEnabled(true);
+        }
     });   
     panel.addControl(cardBoardButton);
     cardBoardButton.isVisible = false;
     var text1 = new BABYLON.GUI.TextBlock();
-    text1.text = "cardboard";
-    text1.color = "white";
-    text1.fontSize = 40;
+    text1.text = "Cardboard";
+    text1.color = "#2822b5";
+    text1.fontSize = 50;
+    text1.fontStyle = "bold";
     cardBoardButton.content = text1; 
 
     // cat tree button
@@ -846,14 +853,19 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
         if(updateOn){
             sendDisplayTreeUpdate();
         }
-        boxes[0].setEnabled(true);
+        if(boxes[0].isEnabled){
+            boxes[0].setEnabled(false);
+        }
+        else{
+            boxes[0].setEnabled(true);
+        }
     });   
     panel.addControl(decorButton);
     decorButton.isVisible = false;
     var text1 = new BABYLON.GUI.TextBlock();
     text1.text = "Cat tree";
-    text1.color = "white";
-    text1.fontSize = 40;
+    text1.color = "purple";
+    text1.fontSize = 50;
     decorButton.content = text1; 
 
     // elephant button
@@ -862,14 +874,19 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
         if(updateOn){
             sendDisplayElephantUpdate();
         }
-        boxes[2].setEnabled(true);
+        if(boxes[2].isEnabled){
+            boxes[2].setEnabled(false);
+        }
+        else{
+            boxes[2].setEnabled(true);
+        }
     });   
     panel.addControl(elephantButton);
     elephantButton.isVisible = false;
     var text1 = new BABYLON.GUI.TextBlock();
-    text1.text = "elephant";
+    text1.text = "Elephant";
     text1.color = "white";
-    text1.fontSize = 40;
+    text1.fontSize = 50;
     elephantButton.content = text1; 
 
     var foodButtons = {
