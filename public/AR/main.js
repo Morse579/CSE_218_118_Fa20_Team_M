@@ -1,5 +1,5 @@
-import {initializeScene} from './ARscene.js'
-export{functions}
+import { initializeScene } from './scene.js'
+export { functions }
 
 const firebaseConfig = {
     apiKey: "AIzaSyCHuFcfj3D2vXpxuJWbJViYa1SJPUkEAZM",
