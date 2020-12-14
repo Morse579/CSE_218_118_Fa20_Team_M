@@ -1,6 +1,6 @@
 export{sendUpdateLocal, sendIndivUpdateLocal, sendDisplayTreeUpdate, sendTreePosUpdate,
     sendDisplayBoardUpdate, sendBoardPosUpdate, sendDisplayElephantUpdate, sendElephantPosUpdate,
-    sendCansUpdate, sendCansAvailUpdate,sendFishAvailUpdate}
+    sendCansUpdate, sendFishUpdate}
 
 import {domain} from './VRmain.js'
 
@@ -56,14 +56,8 @@ function sendCansUpdate(cans){
     xhr.send();
 }
 
-function sendCansAvailUpdate(cans){
+function sendFishUpdate(fish, fishAvail){
     let xhr = new XMLHttpRequest();
-    xhr.open("GET", `${domain}/updateCansAvail?cansAvailable=${cans}`, true);
-    xhr.send();
-}
-
-function sendFishAvailUpdate(fish){
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET", `${domain}/updateFishAvail?fishAvailable=${fish}`, true);
+    xhr.open("GET", `${domain}/updateFish?fish=${fish}&fishAvail=${fishAvail}`, true);
     xhr.send();
 }

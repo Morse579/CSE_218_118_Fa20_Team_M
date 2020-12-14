@@ -1,7 +1,7 @@
 import{displayTaskBoard, updateTaskBoard} from './VRboard.js'
 import{sendUpdateLocal, sendIndivUpdateLocal, sendDisplayTreeUpdate, sendTreePosUpdate,
     sendDisplayBoardUpdate, sendBoardPosUpdate, sendDisplayElephantUpdate, sendElephantPosUpdate,
-    sendCansUpdate, sendCansAvailUpdate, sendFishAvailUpdate} 
+    sendCansUpdate, sendFishUpdate} 
     from './sync.js'
 
 export{domain}
@@ -84,6 +84,7 @@ var board = {};
 function initVRscene(roomInfo){
 
 var canCount = roomInfo.cans;
+var fishCount = roomInfo.fish;
 var cansAvailable = roomInfo.cansAvailable;
 var fishAvailable = roomInfo.fishAvailable;
 var feedSpecialCount = roomInfo.feedSpecialCount;
@@ -233,7 +234,6 @@ var createScene = async function () {
     var fishPosX = 10;
     var fishPosZ = 13;
     var allFish = [];
-    var fishCount = 2;
 
     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
@@ -581,7 +581,7 @@ var createScene = async function () {
                                     if(update.feedSpecialCount >= 3){
                                         interactButtons.elephant.isVisible = true;
                                     }
-                                    if(update.cans !== canCount){
+                                    if(update.cans !== canCount && !cat1.play && !cat2.play && !cat3.play){
                                         var diff = update.cans - canCount;
                                         for(var d = 0;d < diff;d++){
                                             canCount += 1;
@@ -1033,6 +1033,7 @@ function musicTask(scene, musicToPlay, cans, canPosX, canPosZ, musicTaskButton, 
                 musicTaskButton.content = text1;
                 // console.log("finished listening to the reward music!");
                 canCount += 1;
+                cansAvailable -= 1;
                 sendCansUpdate(canCount);
                 BABYLON.SceneLoader.ImportMesh("", "./assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
                     // console.log("musicTask reward loaded");
@@ -1050,8 +1051,6 @@ function musicTask(scene, musicToPlay, cans, canPosX, canPosZ, musicTaskButton, 
                     prevCanPosY = can.position.y;
                 });
                 musicTaskRewarded = true;
-                cansAvailable -= 1;
-                //sendCansAvailUpdate(cansAvailable);
             }
         });
     }
@@ -1064,6 +1063,8 @@ function feedWetTask(fishPosX, allFish, fishPosZ) {
     if (feedWetCount === wetCountForReward) {
         feedWetCount = 0;
         lastOwnedFishIndex += 1;
+        fishAvailable -=1;
+        sendFishUpdate(lastOwnedFishIndex+1, fishAvailable);
         console.log("in feedWetTask, lastOwnedFishIndex = ", lastOwnedFishIndex);
         var fish = allFish[lastOwnedFishIndex];
         fish.position.y = roomPosY + 0.3;
@@ -1078,8 +1079,6 @@ function feedWetTask(fishPosX, allFish, fishPosZ) {
         fish.rotation = new BABYLON.Vector3(0, 0, -Math.PI/2);
         fish.setEnabled(true);
         prevFishPosX = fish.position.x;
-        fishAvailable -=1;
-        //sendFishAvailUpdate(fishAvailable);
     }
 }
 
