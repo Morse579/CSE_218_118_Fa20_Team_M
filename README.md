@@ -54,16 +54,22 @@ all the users by the server.\
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_workflow.png?raw=true" width="800">
 
 ## How to get started?
-**TODO**
-
-### Usage
-You need to first `firebase login` to our public google account.
-Please use `firebase deploy --only hosting` to deploy when you make changes in
-public folder. Sometimes you need to refresh the app page for several times in
-order to see your changes.
 
 ### Hosting URL
-https://ar-meowmeow.web.app
+Main page: https://ar-meowmeow.web.app \
+AR: https://ar-meowmeow.web.app/AR/ARscene.html \
+VR: https://ar-meowmeow.web.app/VR/VRscene.html 
+
+### AR
+**Android** users can enter the URL and view the AR scene with Chrome. \
+**iOS** users can enter the URL and view the AR scene with WebXR Viewer(downloaded from App Store).
+
+### VR
+**PC**: Some browsers(such as Chrome 79) supports WebXR. Users can view the VR scene and 
+user mouse interactions and keyboard interactions. \
+**VR Headset**: Users can enter the URL in the browser of of the VR headset and view the VR scene.
+Users can user controllers to perform interactions.
+
 
 ## Who maintains and contributes to the project?
 AR Meow Meow is a course project for CSE118/218 in UC San Diego, and is developed by Team M.
