@@ -1,8 +1,8 @@
-export{sendUpdateLocal, sendIndivUpdateLocal, sendDisplayTreeUpdate, sendTreePosUpdate,
-    sendDisplayBoardUpdate, sendBoardPosUpdate, sendDisplayElephantUpdate, sendElephantPosUpdate,
-    sendCansUpdate, sendFishUpdate}
+export { sendUpdateLocal, sendIndivUpdateLocal, sendDisplayTreeUpdate, sendTreePosUpdate,
+        sendDisplayBoardUpdate, sendBoardPosUpdate, sendDisplayElephantUpdate, sendElephantPosUpdate,
+        sendCansUpdate, sendFishUpdate }
 
-import {domain} from './VRmain.js'
+import { domain } from './main.js'
 
 function sendUpdateLocal(){
     let xhr = new XMLHttpRequest();

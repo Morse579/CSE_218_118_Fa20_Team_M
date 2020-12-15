@@ -1,6 +1,4 @@
-export {displayTaskBoard, updateTaskBoard}
-
-const size = 1;
+export { displayTaskBoard, updateTaskBoard }
 
 function displayTaskBoard(t1_count,t2_count,t3_count){
     
@@ -70,13 +68,7 @@ function displayTaskBoard(t1_count,t2_count,t3_count){
     var image_st;
     var r_d = "x1"
     //Feed Special Task images
-    if(t3_count==0){
-        image_st = "../assets/icon/gift.png"
-    }
-    else if(t3_count==1){
-        image_st = "../assets/icon/gift.png"
-    }
-    else if(t3_count==2){
+    if(t3_count < 3){
         image_st = "../assets/icon/gift.png"
     }
     else{
@@ -216,14 +208,8 @@ function updateTaskBoard(taskBoard, cansAvailable, fishAvailable, feedSpecialCou
     console.log("update", cansAvailable, fishAvailable, feedSpecialCount);
     var task1Text = taskBoard[1];
     var task2Text = taskBoard[2];
-    var task3Text = taskBoard[3];
     var grid = taskBoard[4];
     task1Text.text = `cans available for today: ${cansAvailable}`;
     task2Text.text = `fish available for today: ${fishAvailable}`;
-    // if(feedSpecialCount >= 3){
-    //     task3Text.text = "DONE!";
-    // }else{
-    //     task3Text.text = `${feedSpecialCount}/3`;
-    // }
     bar_display(grid, feedSpecialCount);
 }
