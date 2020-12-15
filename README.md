@@ -14,93 +14,89 @@ We realized that some cat lovers might not be able to raise real cats at their h
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/storyboard.png?raw=true" width="900">
 
 ### List of Features
-Users can enjoy the experience of raising virtual cats with complete storyline in AR mode, and can also collaborate with other users to play with cats together in a shared VR club room.
-<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/overview.jpeg?raw=true" width="800">
+Users can enjoy the experience of raising virtual cats with complete storyline in AR mode, and can also collaborate with other users to play with cats together in a shared VR clubroom.
 
 #### AR Features
-- **Custom storyline & multiple endings:** We designed a complete storyline with multiple possible endings for each cat. (TODO)
+- **Custom storyline & multiple endings:** The player acts as a cat shelter caregiver in the AR mode. When the player gets a new cat, they begin a subgame with a pre-designed storyline and an "outcome" that is determined by both the presets and player actions. All cats come with individual settings and background stories. Here is a detailed list of the possible outcomes:
+  - outcomes:
+    - Cat got happily adopted.
+    - Cat stayed at the shelter.
+    - Cat ran away from you and became the stray king/queen.
+    - Cat passed away.
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_storyline.jpeg?raw=true" width="800">
 
 - **Random generation of cat appearance, age, background:** A cat of random color, age and background will be generated in our database when users start the game. The difference of each cat might result in different stories and endings. 
+  - cat default settings:
+    - Appearance. Cats with more popular breeds are more likely to be adopted (Outcome 1).
+    - Age: 0.5, 3, 15 years old. The old cat is very likely to pass away in the end (Outcome 4).
+    - Background story: 
+      - stray cat
+      - spent their entire life at the pound
+      - ran away from their home
+      - recently abandoned by owner
+      - traveller cat
+      
 - **Physical environment detection to place cats:** Our app is able to search for and detect real-world objects and surfaces though processing camera image in AR session. Therefore, users can place their cat in a "reasonable" position in the real world. 
+
 - **Interaction including feeding, playing and decorating:** Users can feed or play with cats using various types of items, and also decorate their living space by placing different preset furnitures around.
+
 - **Hunger and mood level system:** We designed hunger and mood levels systems which will reflect the status of the cat after each user-cat interaction, and these different levels will cause different outcomes.
+
+<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_feed.png?raw=true" width="300"> 
+
 - **Currency and shop system:** We also designed a currency and shop system that allows users to purchase new items for cats. The coins can be earned through daily login.
-<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_features.jpeg?raw=true" width="600"> 
+<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_shop.png?raw=true" width="300"> 
 
 #### VR Features
-- Complete tasks to obtain shared items
-  - An ad for a can
-  - Cans for a fish
-  - Fish for new decorations
+- **Complete tasks to obtain shared items.** Food and furniture are only obtained by completing certain tasks. The new items appear in the room after finishing a task. The players can: 
+  - get a can by listening to an advertisement uninterruptedly. Shall the user choose to stop the ad before it finishes, they will lose the reward. A short music piece is currently used as a placeholder for ads. (Tap the "ads for rewards" button)
+  - get a fish by feeding the cats 2 cans. (Tap a cat on its head to feed a can)
+  - get decorations. They will unlock the cardboard box, elephant toy, and cat tree by feeding 1, 2, and 3 fish respectively. (Tap the "feed together" button to feed a fish)
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_overview.png?raw=true" width="900"> 
 
-- Synced interactions and decorations
+- **Synced interactions and decorations.** Interactions like feeding, cat movements, and placing of the furniture are all synced among different users. The hunger and mood bars for the cats also update quickly upon a change.
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_sync.png?raw=true" width="800"> 
 
-- The task board
+- **The task board.** Since we implemented a “task” system to motivate players to explore the VR mode, we also displayed a task board to keep track of the shared progress. As shown in this screenshot, we currently have 1 can and 10 fish that we can possibly get for today. We are also one furniture away from unlocking all the decorations offered by the game.
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_taskboard.png?raw=true" width="800"> 
 
+- **Interact with cats and change background music.** The players can watch several cat movements by tapping on the cats' nametags to interact with them. Every 3 clicks unlock a new background music for the player, with the total number of bgm's being 4. The players can tap the "change bgm" button to change background music. The bgm is not shared among players.
+
 ### Architecture & Data Flow
-The AR scene is rendered by Babylon.js. The interactions and data processing are handled by Firebase functions. 
-User data is stored in Firestore (a NoSQL database).\
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_workflow.png?raw=true" width="800">
 
-The VR scene is rendered by Babylon.js. The interactions are sent to a Heroku server and will be broadcast to 
-all the users by the server.\
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_workflow.png?raw=true" width="800">
 
 ## How to get started?
+**TODO**
+
+### Usage
+You need to first `firebase login` to our public google account.
+Please use `firebase deploy --only hosting` to deploy when you make changes in
+public folder. Sometimes you need to refresh the app page for several times in
+order to see your changes.
 
 ### Hosting URL
-Main page: https://ar-meowmeow.web.app \
-AR: https://ar-meowmeow.web.app/AR/ARscene.html \
-VR: https://ar-meowmeow.web.app/VR/VRscene.html 
-
-### AR
-**Android** users can enter the URL and view the AR scene with Chrome. \
-**iOS** users can enter the URL and view the AR scene with WebXR Viewer(downloaded from App Store).
-
-### VR
-**PC**: Some browsers(such as Chrome 79) supports WebXR. Users can view the VR scene and 
-user mouse interactions and keyboard interactions. \
-**VR Headset**: Users can enter the URL in the browser of of the VR headset and view the VR scene.
-Users can user controllers to perform interactions.
-
-### File Structure
-- login.html 
-- index.html (website home page)
-- functions (Firebase functions/AR server) 
-  - index.js 
-  - ... 
-- VR-server (Heroku server/VR server) 
-  - index.js 
-  - ... 
-- public (Firebase hosting/AR client) 
-  - AR (AR scene) 
-    - ARscene.html
-    - main.js 
-    - scene.js (WebXR with Babylon.js)
-    - ...
-  - VR (VR scene)
-    - VRscene.html
-    - main.js (WebXR with Babylon.js)
-    - ...
-      
-  
+https://ar-meowmeow.web.app
 
 ## Who maintains and contributes to the project?
 AR Meow Meow is a course project for CSE118/218 in UC San Diego, and is developed by Team M.
 Our team has 5 members and we divided our team roles as follows: 
 
-Qinghui (Luna) Xia -- **Full Stack Developer**: focusing on the client side and website UI. Graduating BS Computer Engineering student. \
-Yushan Liu -- **Game Designer** and **Front-end Developer** focusing on BabylonJS GUI. Yushan is a 1st year MS Computer Science student. \
-Peizhen Wu -- **Full Stack Developer**: focusing on the server and Babylon.js GUI. Peizhen is a Computer Science Master student. \
-Yiran Chen -- **Full Stack Developer**: focusing on graphics (models and animations). Yiran is a 1st year MS Computer Science student. \
-Elvis Tran -- **Website Developer**. Elvis is a 5th year BS Computer Science student.
+Luna Xia \
+Yushan Liu \
+Peizhen Wu \
+Yiran Chen \
+Elvis Tran \
 
 ### Helps and Contacts
-If you have any questions regarding AR Meow Meow, please feel free to email us. Our email address is cse218.team.m@gmail.com
+If you have any questions regarding AR Meow Meow, please feel free to email us.
+
+Luna Xia: q5xia@ucsd.edu \
+Yushan Liu: yul579@ucsd.edu \
+Peizhen Wu: pew047@ucsd.edu \
+Yiran Chen: yic328@ucsd.edu \
+Elvis Tran: elt007@ucsd.edu
 
 ## Links to Past Weekly Reports
 Project Proposal: https://youtu.be/JUxQtUT9jrI \
