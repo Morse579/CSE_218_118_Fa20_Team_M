@@ -44,10 +44,10 @@ function displayTaskBoard(t1_count,t2_count,t3_count){
     board.addControl(ntasks, 1, 0);
 
     //Music Task
-    var task1Text = format_tasks(ntasks,0,"a song for a can","cans available for today: ",
+    var task1Text = format_tasks(ntasks,0,"an ads for a can","cans available for today: ",
     true,"../assets/icon/wet_food.png","x1",t1_count);
     //Feed Wet Task
-    var task2Text = format_tasks(ntasks,1,"feed a can for a fish","fish available for today: ",
+    var task2Text = format_tasks(ntasks,1,"feed two cans for a fish","fish available for today: ",
     true,"../assets/icon/feed.png","x1",t2_count);
 
     //divider
