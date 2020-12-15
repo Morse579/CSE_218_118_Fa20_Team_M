@@ -1,10 +1,11 @@
-import{displayTaskBoard, updateTaskBoard} from './VRboard.js'
-import{sendUpdateLocal, sendIndivUpdateLocal, sendDisplayTreeUpdate, sendTreePosUpdate,
-    sendDisplayBoardUpdate, sendBoardPosUpdate, sendDisplayElephantUpdate, sendElephantPosUpdate,
-    sendCansUpdate, sendFishUpdate} 
-    from './sync.js'
-
-export{domain}
+import { sendUpdateLocal, sendIndivUpdateLocal, sendDisplayTreeUpdate, sendTreePosUpdate,
+        sendDisplayBoardUpdate, sendBoardPosUpdate, sendDisplayElephantUpdate, sendElephantPosUpdate} from './sync.js'
+import { addNamesAndBars, updateHungerLevel, updateMoodLevel, 
+        updateIndivHungerLevel, updateIndivMoodLevel } from './bar.js'
+import { displayTaskBoard, updateTaskBoard } from './board.js'
+import { musicTask, feedWetTask } from './task.js'
+import { getCatColorFile, createMats } from './utils.js'
+export { domain }
 
 const FEED_WET_HUNGER = 4;
 const FEED_SP_HUNGER = 10;
@@ -12,6 +13,7 @@ const FEED_WET_MOOD = 4;
 const FEED_SP_MOOD = -5;
 
 const interval = 2000;
+const fishMaxCount = 4;
 
 const domain = "https://obscure-hamlet-30472.herokuapp.com";
 //const domain = "http://127.0.0.1:2020";
@@ -27,67 +29,37 @@ xhr.onreadystatechange = function() {
 xhr.open("GET", `${domain}/update`, true);
 xhr.send();
 
-var cat1 = {
-    hunger: 50,
-    mood: 20,
-    name: "Java",
-    appearance: "black"
-};
-var cat2 = {
-    hunger: 50,
-    mood: 20,
-    name: "C++",
-    appearance: "siam"
-};
-var cat3 = {
-    hunger: 60,
-    mood: 10,
-    name: "Python",
-    appearance: "white"
-};
+var cat1 = {hunger: 50,mood: 20,name: "Java",appearance: "black"};
+var cat2 = {hunger: 50,mood: 20,name: "C++",appearance: "siam"};
+var cat3 = {hunger: 60,mood: 10,name: "Python",appearance: "white"};
 let catsInfo = [cat1, cat2, cat3];
 var canvas = document.getElementById("renderCanvas"); // Get the canvas element
-//var canvas = $("#renderCanvas").get(0);
 var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
 const initPos = [new BABYLON.Vector3(0, 0.2, 8), new BABYLON.Vector3(-8, 0.2, 1), new BABYLON.Vector3(8, 0.2, 1)];
 const gatherPos = [new BABYLON.Vector3(0, 0.2, 1), new BABYLON.Vector3(-3, 0.2, 0), new BABYLON.Vector3(3, 0.2, 0)];
 
-var numBGM = 2;
-var currBGM = -1;
-var clickNames = 0;
+var clubroom = {};
+clubroom.numBGM = 2;
+clubroom.currBGM = -1;
 
 // food stack position
-// var canCount = 2;
-var prevCanPosY = null;
-var prevFishPosX = null;
-var roomPosY = null;
-
-// music task
-var rewardMusicIsPlaying = false;
-var musicTaskRewarded = false;
-
-// feed wet task
-var wetCountForReward = 2;  // need to feed such amount of wet food for a special food reward
-var feedWetCount = 0;
-var fishMaxCount = 4;
-var lastOwnedFishIndex = -1;
-
+clubroom.prevCanPosY = null;
+clubroom.prevFishPosX = null;
+clubroom.roomPosY = null;
 
 var updateOn = true;
 var bars = {};
-
-var randAnim = [1, 2, 6, 19, 20, 22];
-
 var board = {};
 
 function initVRscene(roomInfo){
 
-var canCount = roomInfo.cans;
-var fishCount = roomInfo.fish;
-var cansAvailable = roomInfo.cansAvailable;
-var fishAvailable = roomInfo.fishAvailable;
-var feedSpecialCount = roomInfo.feedSpecialCount;
+clubroom.canCount = roomInfo.cans;
+clubroom.fishCount = roomInfo.fish;
+clubroom.lastOwnedFishIndex = -1;
+clubroom.cansAvailable = roomInfo.cansAvailable;
+clubroom.fishAvailable = roomInfo.fishAvailable;
+clubroom.feedSpecialCount = roomInfo.feedSpecialCount;
 
 // Code for AR scene goes here
 var createScene = async function () {
@@ -123,14 +95,9 @@ var createScene = async function () {
     
     var roots = [root1, root2, root3];
 
-    var mats = {};
+    var mats = createMats();
 
-    mats.pink = new BABYLON.StandardMaterial("mat4");
-    mats.pink.diffuseTexture = new BABYLON.Texture("../assets/color/pink.jpg");
-    
-    mats.orange = new BABYLON.StandardMaterial("mat4");
-    mats.orange.diffuseTexture = new BABYLON.Texture("../assets/color/orange.jpg");
-
+  
     var env =  scene.createDefaultEnvironment({ 
         createSkybox: true,
         skyboxSize: 150,
@@ -141,8 +108,7 @@ var createScene = async function () {
         floorMeshes: [env.ground]
     });
 
-    //var board = {};
-    board = displayTaskBoard(cansAvailable,fishAvailable,feedSpecialCount);
+    board = displayTaskBoard(clubroom.cansAvailable,clubroom.fishAvailable,clubroom.feedSpecialCount);
 
     const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 1});
     sphere.position.z = -3;
@@ -279,55 +245,54 @@ var createScene = async function () {
 
     BABYLON.SceneLoader.ImportMesh("", "../assets/space/conference_room1/", "scene.gltf", scene, 
                                     function (roomMeshes, roomParticleSystems, roomSkeletons) {
-        // alert("VR room loaded.");
         var room = roomMeshes[0];
         room.rotation = new BABYLON.Vector3(0, Math.PI, 0);
         room.position = new BABYLON.Vector3(0, 0.1, 0);
         room.scaling = new BABYLON.Vector3(0.03, 0.03, 0.03);
         room.isPickable = false;
-        roomPosY = room.position.y;
+        clubroom.roomPosY = room.position.y;
 
         // load can
-        for (var i = 0; i < canCount; i++) {
+        for (var i = 0; i < clubroom.canCount; i++) {
             BABYLON.SceneLoader.ImportMesh("", "../assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
                 var can = newMeshes[0];
                 cans.push(can);
                 can.position.x = canPosX;
-                if (!prevCanPosY) {
-                    can.position.y = roomPosY + 0.15;
+                if (!clubroom.prevCanPosY) {
+                    can.position.y = clubroom.roomPosY + 0.15;
                 }
                 else {
-                    can.position.y = prevCanPosY + 0.2;
+                    can.position.y = clubroom.prevCanPosY + 0.2;
                 }
                 can.position.z = canPosZ;
                 can.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
-                prevCanPosY = can.position.y;
+                clubroom.prevCanPosY = can.position.y;
             });
         }
 
         // load owned fish
-        for (var i = 0; i < fishCount; i++) {
+        for (var i = 0; i < clubroom.fishCount; i++) {
             BABYLON.SceneLoader.ImportMesh("", "../assets/food/sardine/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
                 var fish = newMeshes[0];
                 allFish.push(fish);
-                lastOwnedFishIndex += 1;
-                console.log("loaded owned fish, index = ", lastOwnedFishIndex);
-                fish.position.y = roomPosY + 0.3;
+                clubroom.lastOwnedFishIndex += 1;
+                console.log("loaded owned fish, index = ", clubroom.lastOwnedFishIndex);
+                fish.position.y = clubroom.roomPosY + 0.3;
                 fish.position.z = fishPosZ;
-                if (!prevFishPosX) {
+                if (!clubroom.prevFishPosX) {
                     fish.position.x = fishPosX;
                 }
                 else {
-                    fish.position.x = prevFishPosX - 1.5;
+                    fish.position.x = clubroom.prevFishPosX - 1.5;
                 }
                 fish.scaling = new BABYLON.Vector3(40, 40, 40);
                 fish.rotation = new BABYLON.Vector3(0, 0, -Math.PI/2);
-                prevFishPosX = fish.position.x;
+                clubroom.prevFishPosX = fish.position.x;
             });
         }
 
         // load more fish for possible later use
-        for (var i = 0; i < fishMaxCount - fishCount; i++) {
+        for (var i = 0; i < fishMaxCount - clubroom.fishCount; i++) {
             BABYLON.SceneLoader.ImportMesh("", "../assets/food/sardine/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
                 var fish = newMeshes[0];
                 allFish.push(fish);
@@ -468,7 +433,7 @@ var createScene = async function () {
 
                     // 3D gui - for mesh interaction
                     var manager = new BABYLON.GUI.GUI3DManager(scene);
-                    bars = addNamesAndBars(mats, cats, anim, roots);
+                    bars = addNamesAndBars(mats, cats, anim, roots, clubroom);
                     var panelBottom = new BABYLON.GUI.StackPanel3D();
                     manager.addControl(panelBottom);
                     panelBottom.margin = 0.3;
@@ -536,16 +501,15 @@ var createScene = async function () {
                     // get updated info
                     function getUpdate(){
                         if(updateOn){
-                            // console.log("canCount: ", canCount);
                             var xhttp = new XMLHttpRequest();
                             xhttp.onreadystatechange = function() {
                                 if (this.readyState == 4 && this.status == 200) {
                                     var update = JSON.parse(xhttp.responseText);
                                     // console.log(update);
-                                    cansAvailable = update.cansAvailable;
-                                    feedSpecialCount = update.feedSpecialCount;
+                                    clubroom.cansAvailable = update.cansAvailable;
+                                    clubroom.feedSpecialCount = update.feedSpecialCount;
                                     if(update.state === "feedSpecial" && !cat1.play){
-                                        playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats, fishPosX, roomPosY);
+                                        playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats, fishPosX, clubroom.roomPosY);
                                     }
                                     if(update.indivState1 === "feedWet" && !cat1.play){
                                         playCatEatAnimation(scene, animationGroups1, animationGroups1[20], cans, cat1, 1, bars, mats, fishPosX, allFish, fishPosZ);
@@ -581,25 +545,25 @@ var createScene = async function () {
                                     if(update.feedSpecialCount >= 3){
                                         interactButtons.elephant.isVisible = true;
                                     }
-                                    if(update.cans !== canCount && !cat1.play && !cat2.play && !cat3.play){
-                                        var diff = update.cans - canCount;
+                                    if(update.cans !== clubroom.canCount && !cat1.play && !cat2.play && !cat3.play){
+                                        var diff = update.cans - clubroom.canCount;
                                         for(var d = 0;d < diff;d++){
-                                            canCount += 1;
+                                            clubroom.canCount += 1;
                                             // add more cans
                                             BABYLON.SceneLoader.ImportMesh("", "../assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
                                                 // console.log("in getUpdate, diff = ", diff);
                                                 var can = newMeshes[0];
                                                 cans.push(can);
                                                 can.position.x = canPosX;
-                                                if (!prevCanPosY) {
-                                                    can.position.y = roomPosY + 0.15;
+                                                if (!clubroom.prevCanPosY) {
+                                                    can.position.y = clubroom.roomPosY + 0.15;
                                                 }
                                                 else {
-                                                    can.position.y = prevCanPosY + 0.2;
+                                                    can.position.y = clubroom.prevCanPosY + 0.2;
                                                 }
                                                 can.position.z = canPosZ;
                                                 can.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
-                                                prevCanPosY = can.position.y;
+                                                clubroom.prevCanPosY = can.position.y;
                                             });
                                         }
                                     }
@@ -661,7 +625,6 @@ var createScene = async function () {
     }
     return scene;
 }
-//////////
 
 createScene().then(scene => {
     engine.runRenderLoop(() => scene.render());
@@ -670,105 +633,20 @@ createScene().then(scene => {
     });
 });
 
-function addNamesAndBars(mats, cats, anim, roots){
-    var bars = {};
-    bars.hungerBar = [];
-    bars.moodBar = [];
-
-    // Add name
-    var plane1 = BABYLON.Mesh.CreatePlane("plane", 2.2);
-    var plane2 = BABYLON.Mesh.CreatePlane("plane", 2.2);
-    var plane3 = BABYLON.Mesh.CreatePlane("plane", 2.2);
-
-    plane1.parent = roots[0];
-    plane2.parent = roots[1];
-    plane3.parent = roots[2];
-    plane1.position.y = 3;
-    plane2.position.y = 3;
-    plane3.position.y = 3;
-
-    var advancedTexture1 = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane1);
-    var advancedTexture2 = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane2);
-    var advancedTexture3 = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane3);
-
-    var button1 = BABYLON.GUI.Button.CreateSimpleButton("but", cats[0].name);
-    var button2 = BABYLON.GUI.Button.CreateSimpleButton("but", cats[1].name);
-    var button3 = BABYLON.GUI.Button.CreateSimpleButton("but", cats[2].name);
-
-    button1.width = 1;
-    button1.height = 0.3;
-    button1.color = "white";
-    button1.fontSize = 180;
-    button1.cornerRadius = 40;
-    button1.background = "green";
-    button1.onPointerUpObservable.add(function() {
-        var rand = Math.floor(Math.random() * randAnim.length);
-        anim[0][randAnim[rand]].play(false);
-        checkBGMRewards();
-    });
-    advancedTexture1.addControl(button1);
-
-    button2.width = 1;
-    button2.height = 0.3;
-    button2.color = "white";
-    button2.fontSize = 200;
-    button2.cornerRadius = 40;
-    button2.background = "green";
-    button2.onPointerUpObservable.add(function() {
-        var rand = Math.floor(Math.random() * randAnim.length);
-        anim[1][randAnim[rand]].play(false);
-        checkBGMRewards();
-    });
-    advancedTexture2.addControl(button2);
-
-    button3.width = 1;
-    button3.height = 0.3;
-    button3.color = "white";
-    button3.fontSize = 200;
-    button3.cornerRadius = 40;
-    button3.background = "green";
-    button3.onPointerUpObservable.add(function() {
-        var rand = Math.floor(Math.random() * randAnim.length);
-        anim[2][randAnim[rand]].play(false);
-        checkBGMRewards();
-    });
-    advancedTexture3.addControl(button3);
-    
-    for(var j=0;j<3;j++){
-        // Add bars
-        bars.hungerBar[j] = [];
-        for(var i=0;i<100;i++){
-            bars.hungerBar[j][i] = BABYLON.MeshBuilder.CreateBox("box", {height: 0.2, width: 0.02, depth: 0.2});
-            bars.hungerBar[j][i].parent = roots[j];
-            bars.hungerBar[j][i].position.y = 4.5;
-            bars.hungerBar[j][i].position.x = -1 + i*0.02;
-            var hungerValue = cats[j].hunger;
-            hungerValue = Math.max(0, hungerValue);
-            hungerValue = Math.min(100, hungerValue);
-            if(i<hungerValue){
-                bars.hungerBar[j][i].material = mats.pink;	
-            }
-        }
-        bars.moodBar[j] = [];
-        for(var i=0;i<100;i++){
-            bars.moodBar[j][i] = BABYLON.MeshBuilder.CreateBox("box", {height: 0.2, width: 0.02, depth: 0.2});
-            bars.moodBar[j][i].parent = roots[j];
-            bars.moodBar[j][i].position.y = 4;
-            bars.moodBar[j][i].position.x = -1 + i*0.02;
-            var moodValue = cats[j].mood;
-            moodValue = Math.max(0, moodValue);
-            moodValue = Math.min(100, moodValue);
-            if(i<moodValue){
-                bars.moodBar[j][i].material = mats.orange;	
-            }
-        }
-    
+function changeBackgroundMusic(music){
+    if(clubroom.currBGM == -1){
+        clubroom.currBGM = 0;
+        music[0].play();
     }
-  return bars;
+    else{
+        music[clubroom.currBGM].stop();
+        clubroom.currBGM = (clubroom.currBGM + 1) % clubroom.numBGM;
+        music[clubroom.currBGM].play();
+    }
 }
 
 function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFish, boxes, music, rewardMusic, 
-                                     scene, cans, canPosX, canPosZ, fishPosX, taskBoard){
+    scene, cans, canPosX, canPosZ, fishPosX, taskBoard){
 
     // change bgm button
     var musicButton = new BABYLON.GUI.Button3D("musicButton");
@@ -785,7 +663,7 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     // Music Task button
     var musicTaskButton = new BABYLON.GUI.Button3D("musicTaskButton");
     musicTaskButton.onPointerUpObservable.add(function(){
-        musicTask(scene, rewardMusic, cans, canPosX, canPosZ, musicTaskButton);
+        musicTask(scene, rewardMusic, cans, canPosX, canPosZ, musicTaskButton, clubroom);
     });   
     panel.addControl(musicTaskButton);
     var text1 = new BABYLON.GUI.TextBlock();
@@ -797,12 +675,11 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     // Feed together button
     var gatherButton = new BABYLON.GUI.Button3D("gatherButton");
     gatherButton.onPointerUpObservable.add(function(){
-        playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats, fishPosX, roomPosY);
-        if(updateOn){
-            //sendUpdate("feedSpecial", catsInfo);
-            sendUpdateLocal();
-        }
-        
+    playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats, fishPosX, clubroom.roomPosY);
+    if(updateOn){
+        sendUpdateLocal();
+    }
+
     });   
     panel.addControl(gatherButton);
     var text1 = new BABYLON.GUI.TextBlock();
@@ -814,7 +691,7 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     var boardButton = new BABYLON.GUI.Button3D("TaskBoard");
     panel.addControl(boardButton);
     boardButton.onPointerUpObservable.add(function(){
-        updateTaskBoard(taskBoard, cansAvailable, fishAvailable, feedSpecialCount);
+        updateTaskBoard(taskBoard, clubroom.cansAvailable, clubroom.fishAvailable, clubroom.feedSpecialCount);
         taskBoard[0].displayed = !taskBoard[0].displayed;
         taskBoard[0].setEnabled(taskBoard[0].displayed);
     });   
@@ -827,15 +704,15 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     //card board button
     var cardBoardButton = new BABYLON.GUI.Button3D("decorButton");
     cardBoardButton.onPointerUpObservable.add(function(){
-        if(updateOn){
-            sendDisplayBoardUpdate();
-        }
-        if(boxes[1].isEnabled){
-            boxes[1].setEnabled(false);
-        }
-        else{
-            boxes[1].setEnabled(true);
-        }
+    if(updateOn){
+        sendDisplayBoardUpdate();
+    }
+    if(boxes[1].isEnabled){
+        boxes[1].setEnabled(false);
+    }
+    else{
+        boxes[1].setEnabled(true);
+    }
     });   
     panel.addControl(cardBoardButton);
     cardBoardButton.isVisible = false;
@@ -849,15 +726,15 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     // cat tree button
     var decorButton = new BABYLON.GUI.Button3D("decorButton");
     decorButton.onPointerUpObservable.add(function(){
-        if(updateOn){
-            sendDisplayTreeUpdate();
-        }
-        if(boxes[0].isEnabled){
-            boxes[0].setEnabled(false);
-        }
-        else{
-            boxes[0].setEnabled(true);
-        }
+    if(updateOn){
+        sendDisplayTreeUpdate();
+    }
+    if(boxes[0].isEnabled){
+        boxes[0].setEnabled(false);
+    }
+    else{
+        boxes[0].setEnabled(true);
+    }
     });   
     panel.addControl(decorButton);
     decorButton.isVisible = false;
@@ -870,15 +747,15 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     // elephant button
     var elephantButton = new BABYLON.GUI.Button3D("decorButton");
     elephantButton.onPointerUpObservable.add(function(){
-        if(updateOn){
-            sendDisplayElephantUpdate();
-        }
-        if(boxes[2].isEnabled){
-            boxes[2].setEnabled(false);
-        }
-        else{
-            boxes[2].setEnabled(true);
-        }
+    if(updateOn){
+        sendDisplayElephantUpdate();
+    }
+    if(boxes[2].isEnabled){
+        boxes[2].setEnabled(false);
+    }
+    else{
+        boxes[2].setEnabled(true);
+    }
     });   
     panel.addControl(elephantButton);
     elephantButton.isVisible = false;
@@ -888,227 +765,25 @@ function display3DInteractionButtons(panel, bars, mats, cats, roots, anim, allFi
     text1.fontSize = 50;
     elephantButton.content = text1; 
 
-    var foodButtons = {
-        music: musicButton,
-        gather: gatherButton,
+    var buttons = {
         tree: decorButton,
         board: cardBoardButton,
         elephant: elephantButton
     };
-    return foodButtons;
-}
-
-function checkBGMRewards(){
-    clickNames++;
-    if(clickNames === 3){
-        numBGM++;
-
-        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-        var grid = new BABYLON.GUI.Grid(); 
-        advancedTexture.addControl(grid); 
-        grid.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;   
-        grid.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-        
-        grid.widthInPixels = 400;
-        grid.heightInPixels = 200;
-
-        var rect= new BABYLON.GUI.Rectangle();
-        rect.cornerRadius = 100;
-        rect.background =  "#6B899E";
-        rect.alpha = 0.8;
-        rect.thickness = 10;
-        grid.addControl(rect, 0, 0);
-    
-        var unlockText = new BABYLON.GUI.TextBlock();
-        unlockText.text = "Unlock New BGM!";
-        unlockText.heightInPixels = 100;
-        unlockText.color = "#E5A33F";
-        unlockText.fontSize = 40;
-        grid.addControl(unlockText, 0, 0);
-        setTimeout(()=>{
-            advancedTexture.removeControl(grid);
-            advancedTexture.removeControl(rect);
-        }, 1500);
-        
-    }else if(clickNames === 10){
-        numBGM++;
-        //TODO
-    }
-}
-
-
-function updateHungerLevel(bars, cats, mats, val){
-    cats[0].hunger += val;
-    for(var i = Math.max(cats[0].hunger-val,0);i<Math.min(cats[0].hunger,100);i++){
-        bars.hungerBar[0][i].material = mats.pink;
-    }
-    cats[1].hunger += val;
-    for(var i = Math.max(cats[1].hunger-val,0);i<Math.min(cats[1].hunger,100);i++){
-        bars.hungerBar[1][i].material = mats.pink;
-    }
-    cats[2].hunger += val;
-    for(var i = Math.max(cats[2].hunger-val,0);i<Math.min(cats[2].hunger,100);i++){
-        bars.hungerBar[2][i].material = mats.pink;
-    }
-}
-function updateMoodLevel(bars, cats, mats, val){
-    cats[0].mood += val;
-    for(var i = Math.max(cats[0].mood,0);i<Math.min(cats[0].mood-val,100);i++){
-        bars.moodBar[0][i].material = null;
-    }
-    cats[1].mood += val;
-    for(var i = Math.max(cats[1].mood,0);i<Math.min(cats[1].mood-val,100);i++){
-        bars.moodBar[1][i].material = null;
-    }
-    cats[2].mood += val;
-    for(var i = Math.max(cats[2].mood,0);i<Math.min(cats[2].mood-val,100);i++){
-        bars.moodBar[2][i].material = null;
-    }
-}
-
-function updateIndivHungerLevel(bars, cat, mats, index, val){
-    cat.hunger += val;
-    for(var i = Math.max(cat.hunger-val,0);i<Math.min(cat.hunger,100);i++){
-        bars.hungerBar[index][i].material = mats.pink;
-    }
-}
-function updateIndivMoodLevel(bars, cat, mats, index, val){
-    cat.mood += val;
-    console.log(index, cat.mood);
-    for(var i = Math.max(cat.mood-val,0);i<Math.min(cat.mood,100);i++){
-        bars.moodBar[index][i].material = mats.orange;
-    }
-}
-
-function changeBackgroundMusic(music){
-    if(currBGM == -1){
-        currBGM = 0;
-        music[0].play();
-    }
-    else{
-        music[currBGM].stop();
-        currBGM = (currBGM + 1) % numBGM;
-        music[currBGM].play();
-    }
-}
-
-function getCatColorFile(color){
-    var fileToLoad;
-    switch(color) {
-        case "siam":
-            fileToLoad = "ChibiCatV2_unity_siam.gltf";
-            break;
-        case "grey":
-            fileToLoad = "ChibiCatV2_unity_grey.gltf";
-            break;
-        case "carey":
-            fileToLoad = "ChibiCatV2_unity_carey.gltf";
-            break;
-        case "orange":
-            fileToLoad = "ChibiCatV2_unity_orange.gltf";
-            break;
-        case "black":
-            fileToLoad = "ChibiCatV2_unity_black.gltf";
-            break;
-        case "white":
-            fileToLoad = "ChibiCatV2_unity_white.gltf";
-            break;
-        default:
-            fileToLoad = "ChibiCatV2_unity_white2.gltf"
-    }
-    return fileToLoad;
-  }
-
-function musicTask(scene, musicToPlay, cans, canPosX, canPosZ, musicTaskButton, bars, mats) {
-    var text1 = new BABYLON.GUI.TextBlock();
-    text1.color = "orange";
-    text1.fontSize = 50;
-
-    if (rewardMusicIsPlaying) {
-        musicToPlay.stop();
-        musicTaskRewarded = true;
-        text1.text = "Ads\nFor Reward";
-        musicTaskButton.content = text1;
-        rewardMusicIsPlaying = false;
-        // console.log("pressed on button while playing");
-
-        return;
-    }
-    else {
-        musicToPlay.play();
-        musicTaskRewarded = false;
-        rewardMusicIsPlaying = true;
-        text1.text = "Stop Ads\nNo Reward";
-        musicTaskButton.content = text1;
-        // console.log("playing the music")
-
-        musicToPlay.onEndedObservable.addOnce(() => {
-            if (!musicTaskRewarded) {
-                rewardMusicIsPlaying = false;
-                text1.text = "Ads\nFor Reward";
-                musicTaskButton.content = text1;
-                // console.log("finished listening to the reward music!");
-                canCount += 1;
-                cansAvailable -= 1;
-                sendCansUpdate(canCount);
-                BABYLON.SceneLoader.ImportMesh("", "../assets/food/capurrrcino/", "scene.gltf", scene, function (newMeshes, particleSystems, skeletons) {
-                    // console.log("musicTask reward loaded");
-                    var can = newMeshes[0];
-                    cans.push(can);
-                    can.position.x = canPosX;
-                    if (!prevCanPosY) {
-                        can.position.y = roomPosY + 0.15;
-                    }
-                    else {
-                        can.position.y = prevCanPosY + 0.2;
-                    }
-                    can.position.z = canPosZ;
-                    can.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
-                    prevCanPosY = can.position.y;
-                });
-                musicTaskRewarded = true;
-            }
-        });
-    }
-}
-
-function feedWetTask(fishPosX, allFish, fishPosZ) {
-    feedWetCount += 1;
-    console.log("feedWetCount incremented :: ", feedWetCount);
-
-    if (feedWetCount === wetCountForReward) {
-        feedWetCount = 0;
-        lastOwnedFishIndex += 1;
-        fishAvailable -=1;
-        sendFishUpdate(lastOwnedFishIndex+1, fishAvailable);
-        console.log("in feedWetTask, lastOwnedFishIndex = ", lastOwnedFishIndex);
-        var fish = allFish[lastOwnedFishIndex];
-        fish.position.y = roomPosY + 0.3;
-        fish.position.z = fishPosZ;
-        if (!prevFishPosX) {
-            fish.position.x = fishPosX;
-        }
-        else {
-            fish.position.x = prevFishPosX - 1.5;
-        }
-        fish.scaling = new BABYLON.Vector3(40, 40, 40);
-        fish.rotation = new BABYLON.Vector3(0, 0, -Math.PI/2);
-        fish.setEnabled(true);
-        prevFishPosX = fish.position.x;
-    }
+    return buttons;
 }
 
 function playCatEatAnimation(scene, animationGroups, afterEatingAnim, cans, cat, index, bars, mats, fishPosX, allFish, fishPosZ){
     cat.play = true;
-    var can_eaten = cans[canCount - 1];
+    var can_eaten = cans[clubroom.canCount - 1];
     cans.pop();
-    canCount -= 1;
-    feedWetTask(fishPosX, allFish, fishPosZ);
-    if (prevCanPosY - roomPosY <= 0.1) {
-        prevCanPosY = null;
+    clubroom.canCount -= 1;
+    feedWetTask(fishPosX, allFish, fishPosZ, clubroom);
+    if (clubroom.prevCanPosY - clubroom.roomPosY <= 0.1) {
+        clubroom.prevCanPosY = null;
     }
     else {
-        prevCanPosY = prevCanPosY - 0.2;
+        clubroom.prevCanPosY = clubroom.prevCanPosY - 0.2;
     }
 
     if(index === 1){
@@ -1144,15 +819,13 @@ function playCatEatTogetherAnimation(cats, roots, anim, allFish, bars, mats, fis
     cats[1].play = true;
     cats[2].play = true;
 
-    var fish_eaten = allFish[lastOwnedFishIndex];
-    // allFish.pop();
-    lastOwnedFishIndex -= 1;
-    console.log("In playCatEatTogetherAnim, lastOwnedFishIndex = ", lastOwnedFishIndex);
-    if (prevFishPosX === fishPosX) {
-        prevFishPosX = null;
+    var fish_eaten = allFish[clubroom.lastOwnedFishIndex];
+    clubroom.lastOwnedFishIndex -= 1;
+    if (clubroom.prevFishPosX === fishPosX) {
+        clubroom.prevFishPosX = null;
     }
     else {
-        prevFishPosX = prevFishPosX + 1.5;
+        clubroom.prevFishPosX = clubroom.prevFishPosX + 1.5;
     }
 
     fish_eaten.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
