@@ -103,6 +103,7 @@ VR: https://ar-meowmeow.web.app/VR/VRscene.html
 ### AR
 **Android** users can enter the URL and view the AR scene with Chrome. \
 **iOS** users can enter the URL and view the AR scene with WebXR Viewer(downloaded from App Store).
+2D GUI does not work in WebXR Viewer.
 
 ### VR
 **PC**: Some browsers(such as Chrome 79) support WebXR. Users can view the VR scene and 
