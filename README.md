@@ -6,39 +6,42 @@ AR Meow Meow is a mobile Augmented Reality game that can let users raise virtual
 
 ## What the project does?
 ### Storyboard
-The problem we are trying to solve with AR Meow Meow is “the desire for more social interaction that people who may be lonely and are unable to interact with others in these trying times have, and simultaneously, the desire for cat lovers who want to keep a cat but are unable to due to whatever circumstances”.
-![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/storyboard.png?raw=true)
+The problem we are trying to solve with AR Meow Meow is “the desire for more social interaction that people who may be lonely and are unable to interact with others in these trying times have, and simultaneously, the desire for cat lovers who want to keep a cat but are unable to due to whatever circumstances”. \
+<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/storyboard.png?raw=true" width="900">
 
 ### List of Features
 Users can enjoy the experience of raising virtual cats with complete storyline in AR mode, and can also collaborate with other users to play with cats together in a shared VR clubroom.
 
 #### AR Features
-- Custom storyline & multiple endings \
-![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_storyline.jpeg?raw=true)
+- Custom storyline & multiple endings
+<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_storyline.jpeg?raw=true" width="800">
+
 - Random generation of cat appearance, age, background, etc.
 - Physical environment detection to place cats
 - Interaction including feeding, playing and decorating
-- Hunger and mood level system \
-![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_feed.png?raw=true) \
-- Currency and shop system \
-![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_shop.png?raw=true)
+- Hunger and mood level system 
+<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_feed.png?raw=true" width="300"> 
+
+- Currency and shop system 
+<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_shop.png?raw=true" width="300"> 
 
 #### VR Features
 - Complete tasks to obtain shared items
   - An ad for a can
   - Cans for a fish
-  - Fish for new decorations \
-![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_overview.png?raw=true) 
-- Synced interactions and decorations \
-![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_sync.png?raw=true) 
-- The task board \
-![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_taskboard.png?raw=true)
+  - Fish for new decorations
+<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_overview.png?raw=true" width="900"> 
+
+- Synced interactions and decorations
+<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_sync.png?raw=true" width="800"> 
+
+- The task board
+<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_taskboard.png?raw=true" width="800"> 
 
 ### Architecture & Data Flow
-**TODO**
-![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_workflow.png?raw=true)
+<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_workflow.png?raw=true" width="800">
 
-![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_workflow.png?raw=true)
+<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_workflow.png?raw=true" width="800">
 
 ## How to get started?
 
