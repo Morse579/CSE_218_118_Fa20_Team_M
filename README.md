@@ -14,7 +14,7 @@ Users can enjoy the experience of raising virtual cats with complete storyline i
 
 #### AR Features
 - Custom storyline & multiple endings
-![]()
+![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_storyline.jpeg?raw=true)
 - Random generation of cat appearance, age, background, etc.
 - Physical environment detection to place cats
 - Interaction including feeding, playing and decorating
