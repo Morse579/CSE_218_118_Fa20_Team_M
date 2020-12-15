@@ -44,15 +44,15 @@ order to see your changes.
 https://ar-meowmeow.web.app
 
 ## Who maintains and contributes to the project?
-**TODO** \
+**TODO**
 
 ### Helps and Contacts
 If you have any questions regarding AR Meow Meow, please feel free to email us.
 
-Luna Xia: q5xia@ucsd.edu
-Yushan Liu: yul579@ucsd.edu
-Peizhen Wu: pew047@ucsd.edu
-Yiran Chen: yic328@ucsd.edu
+Luna Xia: q5xia@ucsd.edu \
+Yushan Liu: yul579@ucsd.edu \
+Peizhen Wu: pew047@ucsd.edu \
+Yiran Chen: yic328@ucsd.edu \
 Elvis Tran: elt007@ucsd.edu
 
 ## Links to Past Weekly Reports
