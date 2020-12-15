@@ -41,12 +41,16 @@ Users can enjoy the experience of raising virtual cats with complete storyline i
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/overview.jpeg?raw=true" width="800">
 
 #### AR Features
-- **Custom storyline & multiple endings:** The player acts as a cat shelter caregiver in the AR mode. When the player gets a new cat, they begin a subgame with a pre-designed storyline and an "outcome" that is determined by both the presets and player actions. All cats come with individual settings and background stories. Here is a detailed list of the possible outcomes:
+- **Custom storyline & multiple endings:** The player acts as a cat shelter caregiver in the AR mode. When the player gets a new cat, they begin a subgame with a pre-designed storyline and an "outcome" that is determined by both the presets and player actions. All cats come with individual settings and background stories. We also designed several "special tasks" that have significant impact on the outcome. The players are very likely to give their cats a satisfying outcome by completing their pre-assigned special task. Here is a detailed list of the possible outcomes and special tasks:
   - outcomes:
     - Cat got happily adopted.
     - Cat stayed at the shelter.
     - Cat ran away from you and became the stray king/queen.
-    - Cat passed away.
+    - Cat passed away. 
+  - The special tasks are:
+    - I’m really craving some sardine. Could I have five of that?
+    - I’m feeling so lonely. Can you play with me using some toy for 10 times?
+
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_storyline.jpeg?raw=true" width="800">
 
 - **Random generation of cat appearance, age, background:** A cat of random color, age and background will be generated in our database when users start the game. The difference of each cat might result in different stories and endings.
