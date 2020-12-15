@@ -14,7 +14,7 @@ We realized that some cat lovers might not be able to raise real cats at their h
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/storyboard.png?raw=true" width="900">
 
 ### List of Features
-Users can enjoy the experience of raising virtual cats with complete storyline in AR mode, and can also collaborate with other users to play with cats together in a shared VR clubroom.
+Users can enjoy the experience of raising virtual cats with complete storyline in AR mode, and can also collaborate with other users to play with cats together in a shared VR club room.
 
 #### AR Features
 - **Custom storyline & multiple endings:** We designed a complete storyline with multiple possible endings for each cat. (TODO)
@@ -64,20 +64,14 @@ https://ar-meowmeow.web.app
 AR Meow Meow is a course project for CSE118/218 in UC San Diego, and is developed by Team M.
 Our team has 5 members and we divided our team roles as follows: 
 
-Luna Xia \
-Yushan Liu \
-Peizhen Wu \
-Yiran Chen \
-Elvis Tran \
+Qinghui (Luna) Xia — **Full Stack Developer**: focusing on the client side and website UI. Graduating BS Computer Engineering student. \
+Yushan Liu - **Game Designer** and **Front-end Developer** focusing on BabylonJS GUI. Yushan is a 1st year MS Computer Science student. \
+Peizhen Wu - **Full Stack Developer**: focusing on the server and Babylon.js GUI. Peizhen is a Computer Science Master student. \
+Yiran Chen - **Full Stack Developer**: focusing on graphics (models and animations). Yiran is a 1st year MS Computer Science student.
+Elvis Tran - **Website Developer**. Elvis is a 5th year BS Computer Science student.
 
 ### Helps and Contacts
-If you have any questions regarding AR Meow Meow, please feel free to email us.
-
-Luna Xia: q5xia@ucsd.edu \
-Yushan Liu: yul579@ucsd.edu \
-Peizhen Wu: pew047@ucsd.edu \
-Yiran Chen: yic328@ucsd.edu \
-Elvis Tran: elt007@ucsd.edu
+If you have any questions regarding AR Meow Meow, please feel free to email us. Our email address is cse218.team.m@gmail.com
 
 ## Links to Past Weekly Reports
 Project Proposal: https://youtu.be/JUxQtUT9jrI \
