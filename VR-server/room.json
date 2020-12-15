@@ -1,0 +1,20 @@
+{
+    "cans": 2,
+    "fish": 2,
+    "treePosX": 4.862221846814653,
+    "treePosZ": 9.778883432636066,
+    "displayTree": false,
+    "boardPosX": -5.792897041517102,
+    "boardPosZ": 6.122695515413833,
+    "displayBoard": false,
+    "elephantPosX": -2.9038631649793847,
+    "elephantPosZ": 6.743678731002079,
+    "displayElephant": false,
+    "indivState1": "none",
+    "indivState2": "none",
+    "indivState3": "none",
+    "state": "none",
+    "feedSpecialCount": 0,
+    "cansAvailable": 5,
+    "fishAvailable": 5
+}
