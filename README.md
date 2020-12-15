@@ -14,7 +14,7 @@ Users can enjoy the experience of raising virtual cats with complete storyline i
 
 #### AR Features
 - Custom storyline & multiple endings \
-![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_storyline.jpeg?raw=true) \
+![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_storyline.jpeg?raw=true)
 - Random generation of cat appearance, age, background, etc.
 - Physical environment detection to place cats
 - Interaction including feeding, playing and decorating
@@ -28,9 +28,9 @@ Users can enjoy the experience of raising virtual cats with complete storyline i
   - An ad for a can
   - Cans for a fish
   - Fish for new decorations \
-![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_overview.png?raw=true) \
-- Synced interactions and decorations
-![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_sync.png?raw=true) \
+![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_overview.png?raw=true) 
+- Synced interactions and decorations \
+![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_sync.png?raw=true) 
 - The task board \
 ![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_taskboard.png?raw=true)
 
