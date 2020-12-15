@@ -25,11 +25,8 @@ Users can enjoy the experience of raising virtual cats with complete storyline i
 - **Physical environment detection to place cats:** Our app is able to search for and detect real-world objects and surfaces though processing camera image in AR session. Therefore, users can place their cat in a "reasonable" position in the real world. 
 - **Interaction including feeding, playing and decorating:** Users can feed or play with cats using various types of items, and also decorate their living space by placing different preset furnitures around.
 - **Hunger and mood level system:** We designed hunger and mood levels systems which will reflect the status of the cat after each user-cat interaction, and these different levels will cause different outcomes.
-
-<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_feed.png?raw=true" width="300"> 
-
 - **Currency and shop system:** We also designed a currency and shop system that allows users to purchase new items for cats. The coins can be earned through daily login.
-<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_shop.png?raw=true" width="300"> 
+<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_features.jpeg?raw=true" width="800"> 
 
 #### VR Features
 - Complete tasks to obtain shared items
