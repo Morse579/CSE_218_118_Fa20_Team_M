@@ -19,18 +19,28 @@ Users can enjoy the experience of raising virtual cats with complete storyline i
 - Interaction including feeding, playing and decorating
 - Hunger and mood level system
 - Currency and shop system
+![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_background.jpeg?raw=true)
+![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_start_dialogue.jpeg?raw=true)
+![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_feed.png?raw=true)
+![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_shop.png?raw=true)
+![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_end_dialogue.jpeg?raw=true)
 
 #### VR Features
 - Complete tasks to obtain shared items
   - An ad for a can
   - Cans for a fish
   - Fish for new decorations 
+![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_overview.png?raw=true)
 - Synced interactions and decorations
+![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_sync.png?raw=true)
 - The task board
+![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_taskboard.png?raw=true)
 
 ### Architecture & Data Flow
 **TODO**
+![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_workflow.png?raw=true)
 
+![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_workflow.png?raw=true)
 
 ## How to get started?
 
