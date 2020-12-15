@@ -44,8 +44,12 @@ Users can enjoy the experience of raising virtual cats with complete storyline i
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_taskboard.png?raw=true" width="800"> 
 
 ### Architecture & Data Flow
+The AR scene is rendered by Babylon.js. The interactions and data processing are handled by Firebase functions. 
+User data is stored in Firestore (a NoSQL database).\
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_workflow.png?raw=true" width="800">
 
+The VR scene is rendered by Babylon.js. The interactions are sent to a Heroku server and will be broadcast to 
+all the users by the server.\
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_workflow.png?raw=true" width="800">
 
 ## How to get started?
