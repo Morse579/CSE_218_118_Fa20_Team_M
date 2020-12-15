@@ -120,7 +120,7 @@ Users can use controllers to perform interactions.
 - VR-server (Heroku server/VR server) 
   - index.js 
   - ... 
-- public (Firebase hosting/AR client) 
+- public (Firebase hosting/AR & VR client) 
   - AR (AR scene) 
     - ARscene.html
     - main.js 
