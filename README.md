@@ -100,6 +100,12 @@ Main page: https://ar-meowmeow.web.app \
 AR: https://ar-meowmeow.web.app/AR/ARscene.html \
 VR: https://ar-meowmeow.web.app/VR/VRscene.html 
 
+#### Active Accounts
+- alice@218.com(password: alicealice) has no cats, a user should start game
+- bob@218.com(password: bobbob) has a cat "kitty" created on 12.13, a user should continue game
+- carol@218.com(password: carolcarol) has a cat "cc" created on 12.10, a user should continue game
+- david@218.com(password: daviddavid) has a cat "cute" created on 12.7, a user should end game and restart
+
 ### AR
 **Android** users can enter the URL and view the AR scene with Chrome. \
 **iOS** users can enter the URL and view the AR scene with WebXR Viewer(downloaded from App Store).
