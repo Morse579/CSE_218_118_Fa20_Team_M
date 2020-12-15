@@ -18,10 +18,24 @@ Users can enjoy the experience of raising virtual cats with complete storyline i
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/overview.jpeg?raw=true" width="800">
 
 #### AR Features
-- **Custom storyline & multiple endings:** We designed a complete storyline with multiple possible endings for each cat. (TODO)
+- **Custom storyline & multiple endings:** The player acts as a cat shelter caregiver in the AR mode. When the player gets a new cat, they begin a subgame with a pre-designed storyline and an "outcome" that is determined by both the presets and player actions. All cats come with individual settings and background stories. Here is a detailed list of the possible outcomes:
+  - outcomes:
+    - Cat got happily adopted.
+    - Cat stayed at the shelter.
+    - Cat ran away from you and became the stray king/queen.
+    - Cat passed away.
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_storyline.jpeg?raw=true" width="800">
 
-- **Random generation of cat appearance, age, background:** A cat of random color, age and background will be generated in our database when users start the game. The difference of each cat might result in different stories and endings. 
+- **Random generation of cat appearance, age, background:** A cat of random color, age and background will be generated in our database when users start the game. The difference of each cat might result in different stories and endings.
+  - cat default settings:
+    - Appearance. Cats with more popular breeds are more likely to be adopted (Outcome 1).
+    - Age: 0.5, 3, 15 years old. The old cat is very likely to pass away in the end (Outcome 4).
+    - Background story:
+      - stray cat
+      - spent their entire life at the pound
+      - ran away from their home
+      - recently abandoned by owner
+      - traveller cat
 - **Physical environment detection to place cats:** Our app is able to search for and detect real-world objects and surfaces though processing camera image in AR session. Therefore, users can place their cat in a "reasonable" position in the real world. 
 - **Interaction including feeding, playing and decorating:** Users can feed or play with cats using various types of items, and also decorate their living space by placing different preset furnitures around.
 - **Hunger and mood level system:** We designed hunger and mood levels systems which will reflect the status of the cat after each user-cat interaction, and these different levels will cause different outcomes.
@@ -29,17 +43,19 @@ Users can enjoy the experience of raising virtual cats with complete storyline i
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_features.jpeg?raw=true" width="600"> 
 
 #### VR Features
-- Complete tasks to obtain shared items
-  - An ad for a can
-  - Cans for a fish
-  - Fish for new decorations
-<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_overview.png?raw=true" width="900"> 
+- **Complete tasks to obtain shared items.** Food and furniture are only obtained by completing certain tasks. The new items appear in the room after finishing a task. The players can:
+  - get a can by listening to an advertisement uninterruptedly. Shall the user choose to stop the ad before it finishes, they will lose the reward. A short music piece is currently used as a placeholder for ads. (Tap the "ads for rewards" button)
+  - get a fish by feeding the cats 2 cans. (Tap a cat on its head to feed a can)
+  - get decorations. They will unlock the cardboard box, elephant toy, and cat tree by feeding 1, 2, and 3 fish respectively. (Tap the "feed together" button to feed a fish)
+<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_overview.png?raw=true" width="900">
 
-- Synced interactions and decorations
-<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_sync.png?raw=true" width="800"> 
+- **Synced interactions and decorations.** Interactions like feeding, cat movements, and placing of the furniture are all synced among different users. The hunger and mood bars for the cats also update quickly upon a change.
+<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_sync.png?raw=true" width="800">
 
-- The task board
-<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_taskboard.png?raw=true" width="800"> 
+- **The task board.** Since we implemented a “task” system to motivate players to explore the VR mode, we also displayed a task board to keep track of the shared progress. As shown in this screenshot, we currently have 1 can and 10 fish that we can possibly get for today. We are also one furniture away from unlocking all the decorations offered by the game.
+<img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_taskboard.png?raw=true" width="800">
+
+- **Interact with cats and change background music.** The players can watch several cat movements by tapping on the cats' nametags to interact with them. Every 3 clicks unlock a new background music for the player, with the total number of bgm's being 4. The players can tap the "change bgm" button to change background music. The bgm is not shared among players.
 
 ### Architecture & Data Flow
 The AR scene is rendered by Babylon.js. The interactions and data processing are handled by Firebase functions. 
