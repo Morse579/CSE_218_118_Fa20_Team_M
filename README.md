@@ -14,16 +14,14 @@ Users can enjoy the experience of raising virtual cats with complete storyline i
 
 #### AR Features
 - Custom storyline & multiple endings
+![]()
 - Random generation of cat appearance, age, background, etc.
 - Physical environment detection to place cats
 - Interaction including feeding, playing and decorating
 - Hunger and mood level system
-- Currency and shop system
-![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_background.jpeg?raw=true)
-![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_start_dialogue.jpeg?raw=true)
 ![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_feed.png?raw=true)
+- Currency and shop system
 ![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_shop.png?raw=true)
-![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_end_dialogue.jpeg?raw=true)
 
 #### VR Features
 - Complete tasks to obtain shared items
