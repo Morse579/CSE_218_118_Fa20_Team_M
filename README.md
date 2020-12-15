@@ -132,7 +132,8 @@ Final Presentation: https://youtu.be/gCcYBjDubjo
 BGMs: ukulele, little idea, cute, smile From www.bensound.com.
 
 ### Models
-**TODO**
+https://www.turbosquid.com/ \
+https://sketchfab.com/ 
 
 ### Icons
-**TODO**
+https://www.flaticon.com/
