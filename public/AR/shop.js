@@ -1,5 +1,5 @@
-export{displayShop}
-import{functions} from './ARmain.js'
+export { displayShop }
+import { functions } from './main.js'
 
 function displayShop(advancedTexture, user, textUI, coinText){
     // SHOP UI START

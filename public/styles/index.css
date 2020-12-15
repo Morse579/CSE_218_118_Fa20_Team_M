@@ -1,7 +1,7 @@
 body {
     /*font-family: 'Didact Gothic',serif;*/
     font-family: 'Avenir',serif;
-    font-size: 1.5em;
+    font-size: 0.5em;
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -10,19 +10,21 @@ body {
 
 h1 {
     display: block;
-    font-size: 110px;
+    font-size: 60px;
     margin: 0;
-    padding-top: 500px;
+    padding-top: 40px;
     padding-bottom: 0;
     color: #eb4d4b;
+    text-align: center
 }
 
 h3 {
     display: block;
-    font-size: 50px;
+    font-size: 25px;
     margin: 0;
-    padding-top: 30px;
+    padding-top: 10px;
     color: #584646;
+    text-align: center
 }
 
 .dialog-container {
@@ -35,36 +37,34 @@ h3 {
 dialog {
     height: 100%;
     width: 100%;
-    padding: 60px 120px 120px;
+    padding: 10px;
     margin: auto;
     border-width: 0;
     overflow: scroll;
     background-color: #ACC7DB;
+    line-height: 0.9;
 }
 
 .dialog-title {
     display: block;
-    font-size: 100px;
-    /* margin: 0; */
-    padding-top: 90px;
-    padding-bottom: 30px;
+    font-size: 20px;
     color: #eb4d4b;
 }
 
 .dialog-content {
     display: block;
-    font-size: 65px;
+    font-size: 15px;
     margin: 0;
-    padding-top: 30px;
+    padding-top: 5px;
     color: #584646;
 }
 
 header {
-    height: 800px;
+    height: 200px;
 }
 
 .aligncenter {
-    height: 200px;
+    height: 50px;
     text-align: center;
     margin: 0 auto;
 }
@@ -76,72 +76,75 @@ header {
     margin-bottom: 0;
     margin-left: auto;
     margin-right: auto;
+    padding-top: 50px;
 }
 
 .text-background {
     display: block;
     text-align: center;
     height: 0;
-    line-height: 220px;
-    font-size: 380px;
+    line-height: 55px;
+    font-size: 90px;
     color: #e7d7d7;
 }
 
 .name-cat-container {
     display: flex;
-    height: 1000px;
-    padding-top: 60px;
+    height: 250px;
+    padding-top: 15px;
     flex-direction: column;
     align-content: center;
     justify-content: center;
     align-items: center;
-    font-size: 40px;
+    font-size: 20px;
     text-align: center;
 }
 
 .form-container {
     display: flex;
-    height: 500px;
-    padding-top: 60px;
+    height: 125px;
+    padding-top: 15px;
     flex-direction: column;
     align-content: center;
     justify-content: center;
     align-items: center;
-    font-size: 40px;
+    font-size: 20px;
 }
 
 .login-form {
-    font-size: 1.5em;
+    font-size: 1em;
     text-align: center;
-    /* margin-bottom: 30px; */
-    max-height: 10vh;
-    max-width: 80vh;
-    height: 140px;
-    width: 800px;
-    border-radius: 20px;
+    height: 35px;
+    width: 200px;
+    border-radius: 10px;
     color: #584646;
+}
+
+input {
+    width: 200px;
+    height: 30px;
 }
 
 .login-btn-container {
     display: flex;
-    height: 800px;
+    height: 200px;
     flex-direction: column;
     align-content: center;
     justify-content: center;
     align-items: center;
-    font-size: 40px;
+    font-size: 20px;
 }
 
 .login-btn {
-    font-size: 1.5em;
+    font-size: 1em;
     text-align: center;
     cursor: pointer;
     max-height: 300px;
     max-width: 1000px;
-    height: 220px;
-    width: 800px;
+    height: 55px;
+    width: 200px;
     color: white;
-    border-radius: 100px;
+    border-radius: 25px;
     background-color: #EB4D4B;
 }
 
@@ -149,62 +152,44 @@ header {
 
 .mainpage-btn-container {
     display: flex;
-    height: 900px;
+    height: 250px;
     flex-direction: column;
     align-content: center;
     /*justify-content: center;*/
     align-items: center;
-    font-size: 40px;
+    font-size: 20px;
 }
 
 .dialog-btn {
-    font-size: 60px;
+    font-size: 15px;
     text-align: center;
     cursor: pointer;
-    max-height: 300px;
-    max-width: 1000px;
-    margin-top: 60px;
-    height: 220px;
-    width: 800px;
+    margin-top: 20px;
+    height: 30px;
+    width: 100px;
     color: white;
-    border-radius: 100px;
+    border-radius: 25px;
     background-color: #EB4D4B;
 }
 
 .dialog-btn:hover {background: #6B899E;}
 
 .btn {
-    padding: 14px 28px;
-    font-size: 1.5em;
+    padding: 5px 9px;
+    font-size: 1em;
     text-align: center;
     cursor: pointer;
-    margin-bottom: 60px;
+    margin-bottom: 15px;
     max-height: 300px;
     max-width: 1000px;
-    height: 220px;
-    width: 800px;
+    height: 55px;
+    width: 200px;
     color: white;
-    border-radius: 100px;
+    border-radius: 25px;
     background-color: #EB4D4B;
 }
 
 .btn:hover {background: #ACC7DB;}
-
-/*.start {background-color: #EB4D4B;}*/
-/*.end   {background-color: #EB4D4B;}*/
-/*.continue {background-color: #EB4D4B;}*/
-/*.info {background-color: #EB4D4B;}*/
-/*.history {background-color: #EB4D4B;}*/
-/*.load {background-color: #EB4D4B;}*/
-/*.logout {background-color: #EB4D4B;}*/
-/*.default {background-color: #EB4D4B;}*/
-
-#footer {
-    display: block;
-    height: 300px;
-    font-size: 100px;
-    text-align: center;
-}
 
 .center {
     display: block;
@@ -213,36 +198,6 @@ header {
     width: 50%;
 }
 
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    max-width: screen.width;
-    overflow: hidden; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-    margin: auto;
-}
-
-.modal-content {
-    position: relative;
-    background-color: #fefefe;
-    margin: auto;
-    padding: 0;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: screen.width * 0.8;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-    -webkit-animation-name: animatetop;
-    -webkit-animation-duration: 0.4s;
-    animation-name: animatetop;
-    animation-duration: 0.4s
-}
 
 /* Add Animation */
 @-webkit-keyframes animatetop {
@@ -253,47 +208,4 @@ header {
 @keyframes animatetop {
     from {top:-300px; opacity:0}
     to {top:0; opacity:1}
-}
-
-/* The Close Button */
-.close {
-    color: white;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.close_startgame {
-    color: white;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close_startgame:hover,
-.close_startgame_window:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.modal-header {
-    padding: 2px 16px;
-    background-color: #5cb85c;
-    color: white;
-}
-
-.modal-body {padding: 2px 16px;}
-
-.modal-footer {
-    padding: 2px 16px;
-    background-color: #5cb85c;
-    color: white;
 }
