@@ -13,25 +13,25 @@ The problem we are trying to solve with AR Meow Meow is “the desire for more s
 Users can enjoy the experience of raising virtual cats with complete storyline in AR mode, and can also collaborate with other users to play with cats together in a shared VR clubroom.
 
 #### AR Features
-- Custom storyline & multiple endings
-![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_storyline.jpeg?raw=true)
+- Custom storyline & multiple endings \
+![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_storyline.jpeg?raw=true) \
 - Random generation of cat appearance, age, background, etc.
 - Physical environment detection to place cats
 - Interaction including feeding, playing and decorating
-- Hunger and mood level system
-![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_feed.png?raw=true)
-- Currency and shop system
+- Hunger and mood level system \
+![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_feed.png?raw=true) \
+- Currency and shop system \
 ![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_shop.png?raw=true)
 
 #### VR Features
 - Complete tasks to obtain shared items
   - An ad for a can
   - Cans for a fish
-  - Fish for new decorations 
-![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_overview.png?raw=true)
+  - Fish for new decorations \
+![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_overview.png?raw=true) \
 - Synced interactions and decorations
-![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_sync.png?raw=true)
-- The task board
+![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_sync.png?raw=true) \
+- The task board \
 ![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_taskboard.png?raw=true)
 
 ### Architecture & Data Flow
