@@ -1,5 +1,5 @@
 # AR Meow Meow
-Meow o(-w-)o
+Meow o(-w-)o \
 AR Meow Meow is a mobile Augmented Reality game that can let users raise virtual cats on their smartphone through feeding, playing, and completing tasks anywhere, anytime. 
 
 ## Why the project is useful?
@@ -7,7 +7,7 @@ AR Meow Meow is a mobile Augmented Reality game that can let users raise virtual
 
 ## What the project does?
 ### Storyboard
-**TODO**
+![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/storyboard.png?raw=true)
 
 ### List of Features
 Users can enjoy the experience of raising virtual cats with complete storyline in AR mode, and can also collaborate with other users to play with cats together in a shared VR clubroom.
@@ -44,7 +44,7 @@ order to see your changes.
 https://ar-meowmeow.web.app
 
 ## Who maintains and contributes to the project?
-**TODO**
+**TODO** \
 
 ### Helps and Contacts
 If you have any questions regarding AR Meow Meow, please feel free to email us.
@@ -56,12 +56,12 @@ Yiran Chen: yic328@ucsd.edu
 Elvis Tran: elt007@ucsd.edu
 
 ## Links to Past Weekly Reports
-Project Proposal: https://youtu.be/JUxQtUT9jrI
-Midterm Presentation: https://youtu.be/9oAKdyYR8-4
-Week6 Report: https://youtu.be/nt9im_sug0A
-Week7 Report: https://youtu.be/XQgZS5he1UQ
-Week8 Report: https://youtu.be/HBDkMS0wsf4
-Week9 Report: https://youtu.be/TywA0IBmgYA
+Project Proposal: https://youtu.be/JUxQtUT9jrI \
+Midterm Presentation: https://youtu.be/9oAKdyYR8-4 \
+Week6 Report: https://youtu.be/nt9im_sug0A \
+Week7 Report: https://youtu.be/XQgZS5he1UQ \
+Week8 Report: https://youtu.be/HBDkMS0wsf4 \
+Week9 Report: https://youtu.be/TywA0IBmgYA \
 Final Presentation: https://youtu.be/gCcYBjDubjo
 
 ## Resources
