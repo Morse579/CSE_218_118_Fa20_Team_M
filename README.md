@@ -1,14 +1,37 @@
 # AR Meow Meow
 AR Meow Meow is a mobile Augmented Reality game that can let users raise virtual cats on their smartphone through feeding, playing, and completing tasks anywhere, anytime. Meow o(-w-)o
 
-## Why the project is useful?
+## Table of Contents
+   *  **Why the Project is Useful**
+       * [Problem Statement & Goal](#why-the-project-is-useful)
+   *  **What the Project Does**
+       * [Storyboard](#storyboard)
+       * [AR Features](#list-of-features)
+       * [VR Features](#vr-features)
+   * **Architecture and Data Flow**
+       * [AR & VR](#architecture-and-data-flow)
+   * **How to get started**
+       * [Hosting URL](#hosting-url)
+          * AR
+          * VR
+   * **Others**
+       * [File Structure](#file-structure)
+       * **Maintain and Contributions**
+          * [Developers](#developers)
+       * [Help and Contacts](#help-and-contacts)
+       * [Past Weekly Reports](#links-to-past-weekly-reports)
+       * [Resources](#resources)
+       
+       
+
+## Why the Project is Useful
 AR Meow Meow is a simple and adorable game for helping people relax themselves in daily life.
 
 The problem we are trying to solve with AR Meow Meow is “the desire for more social interaction that people who may be lonely and are unable to interact with others in these trying times have, and simultaneously, the desire for cat lovers who want to keep a cat but are unable to due to whatever circumstances”.
 
 Our goal is to make a mobile Augmented Reality game that can let users raise virtual cats on their smartphone. We want to let users play with their virtual cats such as feeding and greeting at anywhere, anytime. Meanwhile, we also want to realize and encourage interactions between different users by letting them socialize with other cat lovers using our app.  
 
-## What the project does?
+## What the Project Does
 ### Storyboard
 We realized that some cat lovers might not be able to raise real cats at their home, and due to the special situation this year, we know many people need more social interaction. We want to take these into consideration and design an AR app to solve the problems. The app will allow users to raise virtual cats, decorate their living space, and also let them socialize with other cat lovers.
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/storyboard.png?raw=true" width="900">
@@ -57,7 +80,7 @@ Users can enjoy the experience of raising virtual cats with complete storyline i
 
 - **Interact with cats and change background music.** The players can watch several cat movements by tapping on the cats' nametags to interact with them. Every 3 clicks unlock a new background music for the player, with the total number of bgm's being 4. The players can tap the "change bgm" button to change background music. The bgm is not shared among players.
 
-### Architecture & Data Flow
+### Architecture and Data Flow
 The AR scene is rendered by Babylon.js. The interactions and data processing are handled by Firebase functions. 
 User data is stored in Firestore (a NoSQL database).\
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/ar_workflow.png?raw=true" width="800">
@@ -66,7 +89,7 @@ The VR scene is rendered by Babylon.js. The interactions are sent to a Heroku se
 all the users by the server.\
 <img src="https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/vr_workflow.png?raw=true" width="800">
 
-## How to get started?
+## How to get started
 
 ### Hosting URL
 Main page: https://ar-meowmeow.web.app \
@@ -106,6 +129,7 @@ Users can use controllers to perform interactions.
   
 
 ## Who maintains and contributes to the project?
+### Developers
 AR Meow Meow is a course project for CSE118/218 in UC San Diego, and is developed by Team M.
 Our team has 5 members and we divided our team roles as follows: 
 
@@ -113,9 +137,9 @@ Qinghui (Luna) Xia -- **Full Stack Developer**: focusing on the client side and 
 Yushan Liu -- **Game Designer** and **Front-end Developer** focusing on BabylonJS GUI. Yushan is a 1st year MS Computer Science student. \
 Peizhen Wu -- **Full Stack Developer**: focusing on the server and Babylon.js GUI. Peizhen is a Computer Science Master student. \
 Yiran Chen -- **Full Stack Developer**: focusing on graphics (models and animations). Yiran is a 1st year MS Computer Science student. \
-Elvis Tran -- **Website Developer**. Elvis is a 5th year BS Computer Science student.
+Elvis Tran -- **Website Developer**: focusing on main page. Elvis is a graduating 5th year BS Computer Engineering student.
 
-### Helps and Contacts
+### Help and Contacts
 If you have any questions regarding AR Meow Meow, please feel free to email us. Our email address is cse218.team.m@gmail.com
 
 ## Links to Past Weekly Reports
