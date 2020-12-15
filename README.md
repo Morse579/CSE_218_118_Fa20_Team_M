@@ -1,12 +1,12 @@
 # AR Meow Meow
-Meow o(-w-)o \
-AR Meow Meow is a mobile Augmented Reality game that can let users raise virtual cats on their smartphone through feeding, playing, and completing tasks anywhere, anytime. 
+AR Meow Meow is a mobile Augmented Reality game that can let users raise virtual cats on their smartphone through feeding, playing, and completing tasks anywhere, anytime. Meow o(-w-)o
 
 ## Why the project is useful?
 **TODO**
 
 ## What the project does?
 ### Storyboard
+The problem we are trying to solve with AR Meow Meow is “the desire for more social interaction that people who may be lonely and are unable to interact with others in these trying times have, and simultaneously, the desire for cat lovers who want to keep a cat but are unable to due to whatever circumstances”.
 ![](https://github.com/WeibelLab-Teaching/CSE_218_118_Fa20_Team_M/blob/main/images/storyboard.png?raw=true)
 
 ### List of Features
@@ -30,6 +30,7 @@ Users can enjoy the experience of raising virtual cats with complete storyline i
 
 ### Architecture & Data Flow
 **TODO**
+
 
 ## How to get started?
 
